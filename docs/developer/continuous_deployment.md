@@ -2,19 +2,20 @@
 
 ### Overview
 
-A cloud deployment.
+A GitHub Actions workflow performs continuous integration and continuous deployment of the MVD to an Azure subscription. The workflow needs the following infrastructure to be deployed:
 
 - An **application** is created to represent the action runner that provisions cloud resources. In Azure Active Directory, a service principal for the application is configured in the cloud tenant, and configured to trust the GitHub repository using Federated Identity Credentials.
+- Another **application** is created to represent the deployed runtimes for accessing Azure resources (such as Key Vault). For simplicity, all runtimes share a single application identity. In Azure Active Directory, a service principal for the application is configured in the cloud tenant. A client secret is configured to allow the runtime to authenticate.
+- An **Azure Container Registry** instance is deployed to contain docker images built in the CI job. These images are deployed to runtime environments in the CD process.
 
-## Deploying an Azure environment
+## Initializing an Azure environment for CD
 
 ### Planning your deployment
 
 You will need:
 
 - An Azure subscription
-- At least one developer with the `Owner` role on the Azure subscription in order to deploy resources and assign roles
-- A service principal (instructions below)
+- Two service principals (instructions below)
 - The following utilities installed locally:
   - [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
   - [GitHub CLI](https://cli.github.com)
@@ -27,7 +28,7 @@ You will need:
 
 ### Create a service identity for GitHub Actions
 
-[Create and configure an application for GitHub Actions](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
+[Create and configure an Azure AD application for GitHub Actions](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
 
 Follow the instructions to *Create an app registration*.
 
@@ -43,9 +44,9 @@ Follow the instructions to *Configure a federated identity credential*.
 
 [Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
 
-### Create a service identity for EDC
+### Create a service identity for Applications
 
-[Create and configure an application for EDC](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
+[Create and configure an Azure AD application for the application runtimes](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
 
 Follow the instructions to *Create an app registration*.
 
@@ -75,7 +76,9 @@ cd/initialize.sh
 The script also configures your repository's GitHub secrets so that workflows can consume the resources. The following secrets are provisioned:
 
 - `AZURE_CLIENT_ID` ,  `AZURE_SUBSCRIPTION_ID` and `AZURE_TENANT_ID`, required to log in with the Federated Credential scenario.
+- `APP_CLIENT_ID`  and `APP_CLIENT_SECRET`, which together with  `AZURE_TENANT_ID` allows application runtimes to connect to Azure resources.
 - `ACR_NAME` containing the container registry name.
 
 Note that these values do not actually contain any sensitive information.
 
+~                               

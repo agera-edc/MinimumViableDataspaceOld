@@ -32,24 +32,9 @@ build
 .vs
 .vscode
 
-/secrets
-
-distributions/**/github.properties
-
-# ignore all certificates
-
-distributions/azure/azure.properties
-.terraform*
-
 .DS_Store
-**/secrets
 
-**/terraform.tfvars
-**/.terraform*
-launchers/demo-e2e/edc-config.properties
 **/out
 *.hprof
 
 .env
-runtime_settings.properties
-generated_backend.tf
