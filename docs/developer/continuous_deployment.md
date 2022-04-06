@@ -41,7 +41,20 @@ Follow the instructions to *Configure a federated identity credential*.
 - For **Entity Type**, select **Pull Request**.
 - For **Name**, type any name.
 
-Grant the application Owner permissions on your Azure subscription.
+[Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
+
+### Create a service identity for EDC
+
+[Create and configure an application for EDC](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
+
+Follow the instructions to *Create an app registration*.
+
+- In **Supported Account Types**, select **Accounts in this organizational directory only**.
+- Don't enter anything for **Redirect URI (optional)**.
+
+Take note of the Application (client) ID.
+
+Create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
 
 ### Configure CD settings
 
@@ -50,10 +63,6 @@ The shell scripts that deploy resources take their configuration from a file nam
 ```bash
 cp cd/.env.example cd/.env
 ```
-
-At a minimum, you must modify the following values:
-
-- `GITHUB_REPO` (to reflect your fork)
 
 ### Deploying CD resources
 
