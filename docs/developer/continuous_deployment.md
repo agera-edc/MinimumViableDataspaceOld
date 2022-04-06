@@ -41,6 +41,8 @@ Follow the instructions to *Configure a federated identity credential*.
 - For **Entity Type**, select **Pull Request**.
 - For **Name**, type any name.
 
+Grant the application Owner permissions on your Azure subscription.
+
 ### Configure CD settings
 
 The shell scripts that deploy resources take their configuration from a file named `.env` that should not be committed into the repository (though the file should be shared across developers in your fork). Copy and adapt the example settings file to your environment, following the comments in the file:
