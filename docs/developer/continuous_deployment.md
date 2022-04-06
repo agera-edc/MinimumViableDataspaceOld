@@ -12,10 +12,12 @@ A GitHub Actions workflow performs continuous integration and continuous deploym
 
 ### Planning your deployment
 
-You will need:
+You will need to provide the following:
 
 - An Azure subscription
 - Two service principals (instructions below)
+
+A GitHub workflow then needs to be run to provision the Azure resources used for CD.
 
 ### Create a service identity for GitHub Actions
 
@@ -28,20 +30,24 @@ Follow the instructions to *Create an app registration*.
 
 Take note of the Application (client) ID.
 
-Follow the instructions to *Configure a federated identity credential*.
+Follow the instructions to *Configure a federated identity credential* for the `main` branch.
+
+- For **Entity Type**, select **Branch**.
+- For **GitHub branch name**, enter `main`.
+- For **Name**, type any name.
+
+Follow the instructions to *Configure a federated identity credential* for Pull requests.
 
 - For **Entity Type**, select **Pull Request**.
 - For **Name**, type any name.
 
 [Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
 
-Configure the following GitHub secrets:
+Configure the following GitHub secret:
 
-| Secret name             | Value |
-| ----------------------- | ----- |
-| `AZURE_CLIENT_ID`       |       |
-| `AZURE_SUBSCRIPTION_ID` |       |
-| `AZURE_TENANT_ID`       |       |
+| Secret name       | Value                        |
+| ----------------- | ---------------------------- |
+| `AZURE_CLIENT_ID` | The application (client) ID. |
 
 ### Create a service identity for Applications
 
@@ -58,21 +64,23 @@ Create a client secret by following the section "Create a new application secret
 
 Configure the following GitHub secrets:
 
-| Secret name         | Value |
-| ------------------- | ----- |
-| `APP_CLIENT_ID`     |       |
-| `APP_CLIENT_SECRET` |       |
+| Secret name         | Value                          |
+| ------------------- | ------------------------------ |
+| `APP_CLIENT_ID`     | The application (client) ID.   |
+| `APP_CLIENT_SECRET` | The application client secret. |
 
 ### Configure CD settings
 
 Configure the following GitHub secrets:
 
-| Secret name                   | Value |
-| ----------------------------- | ----- |
-| `ACR_RESOURCE_GROUP`          |       |
-| `ACR_RESOURCE_GROUP_LOCATION` |       |
-| `ACR_NAME`                    |       |
+| Secret name                   | Value                                                        |
+| ----------------------------- | ------------------------------------------------------------ |
+| `AZURE_TENANT_ID`             | The Azure AD tenant ID.                                      |
+| `AZURE_SUBSCRIPTION_ID`       | The Azure subscription ID to deploy resources in.            |
+| `ACR_RESOURCE_GROUP`          | The Azure resource group name to deploy Azure Container Registry in. |
+| `ACR_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy Azure Container Registry in. Example: `northeurope`. |
+| `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
 
 ### Deploying CD resources
 
-Manually run the CD pipeline.
+Manually run the `Initialize CD` GitHub Actions workflow.

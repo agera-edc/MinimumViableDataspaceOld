@@ -29,5 +29,5 @@ jobs:
       - name: "Create resource group"
         run: az group create --name "$ACR_RESOURCE_GROUP" --location "$ACR_RESOURCE_GROUP_LOCATION" -o table
 
-      - name: "Create resource group"
+      - name: "Create Azure Container Registry"
         run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic -o table
