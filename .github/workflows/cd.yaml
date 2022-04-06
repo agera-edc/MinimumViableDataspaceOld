@@ -19,19 +19,54 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        repo: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
+        with:
+          path: MVD
 
-      # Write JARs to ~/.m2
-      - run: gradlew publishToMavenLocal
-        workingDirectory: DataSpaceConnector
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
 
-      - run: gradle mvd:launcher:connector:shadowJar
+      - name: Checkout EDC
+        uses: actions/checkout@v2
+        with:
+          repository: eclipse-dataspaceconnector/DataSpaceConnector
+          path: DataSpaceConnector
 
-      - run: az acr build --registry $ACR_NAME --image mvd-edc/connector:latest  .
+      - name: Cache EDC modules
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: ~/.m2
+          # .git/FETCH_HEAD contains latest commit ID
+          key: ${{ runner.os }}-m2-${{ hashFiles('DataSpaceConnector/.git/FETCH_HEAD') }}
+
+      - run: find ~/.m2
+
+      - name: Build EDC modules
+        run: ./gradlew publishToMavenLocal
+        if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
+        working-directory: DataSpaceConnector
+
+      - run: ./gradlew launcher:shadowJar
+        working-directory: MVD
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - run: az acr login -n $ACR_NAME
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
-jobs:
+      - run: az acr build --registry $ACR_NAME --image mvd-edc/connector:latest .
+        working-directory: MVD
+        env:
+          ACR_NAME: ${{ secrets.ACR_NAME }}
 
   Deploy:
     matrix:
@@ -64,7 +99,7 @@ jobs:
     matrix:
       - ZF
       - Bosch
-    needs: Build
+    needs: Deploy
     runs-on: ubuntu-latest
 
     steps:
