@@ -21,7 +21,7 @@ A GitHub workflow then needs to be run to provision the Azure resources used for
 
 ### Create a service identity for GitHub Actions
 
-[Create and configure an Azure AD application](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github) for GitHub Actions.
+[Create and configure an Azure AD application for GitHub Actions](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
 
 Follow the instructions to *Create an app registration*.
 
@@ -30,6 +30,11 @@ Follow the instructions to *Create an app registration*.
 
 Take note of the Application (client) ID.
 
+Follow the instructions to *Configure a federated identity credential* for the `main` branch.
+
+- For **Entity Type**, select **Branch**.
+- For **GitHub branch name**, enter `main`.
+- For **Name**, type any name.
 [Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
 
 Configure the following GitHub secrets:
@@ -41,9 +46,16 @@ Configure the following GitHub secrets:
 
 ### Create a service identity for Applications
 
-[Create and configure an Azure AD application](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github) for the application runtimes.
+[Create and configure an Azure AD application for the application runtimes](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
 
-Follow the steps as above, but do not grant the application any Azure roles.
+Follow the instructions to *Create an app registration*.
+
+- In **Supported Account Types**, select **Accounts in this organizational directory only**.
+- Don't enter anything for **Redirect URI (optional)**.
+
+Take note of the Application (client) ID.
+
+Create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
 
 Configure the following GitHub secrets:
 
