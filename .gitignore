@@ -21,3 +21,35 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+.idea
+.vs
+.vscode
+
+/secrets
+
+distributions/**/github.properties
+
+# ignore all certificates
+
+distributions/azure/azure.properties
+.terraform*
+
+.DS_Store
+**/secrets
+
+**/terraform.tfvars
+**/.terraform*
+launchers/demo-e2e/edc-config.properties
+**/out
+*.hprof
+
+.env
+runtime_settings.properties
+generated_backend.tf
