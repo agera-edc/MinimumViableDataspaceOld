@@ -25,7 +25,7 @@ resource "azurerm_container_group" "edc" {
   os_type             = "Linux"
 
   container {
-    name   = "${var.prefix}-edc"
+    name   = "${var.prefix}-${var.participant_name}-edc"
     image  = "${var.repository}:${var.image_tag}"
     cpu    = "0.5"
     memory = "1.5"

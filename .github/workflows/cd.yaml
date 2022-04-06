@@ -88,12 +88,15 @@ jobs:
       - name: "Run terraform"
         run: terraform apply
         env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
           TF_VAR_participant_name: ${{matrix.name}}
           TF_VAR_prefix: ${{github.job.id}}
+          TF_VAR_repository: ${{ secrets.ACR_NAME }}/mvd-edc/connector
+          TF_VAR_image_tag: latest
+          TF_VAR_resource_group: agera-mvd
 
       - uses: upload/artifact
         path: tfstate
+      working-directory: terraform
 
   Destroy:
     matrix:

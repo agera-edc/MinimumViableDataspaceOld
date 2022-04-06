@@ -1,9 +1,11 @@
-variable "prefix" {
-  default = "ouphi-test"
+variable "participant_name" {
 }
 
 variable "repository" {
-  default = "ageramvd.azurecr.io/ouphi-test"
+}
+
+variable "prefix" {
+  default = "test"
 }
 
 variable "image_tag" {
