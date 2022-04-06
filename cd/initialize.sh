@@ -39,3 +39,6 @@ $gh secret set ACR_NAME --body "$ACR_NAME"
 $gh secret set AZURE_CLIENT_ID --body "$CD_CLIENT_ID"
 $gh secret set AZURE_SUBSCRIPTION_ID --body "$subscription_id"
 $gh secret set AZURE_TENANT_ID --body "$tenant_id"
+
+$gh secret set EDC_CLIENT_ID --body "$EDC_CLIENT_ID"
+$gh secret set EDC_CLIENT_SECRET --body "$EDC_CLIENT_SECRET"
