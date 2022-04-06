@@ -16,15 +16,6 @@ You will need:
 
 - An Azure subscription
 - Two service principals (instructions below)
-- The following utilities installed locally:
-  - [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
-  - [GitHub CLI](https://cli.github.com)
-
-### Log in to Azure & GitHub
-
-- You must be [signed in to the target Azure subscription with the Azure CLI](https://docs.microsoft.com/cli/azure/authenticate-azure-cli) and [have the target Azure subscription selected](https://docs.microsoft.com/cli/azure/manage-azure-subscriptions-azure-cli).
-
-- You must be [signed in to GitHub with the GitHub CLI](https://cli.github.com/manual/gh_auth_login) and must have Contributor permissions on the repository.
 
 ### Create a service identity for GitHub Actions
 
@@ -44,6 +35,14 @@ Follow the instructions to *Configure a federated identity credential*.
 
 [Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
 
+Configure the following GitHub secrets:
+
+| Secret name             | Value |
+| ----------------------- | ----- |
+| `AZURE_CLIENT_ID`       |       |
+| `AZURE_SUBSCRIPTION_ID` |       |
+| `AZURE_TENANT_ID`       |       |
+
 ### Create a service identity for Applications
 
 [Create and configure an Azure AD application for the application runtimes](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github).
@@ -57,28 +56,23 @@ Take note of the Application (client) ID.
 
 Create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
 
+Configure the following GitHub secrets:
+
+| Secret name         | Value |
+| ------------------- | ----- |
+| `APP_CLIENT_ID`     |       |
+| `APP_CLIENT_SECRET` |       |
+
 ### Configure CD settings
 
-The shell scripts that deploy resources take their configuration from a file named `.env` that should not be committed into the repository (though the file should be shared across developers in your fork). Copy and adapt the example settings file to your environment, following the comments in the file:
+Configure the following GitHub secrets:
 
-```bash
-cp cd/.env.example cd/.env
-```
+| Secret name                   | Value |
+| ----------------------------- | ----- |
+| `ACR_RESOURCE_GROUP`          |       |
+| `ACR_RESOURCE_GROUP_LOCATION` |       |
+| `ACR_NAME`                    |       |
 
 ### Deploying CD resources
 
-The first time only, set up the container registry by running this script:
-
-```bash
-cd/initialize.sh
-```
-
-The script also configures your repository's GitHub secrets so that workflows can consume the resources. The following secrets are provisioned:
-
-- `AZURE_CLIENT_ID` ,  `AZURE_SUBSCRIPTION_ID` and `AZURE_TENANT_ID`, required to log in with the Federated Credential scenario.
-- `APP_CLIENT_ID`  and `APP_CLIENT_SECRET`, which together with  `AZURE_TENANT_ID` allows application runtimes to connect to Azure resources.
-- `ACR_NAME` containing the container registry name.
-
-Note that these values do not actually contain any sensitive information.
-
-~                               
+Manually run the CD pipeline.
