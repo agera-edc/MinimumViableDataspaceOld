@@ -30,4 +30,4 @@ jobs:
         run: az group create --name "$ACR_RESOURCE_GROUP" --location "$ACR_RESOURCE_GROUP_LOCATION" -o table
 
       - name: "Create Azure Container Registry"
-        run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic -o table
+        run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic --admin-enabled -o table
