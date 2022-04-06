@@ -64,7 +64,7 @@ jobs:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
       - run: az acr build --registry $ACR_NAME --image mvd-edc/connector:latest .
-        working-directory: MVD
+        working-directory: MVD/launcher
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
