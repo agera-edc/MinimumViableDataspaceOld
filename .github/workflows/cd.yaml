@@ -98,11 +98,17 @@ jobs:
           terraform apply -auto-approve
         working-directory: deployment/terraform
         env:
+
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          ACR_NAME: ${{ secrets.ACR_NAME }}
+
+          # Terraform variables
+          TF_VAR_acr_resource_group: ${{ secrets.ACR_RESOURCE_GROUP }}
+          TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_participant_name: ${{ matrix.participant }}
           TF_VAR_prefix: ${{ github.run_number }}
           TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
