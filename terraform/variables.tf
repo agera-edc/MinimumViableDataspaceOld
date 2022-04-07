@@ -1,21 +1,22 @@
-variable "participant_name" {
-}
-
-variable "repository" {
-}
-
 variable "prefix" {
   default = "test"
 }
 
-variable "image_tag" {
-  default = "latest"
+variable "participant_name" {
+  default = "test-participant"
+}
+
+variable "registry" {
+  default = "ageramvd"
+}
+
+variable "image" {
 }
 
 variable "location" {
   default = "northeurope"
 }
 
-variable "resource_group" {
-  default = "agera-mvd"
+variable "registry_resource_group" {
+  default = "agera-mvd-common"
 }
