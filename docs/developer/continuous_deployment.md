@@ -30,6 +30,8 @@ Follow the instructions to *Create an app registration*.
 
 Take note of the Application (client) ID.
 
+Below, we create two credentials: one for federated authentication for GitHub Actions, and one with client secret for Terraform (required as Terraform does not yet support Azure CLI login with a service principal).
+
 Follow the instructions to *Configure a federated identity credential* for the `main` branch.
 
 - For **Entity Type**, select **Branch**.
@@ -38,16 +40,20 @@ Follow the instructions to *Configure a federated identity credential* for the `
 
 Follow the instructions to *Configure a federated identity credential* for Pull requests.
 
+Configure the following GitHub secrets:
 - For **Entity Type**, select **Pull Request**.
 - For **Name**, type any name.
 
+Create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
+
 [Grant the application Owner permissions](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) on your Azure subscription.
 
-Configure the following GitHub secret:
+Configure the following GitHub secrets:
 
-| Secret name       | Value                        |
-| ----------------- | ---------------------------- |
-| `AZURE_CLIENT_ID` | The application (client) ID. |
+| Secret name         | Value                          |
+| ------------------- | ------------------------------ |
+| `ARM_CLIENT_ID`     | The application (client) ID.   |
+| `ARM_CLIENT_SECRET` | The application client secret. |
 
 ### Create a service identity for Applications
 
@@ -75,8 +81,8 @@ Configure the following GitHub secrets:
 
 | Secret name                   | Value                                                        |
 | ----------------------------- | ------------------------------------------------------------ |
-| `AZURE_TENANT_ID`             | The Azure AD tenant ID.                                      |
-| `AZURE_SUBSCRIPTION_ID`       | The Azure subscription ID to deploy resources in.            |
+| `ARM_TENANT_ID`               | The Azure AD tenant ID.                                      |
+| `ARM_SUBSCRIPTION_ID`         | The Azure subscription ID to deploy resources in.            |
 | `ACR_RESOURCE_GROUP`          | The Azure resource group name to deploy Azure Container Registry in. |
 | `ACR_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy Azure Container Registry in. Example: `northeurope`. |
 | `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
