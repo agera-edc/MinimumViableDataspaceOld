@@ -26,7 +26,7 @@ resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-edc"
   location            = var.location
   resource_group_name = var.resource_group
-  ip_address_type     = "public"
+  ip_address_type     = "Public"
   dns_name_label      = "${var.prefix}-agera-mvd"
   os_type             = "Linux"
 
