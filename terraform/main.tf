@@ -11,24 +11,21 @@ provider "azurerm" {
   features {}
 }
 
-locals {
-  deploy_resource_group = "${var.prefix}-agera-mvd"
-}
 
 resource "azurerm_resource_group" "ageramvd" {
-  name     = local.deploy_resource_group
+  name     = var.resource_group
   location = "West Europe"
 }
 
 data "azurerm_container_registry" "registry" {
-  name                = var.registry
-  resource_group_name = var.registry_resource_group
+  name                = var.acr_name
+  resource_group_name = var.acr_resource_group
 }
 
 resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-edc"
   location            = var.location
-  resource_group_name = local.deploy_resource_group
+  resource_group_name = var.resource_group
   ip_address_type     = "public"
   dns_name_label      = "${var.prefix}-agera-mvd"
   os_type             = "Linux"
@@ -41,7 +38,7 @@ resource "azurerm_container_group" "edc" {
 
   container {
     name   = "${var.prefix}-${var.participant_name}-edc"
-    image  = var.image
+    image  = var.runtime_image
     cpu    = "0.5"
     memory = "1.5"
 
