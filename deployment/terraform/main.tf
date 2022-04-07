@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 
-resource "azurerm_resource_group" "ageramvd" {
+resource "azurerm_resource_group" "participantresourcegroup" {
   name     = var.resource_group
   location = "West Europe"
 }
@@ -25,7 +25,7 @@ data "azurerm_container_registry" "registry" {
 resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-edc"
   location            = var.location
-  resource_group_name = var.resource_group
+  resource_group_name = azurerm_resource_group.participantresourcegroup
   ip_address_type     = "Public"
   dns_name_label      = "${var.prefix}-agera-mvd"
   os_type             = "Linux"
