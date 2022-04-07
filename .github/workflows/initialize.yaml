@@ -22,12 +22,12 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: "Create resource group"
         run: az group create --name "$ACR_RESOURCE_GROUP" --location "$ACR_RESOURCE_GROUP_LOCATION" -o table
 
       - name: "Create Azure Container Registry"
-        run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic -o table
+        run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic --admin-enabled -o table
