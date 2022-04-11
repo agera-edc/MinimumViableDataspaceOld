@@ -37,7 +37,7 @@ resource "azurerm_container_group" "edc" {
 
   container {
     name   = "${var.prefix}-${var.participant_name}-edc"
-    image  = "${var.acr_name}.azurecr.io/${var.runtime_image}"
+    image  = "${data. azurerm_container_registry.registry.login_server}/${var.runtime_image}"
     cpu    = "0.5"
     memory = "1.5"
 
