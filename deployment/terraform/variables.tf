@@ -1,6 +1,6 @@
 variable "prefix" {
   description = "Prefix of resource names. Guarantee uniqueness of resource names to be able to deploy several MVD without conflicts."
-  default = "test"
+  default     = "test"
 }
 
 variable "participant_name" {
@@ -24,4 +24,12 @@ variable "acr_resource_group" {
 
 variable "resource_group" {
   default = "test-resource-group"
+}
+
+variable "container_cpu" {
+  default = "0.5"
+}
+
+variable "container_memory" {
+  default = "1.5"
 }

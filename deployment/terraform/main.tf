@@ -37,9 +37,9 @@ resource "azurerm_container_group" "edc" {
 
   container {
     name   = "${var.prefix}-${var.participant_name}-edc"
-    image  = "${data. azurerm_container_registry.registry.login_server}/${var.runtime_image}"
-    cpu    = "0.5"
-    memory = "1.5"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
+    cpu    = var.container_cpu
+    memory = var.container_memory
 
     ports {
       port     = 8181
