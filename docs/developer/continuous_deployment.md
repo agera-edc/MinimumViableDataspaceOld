@@ -83,8 +83,8 @@ Configure the following GitHub secrets:
 | ----------------------------- | ------------------------------------------------------------ |
 | `ARM_TENANT_ID`               | The Azure AD tenant ID.                                      |
 | `ARM_SUBSCRIPTION_ID`         | The Azure subscription ID to deploy resources in.            |
-| `ACR_RESOURCE_GROUP`          | The Azure resource group name to deploy Azure Container Registry in. |
-| `ACR_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy Azure Container Registry in. Example: `northeurope`. |
+| `COMMON_RESOURCE_GROUP`          | The Azure resource group name to deploy common resources in, such as Azure Container Registry. |
+| `COMMON_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy common resources in. Example: `northeurope`. |
 | `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
 
 ### Deploying CD resources
