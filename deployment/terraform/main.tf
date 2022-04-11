@@ -42,7 +42,7 @@ resource "azurerm_container_group" "edc" {
     memory = "1.5"
 
     ports {
-      port     = 80
+      port     = 8181
       protocol = "TCP"
     }
   }
