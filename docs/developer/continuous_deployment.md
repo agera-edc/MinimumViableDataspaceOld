@@ -38,7 +38,7 @@ Follow the instructions to *Configure a federated identity credential* for the `
 - For **GitHub branch name**, enter `main`.
 - For **Name**, type any name.
 
-Follow the instructions to *Configure a federated identity credential* for Pull requests.
+Follow the instructions to [Configure a federated identity credential](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal#configure-a-federated-identity-credential) for Pull requests.
 
 Configure the following GitHub secrets:
 - For **Entity Type**, select **Pull Request**.
