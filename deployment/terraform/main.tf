@@ -13,7 +13,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "participant" {
   name     = var.resource_group
-  location = "West Europe"
+  location = var.location
 }
 
 data "azurerm_container_registry" "registry" {
