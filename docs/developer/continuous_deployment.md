@@ -32,13 +32,13 @@ Take note of the Application (client) ID.
 
 Below, we create two credentials: one for federated authentication for GitHub Actions, and one with client secret for Terraform (required as Terraform does not yet support Azure CLI login with a service principal).
 
-Follow the instructions to *Configure a federated identity credential* for the `main` branch.
+Follow the instructions to [Configure a federated identity credential]([Configure a federated identity credential](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal#configure-a-federated-identity-credential)) for the `main` branch.
 
 - For **Entity Type**, select **Branch**.
 - For **GitHub branch name**, enter `main`.
 - For **Name**, type any name.
 
-Follow the instructions to *Configure a federated identity credential* for Pull requests.
+Follow the instructions to [Configure a federated identity credential](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal#configure-a-federated-identity-credential) for Pull requests.
 
 Configure the following GitHub secrets:
 - For **Entity Type**, select **Pull Request**.
@@ -83,8 +83,8 @@ Configure the following GitHub secrets:
 | ----------------------------- | ------------------------------------------------------------ |
 | `ARM_TENANT_ID`               | The Azure AD tenant ID.                                      |
 | `ARM_SUBSCRIPTION_ID`         | The Azure subscription ID to deploy resources in.            |
-| `ACR_RESOURCE_GROUP`          | The Azure resource group name to deploy Azure Container Registry in. |
-| `ACR_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy Azure Container Registry in. Example: `northeurope`. |
+| `COMMON_RESOURCE_GROUP`          | The Azure resource group name to deploy common resources in, such as Azure Container Registry. |
+| `COMMON_RESOURCE_GROUP_LOCATION` | The location of the Azure resource group name to deploy common resources in. Example: `northeurope`. |
 | `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
 
 ### Deploying CD resources
