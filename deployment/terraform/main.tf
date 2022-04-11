@@ -11,7 +11,6 @@ provider "azurerm" {
   features {}
 }
 
-
 resource "azurerm_resource_group" "participantresourcegroup" {
   name     = var.resource_group
   location = "West Europe"
