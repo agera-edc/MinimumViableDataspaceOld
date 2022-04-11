@@ -24,7 +24,7 @@ data "azurerm_container_registry" "registry" {
 resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-${var.participant_name}-edc"
   location            = var.location
-  resource_group_name = azurerm_resource_group.participantresourcegroup.name
+  resource_group_name = azurerm_resource_group.participant.name
   ip_address_type     = "Public"
   dns_name_label      = "${var.prefix}-${var.participant_name}-edc-mvd"
   os_type             = "Linux"
