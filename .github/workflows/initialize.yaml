@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ACR_RESOURCE_GROUP: ${{ secrets.ACR_RESOURCE_GROUP }}
-      ACR_RESOURCE_GROUP_LOCATION: ${{ secrets.ACR_RESOURCE_GROUP_LOCATION }}
+      COMMON_RESOURCE_GROUP: ${{ secrets.COMMON_RESOURCE_GROUP }}
+      COMMON_RESOURCE_GROUP_LOCATION: ${{ secrets.COMMON_RESOURCE_GROUP_LOCATION }}
       ACR_NAME: ${{ secrets.ACR_NAME }}
 
     steps:
@@ -27,7 +27,7 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: "Create resource group"
-        run: az group create --name "$ACR_RESOURCE_GROUP" --location "$ACR_RESOURCE_GROUP_LOCATION" -o table
+        run: az group create --name "$COMMON_RESOURCE_GROUP" --location "$COMMON_RESOURCE_GROUP_LOCATION" -o table
 
       - name: "Create Azure Container Registry"
-        run: az acr create --resource-group "$ACR_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic --admin-enabled -o table
+        run: az acr create --resource-group "$COMMON_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic --admin-enabled -o table

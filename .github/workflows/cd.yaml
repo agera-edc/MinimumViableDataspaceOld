@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - 'docs/**'
 
-
 # Grant permissions to obtain federated identity credentials
 # see https://docs.github.com/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-azure
 permissions:
@@ -133,5 +132,5 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: 'Delete resource group' 
+      - name: 'Delete resource group'
         run: az group delete --name rg-${{matrix.participant}}-${{ github.run_number }} --no-wait --yes
