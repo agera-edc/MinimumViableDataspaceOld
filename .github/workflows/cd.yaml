@@ -29,6 +29,7 @@ jobs:
         with:
           repository: eclipse-dataspaceconnector/DataSpaceConnector
           path: DataSpaceConnector
+          ref: milestone-3 # tag or commit hash
 
       # Install Java and cache MVD Gradle build.
       - uses: actions/setup-java@v2
