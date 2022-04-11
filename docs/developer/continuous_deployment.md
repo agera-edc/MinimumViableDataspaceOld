@@ -32,7 +32,7 @@ Take note of the Application (client) ID.
 
 Below, we create two credentials: one for federated authentication for GitHub Actions, and one with client secret for Terraform (required as Terraform does not yet support Azure CLI login with a service principal).
 
-Follow the instructions to *Configure a federated identity credential* for the `main` branch.
+Follow the instructions to [Configure a federated identity credential]([Configure a federated identity credential](https://docs.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-github?tabs=azure-portal#configure-a-federated-identity-credential)) for the `main` branch.
 
 - For **Entity Type**, select **Branch**.
 - For **GitHub branch name**, enter `main`.
