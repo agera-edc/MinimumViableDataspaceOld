@@ -52,7 +52,9 @@ jobs:
       # Install EDC packages into ~/.m2.
       # This action only runs if the packages could not be restored from the cache.
       - name: Build EDC packages
-        run: ./gradlew publishToMavenLocal
+        run: |
+          chmod +x ./gradlew
+          ./gradlew publishToMavenLocal
         if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
         working-directory: DataSpaceConnector
 
