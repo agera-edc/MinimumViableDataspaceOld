@@ -128,6 +128,7 @@ jobs:
     needs: Deploy
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: 'Verify application is ready'
         run: |
           curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
