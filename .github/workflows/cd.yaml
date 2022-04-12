@@ -130,8 +130,8 @@ jobs:
     steps:
       - name: 'Verify application is ready'
         run: |
-        curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
-        curl --retry 5 --fail -X GET ${{ needs.Deploy.company2_edc_url }}:8181/api/check/health
+          curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
+          curl --retry 5 --fail -X GET ${{ needs.Deploy.company2_edc_url }}:8181/api/check/health
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
