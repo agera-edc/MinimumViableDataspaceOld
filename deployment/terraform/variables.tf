@@ -33,3 +33,7 @@ variable "container_cpu" {
 variable "container_memory" {
   default = "1.5"
 }
+
+variable "application_id" {
+
+}
