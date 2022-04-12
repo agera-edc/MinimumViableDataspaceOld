@@ -14,6 +14,10 @@ EXPOSE 9191
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail -X GET http://localhost:8181/api/check/health || exit 1
 
 ENTRYPOINT java \
+    -Dedc.vault.clientid=${CLIENTID} \
+    -Dedc.vault.tenantid=${TENANTID} \
+    -Dedc.vault.certificate=/cert/cert.pfx \
+    -Dedc.vault.name=${VAULTNAME} \
     -Djava.security.edg=file:/dev/.urandom \
     -Dedc.ids.id="urn:connector:edc-connector-24" \
     -Dedc.ids.title="Eclipse Dataspace Connector" \
