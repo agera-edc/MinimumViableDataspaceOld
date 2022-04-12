@@ -29,6 +29,8 @@ resource "azurerm_container_group" "edc" {
   dns_name_label      = "${var.prefix}-${var.participant_name}-edc-mvd"
   os_type             = "Linux"
 
+  restart_policy = "Never"
+
   image_registry_credential {
     username = data.azurerm_container_registry.registry.admin_username
     password = data.azurerm_container_registry.registry.admin_password
