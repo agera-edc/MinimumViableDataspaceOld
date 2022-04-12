@@ -45,11 +45,11 @@ resource "azurerm_container_group" "edc" {
       port     = 8181
       protocol = "TCP"
     }
+    ports {
+      port     = 9191
+      protocol = "TCP"
+    }
   }
-      ports {
-       port     = 9191
-       protocol = "TCP"
-     }
 }
 
 output "edc_url" {
