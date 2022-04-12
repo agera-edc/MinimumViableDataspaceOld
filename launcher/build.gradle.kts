@@ -34,7 +34,7 @@ dependencies {
     implementation("${group}:iam-mock:${edcVersion}")
     implementation("${group}:filesystem-configuration:${edcVersion}")
     implementation("${group}:http:${edcVersion}")
-    implementation("${group}:extensions:in-memory:policy-store-memory")
+    implementation("${group}:policy-store-memory:${edcVersion}")
 }
 
 application {
