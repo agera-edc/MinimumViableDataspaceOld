@@ -104,7 +104,7 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
-          EDC_URL=$(terraform output edc_url)
+          EDC_URL=$(terraform output -raw edc_url)
           echo "EDC_URL=$EDC_URL" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_url::${EDC_URL}"
         working-directory: deployment/terraform
