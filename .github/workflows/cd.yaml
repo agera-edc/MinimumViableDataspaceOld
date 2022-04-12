@@ -105,6 +105,7 @@ jobs:
           terraform init
           terraform apply -auto-approve
           EDC_URL=$(terraform output edc_url)
+          echo "EDC_URL=$EDC_URL" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_url::${EDC_URL}"
         working-directory: deployment/terraform
         env:
@@ -123,6 +124,9 @@ jobs:
           TF_VAR_prefix: ${{ github.run_number }}
           TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
           TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
+
+      - name: 'Verify deployed EDC is healthy'
+        run: curl --retry 5 --fail -X GET ${EDC_URL}:8181/api/check/health
 
   Verify:
     needs: Deploy
