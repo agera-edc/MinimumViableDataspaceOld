@@ -130,6 +130,7 @@ jobs:
 
   Verify:
     needs: Deploy
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: 'Verify EDCs are ready'
