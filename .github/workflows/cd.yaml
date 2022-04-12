@@ -78,7 +78,7 @@ jobs:
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
-      # Build Docker runtime image remotely on ACR.
+      # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
         run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ github.run_number }} .
         working-directory: MVD/launcher
