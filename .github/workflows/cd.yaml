@@ -129,7 +129,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Verify application is ready'
-        EDC_URL=$
         run: |
         curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
         curl --retry 5 --fail -X GET ${{ needs.Deploy.company2_edc_url }}:8181/api/check/health
