@@ -99,8 +99,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - id: runterraform
       - name: 'Run terraform'
+        id: runterraform
         run: |
           terraform init
           terraform apply -auto-approve
@@ -128,15 +128,14 @@ jobs:
     needs: Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: 'Verify application is ready'
+      - name: 'Verify EDCs are ready'
         run: |
           curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
           curl --retry 5 --fail -X GET ${{ needs.Deploy.company2_edc_url }}:8181/api/check/health
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
-    needs: Deploy
+    needs: [Deploy, Verify]
     runs-on: ubuntu-latest
     if: always()
     strategy:
