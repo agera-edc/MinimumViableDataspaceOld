@@ -47,3 +47,7 @@ resource "azurerm_container_group" "edc" {
     }
   }
 }
+
+output "edc_url" {
+  value = azurerm_container_group.edc.fqdn
+}

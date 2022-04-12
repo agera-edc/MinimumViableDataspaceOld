@@ -89,17 +89,23 @@ jobs:
   Deploy:
     needs: Build
     runs-on: ubuntu-latest
+    outputs:
+      company1_edc_url: ${{ steps.runterraform.outputs.company1_edc_url }}
+      company2_edc_url: ${{ steps.runterraform.outputs.company2_edc_url }}
+
     strategy:
       matrix:
         participant: [company1, company2]
 
     steps:
       - uses: actions/checkout@v2
-
+      - id: runterraform
       - name: 'Run terraform'
         run: |
           terraform init
           terraform apply -auto-approve
+          EDC_URL=$(terraform output edc_url)
+          run: echo "::set-output name=${{ matrix.participant }}_edc_url::${EDC_URL}"
         working-directory: deployment/terraform
         env:
 
@@ -117,6 +123,16 @@ jobs:
           TF_VAR_prefix: ${{ github.run_number }}
           TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
           TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
+
+  Verify:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Verify application is ready'
+        EDC_URL=$
+        run: |
+        curl --retry 5 --fail -X GET ${{ needs.Deploy.company1_edc_url }}:8181/api/check/health
+        curl --retry 5 --fail -X GET ${{ needs.Deploy.company2_edc_url }}:8181/api/check/health
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
