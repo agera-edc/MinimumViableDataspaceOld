@@ -89,12 +89,12 @@ resource "azurerm_role_assignment" "current-user-secretsofficer" {
   principal_id         = data.azurerm_client_config.current_client.object_id
 }
 
-resource "azurerm_storage_account" "participant" {
+resource "azurerm_storage_account" "assets" {
   name                     = "${var.prefix}${var.participant_name}"
   resource_group_name      = azurerm_resource_group.participant.name
   location                 = azurerm_resource_group.participant.location
   account_tier             = "Standard"
-  account_replication_type = "GRS"
+  account_replication_type = "LRS"
   account_kind             = "StorageV2"
 
   static_website {
@@ -102,9 +102,9 @@ resource "azurerm_storage_account" "participant" {
   }
 }
 
-resource "azurerm_key_vault_secret" "blobstorekey" {
-  name         = "${azurerm_storage_account.participant.name}-key1"
-  value        = azurerm_storage_account.participant.primary_access_key
+resource "azurerm_key_vault_secret" "asset_storage_account" {
+  name         = "${azurerm_storage_account.assets.name}-key1"
+  value        = azurerm_storage_account.assets.primary_access_key
   key_vault_id = azurerm_key_vault.participant.id
   depends_on = [
     azurerm_role_assignment.current-user-secretsofficer
