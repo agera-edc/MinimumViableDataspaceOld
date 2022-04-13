@@ -97,10 +97,6 @@ resource "azurerm_storage_account" "assets" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
-
-  static_website {
-    index_document = "index.html"
-  }
 }
 
 resource "azurerm_key_vault_secret" "asset_storage_account" {
