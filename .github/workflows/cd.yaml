@@ -126,7 +126,7 @@ jobs:
           TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
 
       - name: 'Verify deployed EDC is healthy'
-        run: curl --retry 6 --fail -X GET ${EDC_URL}:8181/api/check/health
+        run: curl --retry 6 --fail http://${EDC_URL}:8181/api/check/health
 
   Verify:
     needs: Deploy
