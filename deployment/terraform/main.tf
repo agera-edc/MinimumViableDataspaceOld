@@ -64,6 +64,7 @@ resource "azurerm_container_group" "edc" {
 }
 
 resource "azurerm_key_vault" "participant" {
+  // added `kv` prefix because the keyvault name needs to begin with a letter
   name                        = "kv${var.prefix}${var.participant_name}"
   location                    = azurerm_resource_group.participant.location
   resource_group_name         = azurerm_resource_group.participant.name
