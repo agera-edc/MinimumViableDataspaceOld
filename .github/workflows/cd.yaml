@@ -135,6 +135,7 @@ jobs:
         run: |
           npm install -g newman
           newman run \
+            --folder "Publish Master Data" \
             --env-var data_management_url="http://$EDC_HOST:9191/api/v1/data" \
             --env-var storage_account="$ASSETS_STORAGE_ACCOUNT" \
             deployment/data/Publish-EDC-Master-Data.postman_collection.json 
