@@ -90,8 +90,8 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     outputs:
-      company1_edc_url: ${{ steps.runterraform.outputs.company1_edc_url }}
-      company2_edc_url: ${{ steps.runterraform.outputs.company2_edc_url }}
+      company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
+      company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
 
     strategy:
       matrix:
@@ -104,9 +104,9 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
-          EDC_URL=$(terraform output -raw edc_url)
-          echo "EDC_URL=$EDC_URL" >> $GITHUB_ENV
-          echo "::set-output name=${{ matrix.participant }}_edc_url::${EDC_URL}"
+          EDC_HOST=$(terraform output -raw edc_host)
+          echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
+          echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
         working-directory: deployment/terraform
         env:
 
@@ -126,7 +126,7 @@ jobs:
           TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
 
       - name: 'Verify deployed EDC is healthy'
-        run: curl --retry 6 --fail http://${EDC_URL}:8181/api/check/health
+        run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
   Verify:
     needs: Deploy
@@ -134,8 +134,8 @@ jobs:
     steps:
       - name: 'Verify EDCs are ready'
         run: |
-          curl --retry 6 --fail -X GET ${{ needs.Deploy.outputs.company1_edc_url }}:8181/api/check/health
-          curl --retry 6 --fail -X GET ${{ needs.Deploy.outputs.company2_edc_url }}:8181/api/check/health
+          curl --retry 6 --fail http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/check/health
+          curl --retry 6 --fail http://${{ needs.Deploy.outputs.company2_edc_host }}:8181/api/check/health
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
