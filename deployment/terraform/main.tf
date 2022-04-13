@@ -64,7 +64,7 @@ resource "azurerm_container_group" "edc" {
 }
 
 resource "azurerm_key_vault" "participant" {
-  name                        = "${var.prefix}-${var.participant_name}"
+  name                        = "${var.prefix}${var.participant_name}"
   location                    = azurerm_resource_group.participant.location
   resource_group_name         = azurerm_resource_group.participant.name
   enabled_for_disk_encryption = false
