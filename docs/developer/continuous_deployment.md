@@ -28,7 +28,7 @@ Follow the instructions to *Create an app registration*.
 - In **Supported Account Types**, select **Accounts in this organizational directory only**.
 - Don't enter anything for **Redirect URI (optional)**.
 
-Take note of the Application (client) ID.
+Take note of the Application (client) ID and the Application object ID.
 
 Below, we create two credentials: one for federated authentication for GitHub Actions, and one with client secret for Terraform (required as Terraform does not yet support Azure CLI login with a service principal).
 
