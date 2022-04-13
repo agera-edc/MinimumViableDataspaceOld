@@ -99,7 +99,7 @@ resource "azurerm_storage_account" "assets" {
   account_kind             = "StorageV2"
 }
 
-resource "azurerm_key_vault_secret" "asset_storage_account" {
+resource "azurerm_key_vault_secret" "asset_storage_key" {
   name         = "${azurerm_storage_account.assets.name}-key1"
   value        = azurerm_storage_account.assets.primary_access_key
   key_vault_id = azurerm_key_vault.participant.id
