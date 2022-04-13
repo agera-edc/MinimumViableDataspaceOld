@@ -28,7 +28,7 @@ Follow the instructions to *Create an app registration*.
 - In **Supported Account Types**, select **Accounts in this organizational directory only**.
 - Don't enter anything for **Redirect URI (optional)**.
 
-Take note of the Application (client) ID and the Application object ID.
+Take note of the Application (client) ID.
 
 Below, we create two credentials: one for federated authentication for GitHub Actions, and one with client secret for Terraform (required as Terraform does not yet support Azure CLI login with a service principal).
 
@@ -64,9 +64,9 @@ Follow the instructions to *Create an app registration*.
 - In **Supported Account Types**, select **Accounts in this organizational directory only**.
 - Don't enter anything for **Redirect URI (optional)**.
 
-Take note of the Application (client) ID.
+Take note of the Application (client) ID. Navigate to the corresponding *Managed application in local directory* (*Enterprise Application*) and take note of the enterprise application Object ID. ⚠️ Make sure you do not use the Object ID of the *App Registration*!
 
-Create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
+In the *App Registration*, create a client secret by following the section "Create a new application secret" in the page on [Creating a an Azure AD application to access resources](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret). Take note of the client secret and keep it safe.
 
 Configure the following GitHub secrets:
 
