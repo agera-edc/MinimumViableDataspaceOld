@@ -8,18 +8,7 @@ terraform {
 }
 
 provider "azurerm" {
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy    = true
-      recover_soft_deleted_key_vaults = false
-    }
-  }
-}
-
-data "azurerm_subscription" "current_subscription" {
-}
-
-data "azurerm_client_config" "current_client" {
+  features {}
 }
 
 data "azurerm_subscription" "current_subscription" {
