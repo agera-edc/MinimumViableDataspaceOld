@@ -74,6 +74,7 @@ Configure the following GitHub secrets:
 | ------------------- | ------------------------------ |
 | `APP_CLIENT_ID`     | The application (client) ID.   |
 | `APP_CLIENT_SECRET` | The application client secret. |
+| `APP_OBJECT_ID`     | The application object ID.     |
 
 ### Configure CD settings
 

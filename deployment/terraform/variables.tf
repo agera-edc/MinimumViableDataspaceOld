@@ -4,7 +4,7 @@ variable "prefix" {
 }
 
 variable "participant_name" {
-  default = "test-participant"
+  default = "testparticipant"
 }
 
 variable "runtime_image" {
@@ -32,4 +32,8 @@ variable "container_cpu" {
 
 variable "container_memory" {
   default = "1.5"
+}
+
+variable "application_object_id" {
+  description = "object id of application service principal"
 }
