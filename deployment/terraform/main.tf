@@ -22,6 +22,12 @@ data "azurerm_subscription" "current_subscription" {
 data "azurerm_client_config" "current_client" {
 }
 
+data "azurerm_subscription" "current_subscription" {
+}
+
+data "azurerm_client_config" "current_client" {
+}
+
 resource "azurerm_resource_group" "participant" {
   name     = var.resource_group
   location = var.location
@@ -80,7 +86,7 @@ resource "azurerm_key_vault" "participant" {
 resource "azurerm_role_assignment" "edc_keyvault" {
   scope                = azurerm_key_vault.participant.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = var.application_object_id
+  principal_id         = var.application_sp_object_id
 }
 
 # Role assignment so that the currently logged in user may add secrets to the vault
