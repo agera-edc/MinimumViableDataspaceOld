@@ -105,6 +105,8 @@ jobs:
           terraform init
           terraform apply -auto-approve
           EDC_HOST=$(terraform output -raw edc_host)
+          ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
+          echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
         working-directory: deployment/terraform
@@ -133,7 +135,7 @@ jobs:
         run: |
           npm install -g newman
           newman run \
-            --env-var data_management_url="$URL" \
+            --env-var data_management_url="$ASSETS_STORAGE_ACCOUNT" \
             --env-var storage_account="dummy" \
             "$COLLECTION" 
         env:
