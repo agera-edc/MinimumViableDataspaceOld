@@ -34,6 +34,6 @@ variable "container_memory" {
   default = "1.5"
 }
 
-variable "application_object_id" {
+variable "application_sp_object_id" {
   description = "object id of application"
 }
