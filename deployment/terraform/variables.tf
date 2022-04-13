@@ -35,5 +35,5 @@ variable "container_memory" {
 }
 
 variable "application_object_id" {
-  description = "object id of application service principal"
+  description = "object id of application"
 }
