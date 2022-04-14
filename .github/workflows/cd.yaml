@@ -160,7 +160,9 @@ jobs:
           path: deployment/terraform
 
       - name: 'Delete terraform resources'
-        run: terraform destroy -var-file=input.tfvars -auto-approve
+        run: |
+          chmod -R u+x .terraform/providers
+          terraform destroy -var-file=input.tfvars -auto-approve
         working-directory: deployment/terraform
 
       - uses: actions/upload-artifact@v3
