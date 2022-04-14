@@ -178,4 +178,3 @@ jobs:
 
       - name: 'Delete resource group'
         run: az group delete --name rg-${{matrix.participant}}-${{ github.run_number }} --no-wait --yes
-
