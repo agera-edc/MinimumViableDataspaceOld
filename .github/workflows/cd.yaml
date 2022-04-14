@@ -102,8 +102,16 @@ jobs:
       - name: 'Run terraform'
         id: runterraform
         run: |
+          echo "
+          acr_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
+          acr_name: ${{ secrets.ACR_NAME }}
+          participant_name: ${{ matrix.participant }}
+          prefix: ${{ github.run_number }}
+          resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
+          runtime_image: mvd-edc/connector:${{ github.run_number }}
+          application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}" >> input.tfvars
           terraform init
-          terraform apply -auto-approve
+          terraform apply -var-file=input.tfvars -auto-approve
           EDC_HOST=$(terraform output -raw edc_host)
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
@@ -116,15 +124,6 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-          # Terraform variables
-          TF_VAR_acr_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
-          TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
-          TF_VAR_participant_name: ${{ matrix.participant }}
-          TF_VAR_prefix: ${{ github.run_number }}
-          TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
-          TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
-          TF_VAR_application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}
 
       - uses: actions/upload-artifact@v3
         name: 'Publish terraform folder'
@@ -161,7 +160,7 @@ jobs:
           path: deployment/terraform
 
       - name: 'Delete terraform resources'
-        run: terraform destroy -auto-approve
+        run: terraform destroy -var-file=input.tfvars -auto-approve
         working-directory: deployment/terraform
 
       - uses: actions/upload-artifact@v3
