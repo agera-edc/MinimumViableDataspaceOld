@@ -162,6 +162,7 @@ jobs:
 
       - name: 'Delete terraform resources'
         run: terraform destroy -auto-approve
+        working-directory: deployment/terraform
 
       - uses: actions/upload-artifact@v3
         name: 'Remove terraform artifact'
