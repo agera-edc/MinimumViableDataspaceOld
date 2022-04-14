@@ -126,6 +126,12 @@ jobs:
           TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
           TF_VAR_application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}
 
+      - uses: actions/upload-artifact@v3
+        name: 'Publish terraform folder'
+        with:
+          name: terraform-${{ matrix.participant }}
+          path: deployment/terraform # or path/to/artifact
+
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
@@ -148,14 +154,20 @@ jobs:
         participant: [company1, company2]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: 'Az CLI login'
-        uses: azure/login@v1
+      - uses: actions/download-artifact@v3
+        name: 'Publish terraform folder'
         with:
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
-          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          name: terraform-${{ matrix.participant }}
+          path: deployment/terraform
 
-      - name: 'Delete resource group'
-        run: az group delete --name rg-${{matrix.participant}}-${{ github.run_number }} --no-wait --yes
+      - name: 'Delete terraform resources'
+        run: terraform destroy -auto-approve
+
+      - uses: actions/upload-artifact@v3
+        name: 'Remove terraform artifact'
+        with:
+          name: terraform-${{ matrix.participant }}
+          path: /dev/null
+
+
+
