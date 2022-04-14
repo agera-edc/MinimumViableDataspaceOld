@@ -130,7 +130,7 @@ jobs:
         name: 'Publish terraform folder'
         with:
           name: terraform-${{ matrix.participant }}
-          path: deployment/terraform # or path/to/artifact
+          path: deployment/terraform
 
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
