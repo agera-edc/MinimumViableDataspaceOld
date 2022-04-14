@@ -164,6 +164,14 @@ jobs:
           chmod -R u+x .terraform/providers
           terraform destroy -var-file=input.tfvars -auto-approve
         working-directory: deployment/terraform
+        env:
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
 
       - uses: actions/upload-artifact@v3
         name: 'Remove terraform artifact'
