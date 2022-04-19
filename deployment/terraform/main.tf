@@ -105,16 +105,12 @@ resource "azurerm_storage_account" "did" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
+  static_website {}
 }
 
 resource "azurerm_storage_container" "assets_container" {
   name                 = "src-container"
   storage_account_name = azurerm_storage_account.assets.name
-}
-
-resource "azurerm_storage_container" "did" {
-  name                 = "did"
-  storage_account_name = azurerm_storage_account.did.name
 }
 
 resource "azurerm_storage_blob" "testfile" {
