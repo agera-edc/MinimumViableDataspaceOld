@@ -156,18 +156,18 @@ resource "azurerm_storage_blob" "did" {
         "@base" = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
       }
     ],
-  "verificationMethod" = [
-    {
-      "id" = "#identity-key-1",
-      "controller" = "",
-      "type" = "JsonWebKey2020",
-      # When running terraform destroy, the public_key_jwk_file is not needed,
-      # public_key_jwk_file var should be set to /dev/null when running terraform destroy
-      "publicKeyJwk" = var.public_key_jwk_file == "/dev/null" ? {} : jsondecode(file(var.public_key_jwk_file))
-    }
-  ],
-  "authentication": [
-    "#identity-key-1"
-  ]})
+    "verificationMethod" = [
+      {
+        "id"         = "#identity-key-1",
+        "controller" = "",
+        "type"       = "JsonWebKey2020",
+        # When running terraform destroy, the public_key_jwk_file is not needed,
+        # public_key_jwk_file var should be set to /dev/null when running terraform destroy
+        "publicKeyJwk" = var.public_key_jwk_file == "/dev/null" ? {} : jsondecode(file(var.public_key_jwk_file))
+      }
+    ],
+    "authentication" : [
+      "#identity-key-1"
+  ] })
   content_type = "application/json"
 }

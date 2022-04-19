@@ -40,7 +40,7 @@ variable "application_sp_object_id" {
 
 variable "key_file" {
   description = "name of a file containing the private key in PEM format"
-  default = "../../key.pem"
+  default     = "../../key.pem"
 }
 
 variable "public_key_jwk_file" {
