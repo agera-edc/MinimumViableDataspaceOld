@@ -156,7 +156,7 @@ resource "azurerm_storage_blob" "did" {
       "id" = "#identity-key-1",
       "controller" = "",
       "type" = "JsonWebKey2020",
-      "publicKeyJwk" = jsondecode(file(var.public_key_jwk_file))
+      "publicKeyJwk" = fileexists(var.public_key_jwk_file) ? jsondecode(file(var.public_key_jwk_file)) : "{}"
     }
   ],
   "authentication": [
