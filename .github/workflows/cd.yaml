@@ -103,13 +103,14 @@ jobs:
         id: runterraform
         run: |
           echo '
-          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
-          acr_name = "${{ secrets.ACR_NAME }}"
-          participant_name = "${{ matrix.participant }}"
-          prefix = "${{ github.run_number }}"
-          resource_group = "rg-${{ matrix.participant }}-${{ github.run_number }}"
-          runtime_image = "mvd-edc/connector:${{ github.run_number }}"
-          application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"' >> input.tfvars
+            acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+            acr_name = "${{ secrets.ACR_NAME }}"
+            participant_name = "${{ matrix.participant }}"
+            prefix = "${{ github.run_number }}"
+            resource_group = "rg-${{ matrix.participant }}-${{ github.run_number }}"
+            runtime_image = "mvd-edc/connector:${{ github.run_number }}"
+            application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
+          ' >> input.tfvars
           terraform init
           terraform apply -var-file=input.tfvars -auto-approve
           EDC_HOST=$(terraform output -raw edc_host)
