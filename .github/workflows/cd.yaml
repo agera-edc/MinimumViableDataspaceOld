@@ -197,7 +197,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v3
-        name: 'Remove terraform artifact'
+        name: 'Clear terraform artifact'
         with:
           name: terraform-${{ matrix.participant }}
           path: /dev/null
