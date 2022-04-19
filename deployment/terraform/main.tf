@@ -146,7 +146,7 @@ resource "azurerm_key_vault_secret" "did_key" {
 resource "azurerm_storage_blob" "did" {
   name                   = "did.json"
   storage_account_name   = azurerm_storage_account.did.name
-  storage_container_name = azurerm_storage_container.did.name
+  storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
     id = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity",
@@ -166,4 +166,5 @@ resource "azurerm_storage_blob" "did" {
   "authentication": [
     "#identity-key-1"
   ]})
+  content_type = "application/json"
 }
