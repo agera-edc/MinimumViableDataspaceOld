@@ -124,3 +124,28 @@ resource "azurerm_key_vault_secret" "did_key" {
     azurerm_role_assignment.current-user-secretsofficer
   ]
 }
+
+resource "azurerm_storage_blob" "webdid" {
+  name                   = "did.json"
+  storage_account_name   = azurerm_storage_account.assets.name
+  storage_container_name = "webdid"
+  type                   = "Block"
+  source_content = jsonencode({
+    id = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity",
+    "@context" = ["https://www.w3.org/ns/did/v1",
+      {
+        "@base" = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity"
+      }
+    ],
+  "verificationMethod" = [
+    {
+      "id" = "#identity-key-1",
+      "controller" = "",
+      "type" = "JsonWebKey2020",
+      "publicKeyJwk" = file(var.public_key_jwk_file)
+    }
+  ],
+  "authentication": [
+    "#identity-key-1"
+  ]})
+}
