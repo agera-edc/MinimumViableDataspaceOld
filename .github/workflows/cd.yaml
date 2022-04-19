@@ -120,11 +120,9 @@ jobs:
           ' >> input.tfvars
           terraform init
           terraform apply -var-file=input.tfvars -auto-approve
-          DID_ENDPOINT=$(terraform output -raw did_endpoint)
           EDC_HOST=$(terraform output -raw edc_host)
           ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
-          echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
         working-directory: deployment/terraform
@@ -144,9 +142,6 @@ jobs:
           name: terraform-${{ matrix.participant }}
           path: deployment/terraform
           retention-days: 1
-
-      - name: 'Verify did endpoint is available'
-        run: curl $DID_ENDPOINT
 
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health

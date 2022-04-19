@@ -5,7 +5,3 @@ output "edc_host" {
 output "assets_storage_account" {
   value = azurerm_storage_account.assets.name
 }
-
-output "did_endpoint" {
-  value = azurerm_storage_blob.did.url
-}
