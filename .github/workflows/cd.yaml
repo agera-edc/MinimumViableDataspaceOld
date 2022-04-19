@@ -202,6 +202,7 @@ jobs:
 
           # Override terraform values defined in file input.tfvars
           TF_VAR_key_file: /dev/null
+          TF_VAR_public_key_jwk_file: /dev/null
 
       - uses: actions/upload-artifact@v3
         name: 'Clear terraform artifact'
