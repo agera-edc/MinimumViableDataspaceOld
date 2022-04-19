@@ -169,7 +169,7 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
-        name: 'Publish terraform folder'
+        name: 'Download terraform folder'
         with:
           name: terraform-${{ matrix.participant }}
           path: deployment/terraform
