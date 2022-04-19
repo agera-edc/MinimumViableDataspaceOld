@@ -86,7 +86,16 @@ resource "azurerm_role_assignment" "current-user-secretsofficer" {
 }
 
 resource "azurerm_storage_account" "assets" {
-  name                     = "${var.prefix}${var.participant_name}"
+  name                     = "${var.prefix}${var.participant_name}assets"
+  resource_group_name      = azurerm_resource_group.participant.name
+  location                 = azurerm_resource_group.participant.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  account_kind             = "StorageV2"
+}
+
+resource "azurerm_storage_account" "did" {
+  name                     = "${var.prefix}${var.participant_name}did"
   resource_group_name      = azurerm_resource_group.participant.name
   location                 = azurerm_resource_group.participant.location
   account_tier             = "Standard"
@@ -97,6 +106,11 @@ resource "azurerm_storage_account" "assets" {
 resource "azurerm_storage_container" "assets_container" {
   name                 = "src-container"
   storage_account_name = azurerm_storage_account.assets.name
+}
+
+resource "azurerm_storage_container" "did" {
+  name                 = "did"
+  storage_account_name = azurerm_storage_account.did.name
 }
 
 resource "azurerm_storage_blob" "testfile" {
@@ -125,15 +139,10 @@ resource "azurerm_key_vault_secret" "did_key" {
   ]
 }
 
-resource "azurerm_storage_container" "did_container" {
-  name                 = "did"
-  storage_account_name = azurerm_storage_account.assets.name
-}
-
-resource "azurerm_storage_blob" "webdid" {
+resource "azurerm_storage_blob" "did" {
   name                   = "did.json"
-  storage_account_name   = azurerm_storage_account.assets.name
-  storage_container_name = azurerm_storage_container.did_container.name
+  storage_account_name   = azurerm_storage_account.did.name
+  storage_container_name = azurerm_storage_container.did.name
   type                   = "Block"
   source_content = jsonencode({
     id = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity",
