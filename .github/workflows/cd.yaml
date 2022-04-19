@@ -177,7 +177,7 @@ jobs:
       - name: 'Delete terraform resources'
         run: |
           : # Make terraform provider binaries executable because file permissions of uploaded artifacts are not maintained.
-          chmod -R u+x .terraform/providers
+          chmod -R +x .terraform/providers
           terraform destroy -var-file=input.tfvars -auto-approve
         working-directory: deployment/terraform
         env:
@@ -194,6 +194,3 @@ jobs:
         with:
           name: terraform-${{ matrix.participant }}
           path: /dev/null
-
-
-
