@@ -132,6 +132,7 @@ jobs:
         with:
           name: terraform-${{ matrix.participant }}
           path: deployment/terraform
+          retention-days: 1
 
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
