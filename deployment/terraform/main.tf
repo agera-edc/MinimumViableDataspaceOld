@@ -145,10 +145,10 @@ resource "azurerm_storage_blob" "did" {
   storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
-    id = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity",
+    id = "did:web:${azurerm_storage_account.did.primary_web_host}:identity",
     "@context" = ["https://www.w3.org/ns/did/v1",
       {
-        "@base" = "did:web:${azurerm_storage_account.assets.primary_web_host}:identity"
+        "@base" = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
       }
     ],
   "verificationMethod" = [
@@ -156,7 +156,9 @@ resource "azurerm_storage_blob" "did" {
       "id" = "#identity-key-1",
       "controller" = "",
       "type" = "JsonWebKey2020",
-      "publicKeyJwk" = fileexists(var.public_key_jwk_file) ? jsondecode(file(var.public_key_jwk_file)) : {}
+      # When running terraform destroy, the public_key_jwk_file is not needed,
+      # public_key_jwk_file var should be set to /dev/null when running terraform destroy
+      "publicKeyJwk" = var.public_key_jwk_file == "/dev/null" ? {} : jsondecode(file(var.public_key_jwk_file))
     }
   ],
   "authentication": [
