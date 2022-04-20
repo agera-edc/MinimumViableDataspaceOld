@@ -6,12 +6,7 @@ terraform {
     }
   }
 
-  backend "azurerm" {
-    resource_group_name  = var.common_resource_group
-    storage_account_name = var.terraform_state_storage_account
-    container_name       = var.terraform_state_container
-    key                  = "${var.prefix}${var.participant_name}.tfstate"
-  }
+  backend "azurerm" {}
 }
 
 provider "azurerm" {

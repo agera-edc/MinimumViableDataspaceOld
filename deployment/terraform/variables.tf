@@ -22,14 +22,6 @@ variable "common_resource_group" {
   default = "agera-mvd-common"
 }
 
-variable "terraform_state_storage_account" {
-  default = "mvdterraformstates"
-}
-
-variable "terraform_state_container" {
-  default = "mvdterraformstates"
-}
-
 variable "resource_group" {
   default = "test-resource-group"
 }
