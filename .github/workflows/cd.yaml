@@ -77,8 +77,7 @@ jobs:
             storage_account_name = "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}
             container_name       = "${{ secrets.TERRAFORM_STATE_CONTAINER }}
             key                  = "${{ matrix.participant }}${{ github.run_number }}.tfstate"
-          '
-          >> backend.conf
+          ' >> backend.conf
 
           echo '
             acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
