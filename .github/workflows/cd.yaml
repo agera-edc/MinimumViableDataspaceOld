@@ -88,6 +88,7 @@ jobs:
             runtime_image = "mvd-edc/connector:${{ github.run_number }}"
             application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
           ' >> input.tfvars
+
           terraform init -backend-config=backend.conf
           terraform apply -var-file=input.tfvars -auto-approve
           DID_ENDPOINT=$(terraform output -raw did_endpoint)
@@ -110,12 +111,11 @@ jobs:
           TF_VAR_key_file: "../../key.pem"
           TF_VAR_public_key_jwk_file: "../../key.public.jwk"
 
-      # Publish terraform folder because it contains the state, the provider builds and the input.tfvars file
       - uses: actions/upload-artifact@v3
-        name: 'Publish terraform folder'
+        name: 'Publish Backend conf'
         with:
-          name: terraform-${{ matrix.participant }}
-          path: deployment/terraform
+          name: terraform-${{ matrix.participant }}-backend-conf
+          path: deployment/terraform/backend.conf
           retention-days: 1
 
       - name: 'Verify did endpoint is available'
@@ -163,8 +163,8 @@ jobs:
       - uses: actions/download-artifact@v3
         name: 'Download terraform folder'
         with:
-          name: terraform-${{ matrix.participant }}
-          path: deployment/terraform
+          name: terraform-${{ matrix.participant }}-backend-conf
+          path: deployment/terraform/backend.conf
 
       - name: 'Delete terraform resources'
         run: |
@@ -178,9 +178,3 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-      - uses: actions/upload-artifact@v3
-        name: 'Clear terraform artifact'
-        with:
-          name: terraform-${{ matrix.participant }}
-          path: /dev/null
