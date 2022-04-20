@@ -132,7 +132,7 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 
 resource "azurerm_key_vault_secret" "did_key" {
   name         = var.participant_name
-  value        = file(var.key_file)
+  value        = var.key_file == null ? "no did_key" : file(var.key_file)
   key_vault_id = azurerm_key_vault.participant.id
   depends_on = [
     azurerm_role_assignment.current-user-secretsofficer
@@ -156,9 +156,9 @@ resource "azurerm_storage_blob" "did" {
         "id"         = "#identity-key-1",
         "controller" = "",
         "type"       = "JsonWebKey2020",
-        # When running terraform destroy, the public_key_jwk_file is not needed,
-        # public_key_jwk_file var should be set to /dev/null when running terraform destroy
-        "publicKeyJwk" = var.public_key_jwk_file == "/dev/null" ? {} : jsondecode(file(var.public_key_jwk_file))
+        # When running terraform destroy, the public_key_jwk_file content is not needed, default public_key_jwk_file
+        # value is null and should be specified to run terraform apply.
+        "publicKeyJwk" = var.public_key_jwk_file == null ? {} : jsondecode(file(var.public_key_jwk_file))
       }
     ],
     "authentication" : [
