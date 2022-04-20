@@ -40,6 +40,7 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static java.lang.String.format;
+import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.*;
 
 /**
  * Utility methods for building a Gatling simulation for performing contract negotiation and file transfer.
@@ -179,27 +180,29 @@ public abstract class FileTransferSimulationUtils {
 
         var blobName = UUID.randomUUID().toString();
         var destinationDataAddress = DataAddress.Builder.newInstance()
-                .type(TYPE)
+                .type("AzureStorageBlobData")
                 .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
                 .property(CONTAINER_NAME, THE_CONTAINER_NAME)
                 .property(BLOB_NAME, blobName)
                 .build();
 
         var request = Map.of(
+                "id", UUID.randomUUID().toString(),
                 "contractId", contractAgreementId,
                 "assetId", PROVIDER_ASSET_NAME,
                 "connectorId", "consumer",
                 "connectorAddress", connectorAddress,
                 "protocol", "ids-multipart",
                 "dataDestination", destinationDataAddress,
-                "managedResources", true, // FIXME ?
+                "managedResources", false, // FIXME ?
                 "transferType", TransferType.Builder.transferType() // FIXME?
                         .contentType("application/octet-stream")
                         .isFinite(true)
                         .build()
         );
 
-        return new TypeManager().writeValueAsString(request);
+        var v = new TypeManager().writeValueAsString(request);
+        return v;
 
     }
 
@@ -251,12 +254,6 @@ public abstract class FileTransferSimulationUtils {
         return new TypeManager().writeValueAsString(request);
     }
 
-
-    public static final String TYPE = "AzureStorageBlobData";
-    public static final String ACCOUNT_NAME = "account";
-    public static final String CONTAINER_NAME = "container";
-    public static final String BLOB_NAME = "blob";
-    public static final String SHARED_KEY = "sharedKey";
 
     /*
     private void gen() {
