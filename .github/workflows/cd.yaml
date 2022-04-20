@@ -149,7 +149,7 @@ jobs:
           retention-days: 1
 
       - name: 'Verify did endpoint is available'
-        run: curl --fail $DID_ENDPOINT | jq '.id'
+        run: curl --retry 6 --fail $DID_ENDPOINT | jq '.id'
 
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
