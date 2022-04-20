@@ -168,7 +168,7 @@ jobs:
         run: |
           cat backend.conf
           terraform init -backend-config=backend.conf
-          terraform destroy -auto-approve
+          terraform plan
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider
