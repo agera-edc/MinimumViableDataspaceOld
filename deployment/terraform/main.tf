@@ -105,6 +105,7 @@ resource "azurerm_storage_account" "did" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
+  static_website {}
 }
 
 resource "azurerm_storage_container" "assets_container" {
@@ -138,16 +139,10 @@ resource "azurerm_key_vault_secret" "did_key" {
   ]
 }
 
-resource "azurerm_storage_container" "didweb" {
-  name                  = "didweb"
-  storage_account_name  = azurerm_storage_account.did.name
-  container_access_type = "blob"
-}
-
 resource "azurerm_storage_blob" "did" {
   name                   = "did.json"
   storage_account_name   = azurerm_storage_account.did.name
-  storage_container_name = azurerm_storage_container.didweb.name
+  storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
     id = "did:web:${azurerm_storage_account.did.primary_web_host}:identity",

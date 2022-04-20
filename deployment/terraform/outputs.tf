@@ -7,5 +7,5 @@ output "assets_storage_account" {
 }
 
 output "did_endpoint" {
-  value = azurerm_storage_blob.did.url
+  value = "${azurerm_storage_account.did.primary_web_endpoint}${azurerm_storage_blob.did.name}"
 }
