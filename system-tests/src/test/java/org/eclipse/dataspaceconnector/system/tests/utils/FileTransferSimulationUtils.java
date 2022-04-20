@@ -14,10 +14,6 @@
 
 package org.eclipse.dataspaceconnector.system.tests.utils;
 
-import com.azure.core.management.AzureEnvironment;
-import com.azure.core.management.profile.AzureProfile;
-import com.azure.identity.DefaultAzureCredentialBuilder;
-import com.azure.resourcemanager.AzureResourceManager;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.http.HttpRequestActionBuilder;
 import org.eclipse.dataspaceconnector.policy.model.Action;
@@ -27,14 +23,11 @@ import org.eclipse.dataspaceconnector.policy.model.PolicyType;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractNegotiationStates;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataFlowRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcessStates;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferType;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
@@ -71,7 +64,7 @@ public abstract class FileTransferSimulationUtils {
     /**
      * Gatling chain for performing contract negotiation and file transfer.
      *
-     * @param providerUrl     URL for the Provider API, as accessed from the Consumer runtime.
+     * @param providerUrl URL for the Provider API, as accessed from the Consumer runtime.
      */
     public static ChainBuilder contractNegotiationAndFileTransfer(String providerUrl) {
         return startContractAgreement(providerUrl)
@@ -142,7 +135,7 @@ public abstract class FileTransferSimulationUtils {
      * <p>
      * Saves the Transfer Process ID into the {@see TRANSFER_PROCESS_ID} session key.
      *
-     * @param providerUrl     URL for the Provider API, as accessed from the Consumer runtime.
+     * @param providerUrl URL for the Provider API, as accessed from the Consumer runtime.
      */
     private static ChainBuilder startFileTransfer(String providerUrl) {
         String connectorAddress = format("%s/api/v1/ids/data", providerUrl);
@@ -185,12 +178,12 @@ public abstract class FileTransferSimulationUtils {
 
 
         var blobName = UUID.randomUUID().toString();
-                var destinationDataAddress = DataAddress.Builder.newInstance()
-                        .type(TYPE)
-                        .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
-                        .property(CONTAINER_NAME, THE_CONTAINER_NAME)
-                        .property(BLOB_NAME, blobName)
-                        .build();
+        var destinationDataAddress = DataAddress.Builder.newInstance()
+                .type(TYPE)
+                .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
+                .property(CONTAINER_NAME, THE_CONTAINER_NAME)
+                .property(BLOB_NAME, blobName)
+                .build();
 
         var request = Map.of(
                 "contractId", contractAgreementId,
