@@ -18,7 +18,7 @@ variable "acr_name" {
   default = "ageramvd"
 }
 
-variable "common_resource_group" {
+variable "acr_resource_group" {
   default = "agera-mvd-common"
 }
 

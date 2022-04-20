@@ -30,7 +30,7 @@ resource "azurerm_resource_group" "participant" {
 
 data "azurerm_container_registry" "registry" {
   name                = var.acr_name
-  resource_group_name = var.common_resource_group
+  resource_group_name = var.acr_resource_group
 }
 
 resource "azurerm_container_group" "edc" {
