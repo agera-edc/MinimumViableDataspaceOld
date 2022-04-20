@@ -137,7 +137,6 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-          ## Override terraform values defined in file input.tfvars
           TF_VAR_key_file = "../../key.pem"
           TF_VAR_public_key_jwk_file = "../../key.public.jwk"
 
