@@ -162,7 +162,7 @@ jobs:
         name: 'Download terraform folder'
         with:
           name: terraform-${{ matrix.participant }}-backend-conf
-          path: deployment/terraform/backend.conf
+          path: deployment/terraform/
 
       - name: 'Delete terraform resources'
         run: |
