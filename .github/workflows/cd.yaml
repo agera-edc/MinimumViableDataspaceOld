@@ -137,8 +137,8 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-          TF_VAR_key_file = "../../key.pem"
-          TF_VAR_public_key_jwk_file = "../../key.public.jwk"
+          TF_VAR_key_file: "../../key.pem"
+          TF_VAR_public_key_jwk_file: "../../key.public.jwk"
 
       # Publish terraform folder because it contains the state, the provider builds and the input.tfvars file
       - uses: actions/upload-artifact@v3
