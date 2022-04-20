@@ -159,6 +159,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      # Az login is needed to delete the blob terraform state.
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       - uses: actions/download-artifact@v3
         name: 'Download terraform folder'
         with:
