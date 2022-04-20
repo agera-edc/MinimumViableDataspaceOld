@@ -4,7 +4,7 @@ variable "prefix" {
 }
 
 variable "participant_name" {
-  default = "testparticipant"
+  default = "participant"
 }
 
 variable "runtime_image" {
