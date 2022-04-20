@@ -166,6 +166,7 @@ jobs:
 
       - name: 'Delete terraform resources'
         run: |
+          cat backend.conf
           terraform init -backend-config=backend.conf
           terraform destroy -auto-approve
         working-directory: deployment/terraform
