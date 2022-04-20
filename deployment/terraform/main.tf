@@ -132,6 +132,7 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 
 resource "azurerm_key_vault_secret" "did_key" {
   name         = var.participant_name
+  # Default key_file value is null because when running terraform destroy, the key_file content is not needed.
   value        = var.key_file == null ? "no did_key" : file(var.key_file)
   key_vault_id = azurerm_key_vault.participant.id
   depends_on = [

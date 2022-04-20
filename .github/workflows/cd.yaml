@@ -117,8 +117,6 @@ jobs:
             resource_group = "rg-${{ matrix.participant }}-${{ github.run_number }}"
             runtime_image = "mvd-edc/connector:${{ github.run_number }}"
             application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
-            key_file = "../../key.pem"
-            public_key_jwk_file = "../../key.public.jwk"
           ' >> input.tfvars
           terraform init
           terraform apply -var-file=input.tfvars -auto-approve
@@ -138,6 +136,11 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+          ## Override terraform values defined in file input.tfvars
+          TF_VAR_key_file = "../../key.pem"
+          TF_VAR_public_key_jwk_file = "../../key.public.jwk"
+
 
       # Publish terraform folder because it contains the state, the provider builds and the input.tfvars file
       - uses: actions/upload-artifact@v3
