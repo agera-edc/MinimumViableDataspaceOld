@@ -40,7 +40,9 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static java.lang.String.format;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.*;
+import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.ACCOUNT_NAME;
+import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.BLOB_NAME;
+import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.CONTAINER_NAME;
 
 /**
  * Utility methods for building a Gatling simulation for performing contract negotiation and file transfer.
@@ -203,7 +205,6 @@ public abstract class FileTransferSimulationUtils {
 
         var v = new TypeManager().writeValueAsString(request);
         return v;
-
     }
 
     /**
@@ -253,117 +254,4 @@ public abstract class FileTransferSimulationUtils {
 
         return new TypeManager().writeValueAsString(request);
     }
-
-
-    /*
-    private void gen() {
-        var tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
-        var subscriptionId = "9d236f09-93d9-4f41-88a6-20201a6a1abc";
-        var PROVIDER_STORAGE_RESOURCE_ID = "/subscriptions/9d236f09-93d9-4f41-88a6-20201a6a1abc/resourceGroups/rg-company1-194/providers/Microsoft.Storage/storageAccounts/194company1";
-        var CONSUMER_STORAGE_RESOURCE_ID = "/subscriptions/9d236f09-93d9-4f41-88a6-20201a6a1abc/resourceGroups/rg-company1-194/providers/Microsoft.Storage/storageAccounts/194company1";
-
-        // Detect credential source based on runtime environment, e.g. Azure CLI, environment variables
-        var credential = new DefaultAzureCredentialBuilder().build();
-
-        var azure = AzureEnvironment.AZURE;
-        var profile = new AzureProfile(tenantId, subscriptionId, azure);
-
-        var azureResourceManager = AzureResourceManager
-                .authenticate(credential, profile)
-                .withSubscription(subscriptionId);
-
-            var providerStorage = new Account(azureResourceManager, PROVIDER_STORAGE_RESOURCE_ID);
-            var consumerStorage = new Account(azureResourceManager, CONSUMER_STORAGE_RESOURCE_ID);
-            var randomBytes = new byte[1024];
-            var random = new Random();
-            random.nextBytes(randomBytes);
-
-            var source = DataAddress.Builder.newInstance()
-                    .type(TYPE)
-                    .property(ACCOUNT_NAME, providerStorage.name)
-                    .property(CONTAINER_NAME, providerStorage.containerName)
-                    .property(BLOB_NAME, blobName)
-                    .property(SHARED_KEY, providerStorage.key)
-                    .build();
-            var destination = DataAddress.Builder.newInstance()
-                    .type(TYPE)
-                    .property(ACCOUNT_NAME, consumerStorage.name)
-                    .property(CONTAINER_NAME, consumerStorage.containerName)
-                    .property(SHARED_KEY, consumerStorage.key)
-                    .build();
-            var request = DataFlowRequest.Builder.newInstance()
-                    .sourceDataAddress(source)
-                    .destinationDataAddress(destination)
-                    .id(UUID.randomUUID().toString())
-                    .processId(UUID.randomUUID().toString())
-                    .trackable(true)
-                    .build();
-        }
-
-     */
-            /*
-
-        private String contractId;
-        private String assetId;
-        private String connectorId;
-        private String connectorAddress;
-        private String protocol = "ids-multipart";
-        private DataAddress dataDestination;
-        private boolean managedResources = true;
-        private Map<String, String> properties = new HashMap<>();
-        private TransferType transferType;
-*/
-
-
-            /*
-            // Act
-            dataPlaneManager.initiateTransfer(request);
-
-            // Assert
-            var destinationBlob = consumerStorage.client
-                    .getBlobContainerClient(consumerStorage.containerName)
-                    .getBlobClient(blobName);
-            await()
-                    .atMost(Duration.ofMinutes(5))
-                    .untilAsserted(() -> assertThat(store.getState(request.getProcessId()))
-                            .isEqualTo(DataPlaneStore.State.COMPLETED));
-            assertThat(destinationBlob.exists())
-                    .withFailMessage("should have copied blob between containers")
-                    .isTrue();
-            assertThat(destinationBlob.getProperties().getBlobSize())
-                    .isEqualTo(randomBytes.length);
-
-             */
-
-        /*
-        static class Account {
-
-            static final Faker FAKER = new Faker();
-            final String name;
-            final String key;
-            final BlobServiceClient client;
-            final String containerName = FAKER.lorem().characters(35, 40, false, false);
-
-            Account(AzureResourceManager azureResourceManager, String setting) {
-                var account = azureResourceManager.storageAccounts().getById(accountId);
-                name = account.name();
-                key = account.getKeys().stream().findFirst().orElseThrow().value();
-                client = new BlobServiceClientBuilder()
-                        .credential(new StorageSharedKeyCredential(account.name(), key))
-                        .endpoint(account.endPoints().primary().blob())
-                        .buildClient();
-                createContainer();
-            }
-
-            void createContainer() {
-                assertFalse(client.getBlobContainerClient(containerName).exists());
-
-                BlobContainerClient blobContainerClient = client.createBlobContainer(containerName);
-                assertTrue(blobContainerClient.exists());
-                containerCleanup.add(() -> client.deleteBlobContainer(containerName));
-            }
-        }
-
-         */
-
 }
