@@ -132,7 +132,7 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 
 resource "azurerm_key_vault_secret" "did_key" {
   name         = var.participant_name
-  # Create did_key secret only if key_file value is provided. Default key_file is null.
+  # Create did_key secret only if key_file value is provided. Default key_file value is null.
   count = var.key_file == null ? 0 : 1
   value        = file(var.key_file)
   key_vault_id = azurerm_key_vault.participant.id
@@ -144,6 +144,8 @@ resource "azurerm_key_vault_secret" "did_key" {
 resource "azurerm_storage_blob" "did" {
   name                   = "did.json"
   storage_account_name   = azurerm_storage_account.did.name
+  # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
+  count = var.public_key_jwk_file == null ? 0 : 1
   storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
@@ -158,9 +160,7 @@ resource "azurerm_storage_blob" "did" {
         "id"         = "#identity-key-1",
         "controller" = "",
         "type"       = "JsonWebKey2020",
-        # When running terraform destroy, the public_key_jwk_file content is not needed, default public_key_jwk_file
-        # value is null and should be specified to run terraform apply.
-        "publicKeyJwk" = var.public_key_jwk_file == null ? {} : jsondecode(file(var.public_key_jwk_file))
+        "publicKeyJwk" = jsondecode(file(var.public_key_jwk_file))
       }
     ],
     "authentication" : [
