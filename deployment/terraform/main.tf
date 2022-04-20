@@ -5,6 +5,13 @@ terraform {
       version = ">= 3.1.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name  = var.common_resource_group
+    storage_account_name = var.terraform_state_storage_account
+    container_name       = var.terraform_state_container
+    key                  = "${var.prefix}${var.participant_name}.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -28,7 +35,7 @@ resource "azurerm_resource_group" "participant" {
 
 data "azurerm_container_registry" "registry" {
   name                = var.acr_name
-  resource_group_name = var.acr_resource_group
+  resource_group_name = var.common_resource_group
 }
 
 resource "azurerm_container_group" "edc" {
