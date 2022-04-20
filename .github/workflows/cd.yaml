@@ -169,7 +169,7 @@ jobs:
       - name: 'Delete terraform resources'
         run: |
           terraform init -backend-config=backend.conf
-          terraform destroy -var-file=input.tfvars -auto-approve
+          terraform destroy -auto-approve
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider
