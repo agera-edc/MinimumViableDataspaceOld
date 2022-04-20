@@ -7,5 +7,5 @@ output "assets_storage_account" {
 }
 
 output "did_endpoint" {
-  value = length(azurerm_storage_blob.did) > 0 ? "${azurerm_storage_account.did.primary_web_endpoint}{${azurerm_storage_blob.did[0].name}" : null
+  value = length(azurerm_storage_blob.did) > 0 ? "${azurerm_storage_account.did.primary_web_endpoint}${azurerm_storage_blob.did[0].name}" : null
 }
