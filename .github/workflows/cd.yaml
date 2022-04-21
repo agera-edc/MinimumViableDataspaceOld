@@ -167,7 +167,7 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       - uses: actions/download-artifact@v3
-        name: 'Download terraform folder'
+        name: 'Download backend conf'
         with:
           name: terraform-${{ matrix.participant }}-backend-conf
           path: deployment/terraform/
