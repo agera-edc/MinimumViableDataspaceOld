@@ -181,7 +181,7 @@ public abstract class FileTransferSimulationUtils {
 
         var blobName = UUID.randomUUID().toString();
         var destinationDataAddress = DataAddress.Builder.newInstance()
-                .type("AzureStorageBlobData")
+                .type("AzureStorage")
                 .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
                 .property(BLOB_NAME, blobName)
                 .build();
