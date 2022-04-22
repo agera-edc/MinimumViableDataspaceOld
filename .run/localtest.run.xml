@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="localtest" type="CompoundRunConfigurationType">
+    <toRun name="consumer" type="Application" />
+    <toRun name="provider" type="Application" />
+    <toRun name="FileTransferAsClientIntegrationTest" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
