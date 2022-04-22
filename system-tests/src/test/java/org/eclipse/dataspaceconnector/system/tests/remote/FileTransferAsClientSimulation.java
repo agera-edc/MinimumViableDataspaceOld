@@ -24,7 +24,7 @@ import static io.gatling.javaapi.core.CoreDsl.global;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static org.eclipse.dataspaceconnector.system.tests.utils.FileTransferSimulationUtils.DESCRIPTION;
-import static org.eclipse.dataspaceconnector.system.tests.utils.FileTransferSimulationUtils.contractNegotiation;
+import static org.eclipse.dataspaceconnector.system.tests.utils.FileTransferSimulationUtils.contractNegotiationAndFileTransfer;
 
 /**
  * Runs a single iteration of contract negotiation and file transfer, getting settings from environment variables.
@@ -37,7 +37,8 @@ public class FileTransferAsClientSimulation extends Simulation {
         setUp(scenario(DESCRIPTION)
                 .repeat(1)
                 .on(
-                        contractNegotiation(getFromEnv("PROVIDER_URL"))
+                        contractNegotiationAndFileTransfer(
+                                getFromEnv("PROVIDER_URL"))
                 )
                 .injectOpen(atOnceUsers(1)))
                 .protocols(http
