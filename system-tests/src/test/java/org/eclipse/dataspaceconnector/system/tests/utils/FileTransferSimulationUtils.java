@@ -40,9 +40,9 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static java.lang.String.format;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.ACCOUNT_NAME;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.BLOB_NAME;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.CONTAINER_NAME;
+import static org.eclipse.dataspaceconnector.azure.blob.AzureBlobStoreSchema.ACCOUNT_NAME;
+import static org.eclipse.dataspaceconnector.azure.blob.AzureBlobStoreSchema.BLOB_NAME;
+import static org.eclipse.dataspaceconnector.azure.blob.AzureBlobStoreSchema.CONTAINER_NAME;
 
 /**
  * Utility methods for building a Gatling simulation for performing contract negotiation and file transfer.
@@ -59,7 +59,6 @@ public abstract class FileTransferSimulationUtils {
     private static final String CONTRACT_DEFINITION_ID = "4a75736e-001d-4364-8bd4-9888490edb56";
 
     public static final String THE_ACCOUNT_NAME = "testdocument";
-    public static final String THE_CONTAINER_NAME = "testdocument";
 
     private FileTransferSimulationUtils() {
     }
@@ -184,7 +183,6 @@ public abstract class FileTransferSimulationUtils {
         var destinationDataAddress = DataAddress.Builder.newInstance()
                 .type("AzureStorageBlobData")
                 .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
-                .property(CONTAINER_NAME, THE_CONTAINER_NAME)
                 .property(BLOB_NAME, blobName)
                 .build();
 
@@ -196,7 +194,7 @@ public abstract class FileTransferSimulationUtils {
                 "connectorAddress", connectorAddress,
                 "protocol", "ids-multipart",
                 "dataDestination", destinationDataAddress,
-                "managedResources", false, // FIXME ?
+                "managedResources", true, // FIXME ?
                 "transferType", TransferType.Builder.transferType() // FIXME?
                         .contentType("application/octet-stream")
                         .isFinite(true)

@@ -36,6 +36,9 @@ dependencies {
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("${edcGroup}:policy-store-memory:${edcVersion}")
 
+    // Blob storage container provisioning
+    implementation("${edcGroup}:blobstorage:${edcVersion}")
+
     // Embedded DPF
     implementation("${edcGroup}:data-plane-transfer-client:${edcVersion}")
     implementation("${edcGroup}:data-plane-selector-client:${edcVersion}")
