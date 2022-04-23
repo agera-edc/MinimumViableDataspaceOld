@@ -38,6 +38,8 @@ import static org.eclipse.dataspaceconnector.system.tests.local.TransferLocalSim
 import static org.eclipse.dataspaceconnector.system.tests.utils.GatlingUtils.runGatling;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_FILE;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.is;
 
 public class BlobTransferIntegrationTest {
     private static final String ASSETS_PATH = "/assets";
@@ -159,7 +161,7 @@ public class BlobTransferIntegrationTest {
                 .when()
                 .post(path)
                 .then()
-                .statusCode(204);
+                .statusCode(anyOf(is(204), is(409)));
     }
 
     private RequestSpecification givenProviderBaseRequest() {
