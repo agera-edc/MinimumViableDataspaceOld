@@ -21,7 +21,9 @@ val edcVersion: String by project
 val edcGroup: String by project
 val gatlingVersion: String by project
 val jupiterVersion: String by project
+val storageBlobVersion: String by project
 val assertj: String by project
+val restAssured: String by project
 
 dependencies {
     testImplementation("io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}") {
@@ -41,6 +43,8 @@ dependencies {
     testImplementation("${edcGroup}:blob-common:${edcVersion}")
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
+    testImplementation("com.azure:azure-storage-blob:${storageBlobVersion}")
+    testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }
 

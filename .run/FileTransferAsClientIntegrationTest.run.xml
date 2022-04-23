@@ -5,6 +5,7 @@
         <map>
           <entry key="CONSUMER_URL" value="http://localhost:9191" />
           <entry key="DESTINATION_PATH" value="/tmp" />
+          <entry key="PROVIDER_DM_URL" value="http://localhost:8182" />
           <entry key="PROVIDER_URL" value="http://localhost:7171" />
         </map>
       </option>
@@ -19,7 +20,7 @@
         <list>
           <option value=":system-tests:test" />
           <option value="--tests" />
-          <option value="&quot;org.eclipse.dataspaceconnector.system.tests.remote.FileTransferAsClientIntegrationTest&quot;" />
+          <option value="&quot;org.eclipse.dataspaceconnector.system.tests.local.BlobTransferIntegrationTest&quot;" />
         </list>
       </option>
       <option name="vmOptions" />
