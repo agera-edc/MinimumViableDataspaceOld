@@ -36,7 +36,8 @@ import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.system.tests.local.BlobTransferLocalSimulation.ACCOUNT_NAME_PROPERTY;
 import static org.eclipse.dataspaceconnector.system.tests.local.TransferLocalSimulation.PROVIDER_MANAGEMENT_PATH;
 import static org.eclipse.dataspaceconnector.system.tests.utils.GatlingUtils.runGatling;
-import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_NAME;
+import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_FILE;
+import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
 public class BlobTransferIntegrationTest {
     private static final String ASSETS_PATH = "/assets";
@@ -97,10 +98,10 @@ public class BlobTransferIntegrationTest {
         var asset = Map.of(
                 "asset", Map.of(
                         "properties", Map.of(
-                                "asset:prop:name", PROVIDER_ASSET_NAME,
+                                "asset:prop:name", PROVIDER_ASSET_ID,
                                 "asset:prop:contenttype", "text/plain",
                                 "asset:prop:version", "1.0",
-                                "asset:prop:id", PROVIDER_ASSET_NAME,
+                                "asset:prop:id", PROVIDER_ASSET_ID,
                                 "type", "AzureStorage"
                         )
                 ),
@@ -108,8 +109,8 @@ public class BlobTransferIntegrationTest {
                         "properties", Map.of(
                                 "type", AzureBlobStoreSchema.TYPE,
                                 AzureBlobStoreSchema.ACCOUNT_NAME, account1Name,
-                                AzureBlobStoreSchema.CONTAINER_NAME, PROVIDER_CONTAINER_NAME,
-                                AzureBlobStoreSchema.BLOB_NAME, PROVIDER_ASSET_NAME,
+                                AzureBlobStoreSchema.CONTAINER_NAME, "src-container",
+                                AzureBlobStoreSchema.BLOB_NAME, PROVIDER_ASSET_FILE,
                                 "keyName", format("%s-key1", account1Name)
                         )
                 )
@@ -121,7 +122,7 @@ public class BlobTransferIntegrationTest {
     private String createPolicy() {
         var policy = Policy.Builder.newInstance()
                 .permission(Permission.Builder.newInstance()
-                        .target(PROVIDER_ASSET_NAME)
+                        .target(PROVIDER_ASSET_ID)
                         .action(Action.Builder.newInstance().type("USE").build())
                         .build())
                 .type(PolicyType.SET)
@@ -137,7 +138,7 @@ public class BlobTransferIntegrationTest {
         var criteria = AssetSelectorExpression.Builder.newInstance()
                 .constraint("asset:prop:id",
                         "=",
-                        PROVIDER_ASSET_NAME)
+                        PROVIDER_ASSET_ID)
                 .build();
 
         var contractDefinition = Map.of(
