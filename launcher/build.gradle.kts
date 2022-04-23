@@ -38,6 +38,7 @@ dependencies {
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")
+    implementation("${edcGroup}:azure-vault:${edcVersion}")
 
     // Embedded DPF
     implementation("${edcGroup}:data-plane-transfer-client:${edcVersion}")
