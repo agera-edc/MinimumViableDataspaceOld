@@ -35,10 +35,8 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
  * {@see FileTransferIntegrationTest}.
  */
 public class TransferLocalSimulation extends Simulation {
-    public static final String CONSUMER_CONNECTOR_PATH = "/api";
     public static final String CONSUMER_MANAGEMENT_PATH = "/api/v1/data";
 
-    public static final String PROVIDER_CONNECTOR_PATH = "/api";
     public static final String PROVIDER_MANAGEMENT_PATH = "/api/v1/data";
 
     private static final int REPEAT = Integer.parseInt(propOrEnv("repeat", "1"));
@@ -49,9 +47,9 @@ public class TransferLocalSimulation extends Simulation {
     public TransferLocalSimulation(TransferRequestFactory requestFactory) {
         setUp(scenario(DESCRIPTION)
                 .repeat(REPEAT)
-                .on(contractNegotiationAndTransfer(getFromEnv("PROVIDER_URL"), requestFactory))
+                .on(contractNegotiationAndTransfer(getFromEnv("PROVIDER_IDS_URL"), requestFactory))
                 .injectOpen(atOnceUsers(AT_ONCE_USERS)))
-                .protocols(http.baseUrl(getFromEnv("CONSUMER_URL") + "/" + CONSUMER_MANAGEMENT_PATH))
+                .protocols(http.baseUrl(getFromEnv("CONSUMER_MANAGEMENT_URL") + "/" + CONSUMER_MANAGEMENT_PATH))
                 .assertions(
                         details(TRANSFER_SUCCESSFUL).successfulRequests().count().is((long) (AT_ONCE_USERS * REPEAT)),
                         global().responseTime().max().lt(MAX_RESPONSE_TIME),

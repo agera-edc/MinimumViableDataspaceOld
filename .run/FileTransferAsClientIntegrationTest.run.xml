@@ -3,10 +3,10 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="CONSUMER_URL" value="http://localhost:9191" />
+          <entry key="CONSUMER_MANAGEMENT_URL" value="http://localhost:9191" />
           <entry key="DESTINATION_PATH" value="/tmp" />
-          <entry key="PROVIDER_DM_URL" value="http://localhost:8182" />
-          <entry key="PROVIDER_URL" value="http://localhost:7171" />
+          <entry key="PROVIDER_IDS_URL" value="http://localhost:7171" />
+          <entry key="PROVIDER_MANAGEMENT_URL" value="http://localhost:8182" />
         </map>
       </option>
       <option name="executionName" />

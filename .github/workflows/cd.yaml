@@ -146,8 +146,8 @@ jobs:
         run: |
           ./gradlew :system-tests:test
         env:
-          CONSUMER_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
-          PROVIDER_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
+          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
+          PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:

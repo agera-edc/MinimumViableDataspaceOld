@@ -24,6 +24,7 @@ val jupiterVersion: String by project
 val storageBlobVersion: String by project
 val assertj: String by project
 val restAssured: String by project
+val azureIdentityVersion: String by project
 
 dependencies {
     testImplementation("io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}") {
@@ -46,5 +47,7 @@ dependencies {
     testImplementation("com.azure:azure-storage-blob:${storageBlobVersion}")
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
+    testImplementation("com.azure:azure-identity:${azureIdentityVersion}")
+    testImplementation("com.azure:azure-security-keyvault-secrets:4.2.3")
 }
 
