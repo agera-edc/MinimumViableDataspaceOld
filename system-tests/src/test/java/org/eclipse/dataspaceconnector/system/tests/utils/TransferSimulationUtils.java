@@ -15,16 +15,16 @@
 package org.eclipse.dataspaceconnector.system.tests.utils;
 
 import io.gatling.javaapi.core.ChainBuilder;
+import io.gatling.javaapi.core.Session;
 import io.gatling.javaapi.http.HttpRequestActionBuilder;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.policy.model.PolicyType;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
-import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractNegotiationStates;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcessStates;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferType;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.Map;
@@ -40,14 +40,11 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static java.lang.String.format;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.ACCOUNT_NAME;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.BLOB_NAME;
-import static org.eclipse.dataspaceconnector.azure.blob.core.AzureBlobStoreSchema.CONTAINER_NAME;
 
 /**
  * Utility methods for building a Gatling simulation for performing contract negotiation and file transfer.
  */
-public abstract class FileTransferSimulationUtils {
+public abstract class TransferSimulationUtils {
 
     public static final String CONTRACT_AGREEMENT_ID = "contractAgreementId";
     public static final String CONTRACT_NEGOTIATION_REQUEST_ID = "contractNegotiationRequestId";
@@ -55,24 +52,26 @@ public abstract class FileTransferSimulationUtils {
 
     public static final String DESCRIPTION = "[Contract negotiation and file transfer]";
 
-    public static final String PROVIDER_ASSET_NAME = "text-document";
-    private static final String CONTRACT_DEFINITION_ID = "4a75736e-001d-4364-8bd4-9888490edb56";
+    public static final String PROVIDER_ASSET_ID = "test-document";
+    public static final String PROVIDER_ASSET_FILE = "text-document.txt";
 
-    public static final String THE_ACCOUNT_NAME = "testdocument";
-    public static final String THE_CONTAINER_NAME = "testdocument";
+    public static final String TRANSFER_SUCCESSFUL = "Transfer successful";
 
-    private FileTransferSimulationUtils() {
+    public static final String TRANSFER_PROCESSES_PATH = "/transferprocess";
+
+    private TransferSimulationUtils() {
     }
 
     /**
      * Gatling chain for performing contract negotiation and file transfer.
      *
-     * @param providerUrl URL for the Provider API, as accessed from the Consumer runtime.
+     * @param providerUrl    URL for the Provider API, as accessed from the Consumer runtime.
+     * @param requestFactory Factory for creating transfer request payloads.
      */
-    public static ChainBuilder contractNegotiationAndFileTransfer(String providerUrl) {
+    public static ChainBuilder contractNegotiationAndTransfer(String providerUrl, TransferRequestFactory requestFactory) {
         return startContractAgreement(providerUrl)
                 .exec(waitForContractAgreement())
-                .exec(startFileTransfer(providerUrl))
+                .exec(startTransfer(providerUrl, requestFactory))
                 .exec(waitForTransferCompletion());
     }
 
@@ -89,6 +88,7 @@ public abstract class FileTransferSimulationUtils {
                 .on(exec(initiateContractNegotiation(connectorAddress)));
     }
 
+    @NotNull
     private static HttpRequestActionBuilder initiateContractNegotiation(String connectorAddress) {
         return http("Initiate contract negotiation")
                 .post("/contractnegotiations")
@@ -111,11 +111,17 @@ public abstract class FileTransferSimulationUtils {
     private static ChainBuilder waitForContractAgreement() {
         return exec(session -> session.set("status", -1))
                 .group("Wait for agreement")
-                .on(doWhileDuring(session -> session.getString(CONTRACT_AGREEMENT_ID) == null, Duration.ofSeconds(30))
+                .on(doWhileDuring(session -> contractAgreementNotCompleted(session), Duration.ofSeconds(30))
                         .on(exec(getContractStatus()).pace(Duration.ofSeconds(1)))
-                );
+                )
+                .exitHereIf(session -> contractAgreementNotCompleted(session));
     }
 
+    private static boolean contractAgreementNotCompleted(Session session) {
+        return session.getString(CONTRACT_AGREEMENT_ID) == null;
+    }
+
+    @NotNull
     private static HttpRequestActionBuilder getContractStatus() {
         return http("Get status")
                 .get(session -> format("/contractnegotiations/%s", session.getString(CONTRACT_NEGOTIATION_REQUEST_ID)))
@@ -138,73 +144,35 @@ public abstract class FileTransferSimulationUtils {
      * <p>
      * Saves the Transfer Process ID into the {@see TRANSFER_PROCESS_ID} session key.
      *
-     * @param providerUrl URL for the Provider API, as accessed from the Consumer runtime.
+     * @param providerUrl    URL for the Provider API, as accessed from the Consumer runtime.
+     * @param requestFactory Factory for creating transfer request payloads.
      */
-    private static ChainBuilder startFileTransfer(String providerUrl) {
+    private static ChainBuilder startTransfer(String providerUrl, TransferRequestFactory requestFactory) {
         String connectorAddress = format("%s/api/v1/ids/data", providerUrl);
         return group("Initiate transfer")
-                .on(exec(initiateFileTransfer(connectorAddress)));
+                .on(exec(initiateTransfer(requestFactory, connectorAddress)));
     }
 
-    private static HttpRequestActionBuilder initiateFileTransfer(String connectorAddress) {
+    public static class TransferInitiationData {
+        public final String contractAgreementId;
+        public final String connectorAddress;
 
+        TransferInitiationData(String contractAgreementId, String connectorAddress) {
+            this.contractAgreementId = contractAgreementId;
+            this.connectorAddress = connectorAddress;
+        }
+    }
+
+    @NotNull
+    private static HttpRequestActionBuilder initiateTransfer(TransferRequestFactory requestFactory, String connectorAddress) {
         return http("Initiate file transfer")
-                .post("/transferprocess")
-                .body(StringBody(session -> transferRequest(session.getString(CONTRACT_AGREEMENT_ID), connectorAddress)))
+                .post(TRANSFER_PROCESSES_PATH)
+                .body(StringBody(session -> requestFactory.apply(new TransferInitiationData(session.getString(CONTRACT_AGREEMENT_ID), connectorAddress))))
                 .header(CONTENT_TYPE, "application/json")
                 .check(status().is(200))
                 .check(bodyString()
                         .notNull()
                         .saveAs(TRANSFER_PROCESS_ID));
-    }
-
-    private static String transferRequest(String contractAgreementId, String connectorAddress) {
-        /*
-        var request = Map.of(
-                "contractId", contractAgreementId,
-                "assetId", PROVIDER_ASSET_NAME,
-                "connectorId", "consumer",
-                "connectorAddress", connectorAddress,
-                "protocol", "ids-multipart",
-                "dataDestination", DataAddress.Builder.newInstance()
-                        .keyName("keyName")
-                        .type("File")
-                        .property("path", destinationPath)
-                        .build(),
-                "managedResources", false,
-                "transferType", TransferType.Builder.transferType()
-                        .contentType("application/octet-stream")
-                        .isFinite(true)
-                        .build()
-        );
-                */
-
-
-        var blobName = UUID.randomUUID().toString();
-        var destinationDataAddress = DataAddress.Builder.newInstance()
-                .type("AzureStorageBlobData")
-                .property(ACCOUNT_NAME, THE_ACCOUNT_NAME)
-                .property(CONTAINER_NAME, THE_CONTAINER_NAME)
-                .property(BLOB_NAME, blobName)
-                .build();
-
-        var request = Map.of(
-                "id", UUID.randomUUID().toString(),
-                "contractId", contractAgreementId,
-                "assetId", PROVIDER_ASSET_NAME,
-                "connectorId", "consumer",
-                "connectorAddress", connectorAddress,
-                "protocol", "ids-multipart",
-                "dataDestination", destinationDataAddress,
-                "managedResources", false, // FIXME ?
-                "transferType", TransferType.Builder.transferType() // FIXME?
-                        .contentType("application/octet-stream")
-                        .isFinite(true)
-                        .build()
-        );
-
-        var v = new TypeManager().writeValueAsString(request);
-        return v;
     }
 
     /**
@@ -214,14 +182,27 @@ public abstract class FileTransferSimulationUtils {
      * Expects the Transfer Process ID to be provided in the {@see TRANSFER_PROCESS_ID} session key.
      */
     private static ChainBuilder waitForTransferCompletion() {
-        return group("Wait for transfer").on(
-                exec(session -> session.set("status", "INITIAL"))
-                        .doWhileDuring(session -> !session.getString("status").equals(TransferProcessStates.COMPLETED.name()),
+        return group("Wait for transfer")
+                .on(exec(session -> session.set("status", "INITIAL"))
+                        .doWhileDuring(session -> transferNotCompleted(session),
                                 Duration.ofSeconds(30))
-                        .on(exec(getTransferStatus()).pace(Duration.ofSeconds(1)))
-        );
+                        .on(exec(getTransferStatus()).pace(Duration.ofSeconds(1))))
+
+                .exitHereIf(session -> transferNotCompleted(session))
+
+                // Perform one additional request if the transfer successful.
+                // This allows running Gatling assertions to validate that the transfer actually succeeded
+                // (and timeout was not reached).
+                .group(TRANSFER_SUCCESSFUL)
+                .on(exec(getTransferStatus()));
     }
 
+    @NotNull
+    private static Boolean transferNotCompleted(Session session) {
+        return !session.getString("status").equals(TransferProcessStates.COMPLETED.name());
+    }
+
+    @NotNull
     private static HttpRequestActionBuilder getTransferStatus() {
         return http("Get transfer status")
                 .get(session -> format("/transferprocess/%s", session.getString(TRANSFER_PROCESS_ID)))
@@ -236,7 +217,7 @@ public abstract class FileTransferSimulationUtils {
         var policy = Policy.Builder.newInstance()
                 .id(UUID.randomUUID().toString())
                 .permission(Permission.Builder.newInstance()
-                        .target("text-document")
+                        .target("test-document")
                         .action(Action.Builder.newInstance().type("USE").build())
                         .build())
                 .type(PolicyType.SET)
@@ -246,8 +227,8 @@ public abstract class FileTransferSimulationUtils {
                 "connectorAddress", providerUrl,
                 "protocol", "ids-multipart",
                 "offer", Map.of(
-                        "offerId", CONTRACT_DEFINITION_ID + ":1",
-                        "assetId", PROVIDER_ASSET_NAME,
+                        "offerId", "4a75736e-001d-4364-8bd4-9888490edb56:0a3dbe71-2ddf-4c3a-b72e-d190bb4d3c58",
+                        "assetId", PROVIDER_ASSET_ID,
                         "policy", policy
                 )
         );
