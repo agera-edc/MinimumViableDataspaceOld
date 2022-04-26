@@ -38,7 +38,6 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 
 public class BlobTransferIntegrationTest {
     public static final String CONSUMER_CONNECTOR_MANAGEMENT_URL = getEnv("CONSUMER_MANAGEMENT_URL");
-    public static final String DST_ACCOUNT_NAME = getEnv("CONSUMER_STORAGE_ACCOUNT");
     public static final String DST_KEY_VAULT_NAME = getEnv("CONSUMER_KEY_VAULT");
     String BLOB_STORE_ENDPOINT_TEMPLATE = "https://%s.blob.core.windows.net";
     String KEY_VAULT_ENDPOINT_TEMPLATE = "https://%s.vault.azure.net";
@@ -46,15 +45,10 @@ public class BlobTransferIntegrationTest {
 
     @Test
     public void transferBlob_success() {
-        BlobServiceClient blobServiceClient2 = getBlobServiceClient(DST_KEY_VAULT_NAME, DST_ACCOUNT_NAME);
-
-        // Arrange
-        // Seed data to provider
-
-        // Write Key to vault
+        BlobServiceClient blobServiceClient2 = getBlobServiceClient(DST_KEY_VAULT_NAME);
 
         // Act
-        System.setProperty(ACCOUNT_NAME_PROPERTY, DST_ACCOUNT_NAME);
+        System.setProperty(ACCOUNT_NAME_PROPERTY, blobServiceClient2.getAccountName());
         runGatling(BlobTransferLocalSimulation.class, TransferSimulationUtils.DESCRIPTION);
 
         // Assert
@@ -67,13 +61,18 @@ public class BlobTransferIntegrationTest {
     }
 
     @NotNull
-    private BlobServiceClient getBlobServiceClient(String keyVaultName, String accountName) {
+    private BlobServiceClient getBlobServiceClient(String keyVaultName) {
         var credential = new DefaultAzureCredentialBuilder().build();
         var vault = new SecretClientBuilder()
                 .vaultUrl(format(KEY_VAULT_ENDPOINT_TEMPLATE, keyVaultName))
                 .credential(credential)
                 .buildClient();
-        var accountKey = vault.getSecret(accountName + "-key1");
+        // Find the first account with a key in the key vault
+        var accountKeySecret = vault.listPropertiesOfSecrets().stream().filter(s -> s.getName().endsWith("-key1")).findFirst().orElseThrow(
+                () -> new AssertionError("Key vault " + keyVaultName + " should contain the storage account key")
+        );
+        var accountKey = vault.getSecret(accountKeySecret.getName());
+        var accountName = accountKeySecret.getName().replaceFirst("-key1$", "");
         var blobServiceClient = new BlobServiceClientBuilder()
                 .endpoint(format(BLOB_STORE_ENDPOINT_TEMPLATE, accountName))
                 .credential(new StorageSharedKeyCredential(accountName, accountKey.getValue()))

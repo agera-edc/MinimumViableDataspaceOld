@@ -84,10 +84,12 @@ jobs:
           DID_ENDPOINT=$(terraform output -raw did_endpoint)
           EDC_HOST=$(terraform output -raw edc_host)
           ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
+          KEY_VAULT=$(terraform output -raw key_vault)
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
+          echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
         working-directory: deployment/terraform
         env:
 
@@ -143,7 +145,9 @@ jobs:
           ./gradlew :system-tests:test
         env:
           CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
+          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
