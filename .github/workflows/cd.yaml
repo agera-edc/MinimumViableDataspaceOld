@@ -144,6 +144,13 @@ jobs:
 
       - uses: ./.github/actions/gradle-setup
 
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
       - name: 'System tests'
         run: |
           ./gradlew :system-tests:test
