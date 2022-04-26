@@ -33,6 +33,11 @@ data "azurerm_container_registry" "registry" {
   resource_group_name = var.acr_resource_group
 }
 
+locals {
+  container_name   = "${var.prefix}-${var.participant_name}-edc"
+  container_ids_port = 8282
+}
+
 resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-${var.participant_name}-edc"
   location            = var.location
@@ -48,7 +53,7 @@ resource "azurerm_container_group" "edc" {
   }
 
   container {
-    name   = "${var.prefix}-${var.participant_name}-edc"
+    name   = local.container_name
     image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
@@ -58,7 +63,7 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     ports {
-      port     = 8282
+      port     = local.container_ids_port
       protocol = "TCP"
     }
     ports {
@@ -71,6 +76,7 @@ resource "azurerm_container_group" "edc" {
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID = var.application_sp_client_id
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
+      IDS_WEBHOOK_ADDRESS = "http://${local.container_name}.${var.location}.azurecontainer.io:${local.container_ids_port}"
     }
   }
 }
