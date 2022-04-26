@@ -37,8 +37,6 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 public class TransferLocalSimulation extends Simulation {
     public static final String CONSUMER_MANAGEMENT_PATH = "/api/v1/data";
 
-    public static final String PROVIDER_MANAGEMENT_PATH = "/api/v1/data";
-
     private static final int REPEAT = Integer.parseInt(propOrEnv("repeat", "1"));
     private static final int AT_ONCE_USERS = Integer.parseInt(propOrEnv("at.once.users", "1"));
     private static final int MAX_RESPONSE_TIME = Integer.parseInt(propOrEnv("max.response.time", "5000"));

@@ -65,8 +65,8 @@ public abstract class TransferSimulationUtils {
     /**
      * Gatling chain for performing contract negotiation and file transfer.
      *
-     * @param providerUrl     URL for the Provider API, as accessed from the Consumer runtime.
-     * @param destinationPath File copy destination path. If it includes the character sequence {@code %s}, that sequence is replaced with a random string in each iteration.
+     * @param providerUrl    URL for the Provider API, as accessed from the Consumer runtime.
+     * @param requestFactory Factory for creating transfer request payloads.
      */
     public static ChainBuilder contractNegotiationAndTransfer(String providerUrl, TransferRequestFactory requestFactory) {
         return startContractAgreement(providerUrl)
@@ -144,8 +144,8 @@ public abstract class TransferSimulationUtils {
      * <p>
      * Saves the Transfer Process ID into the {@see TRANSFER_PROCESS_ID} session key.
      *
-     * @param providerUrl     URL for the Provider API, as accessed from the Consumer runtime.
-     * @param destinationPath File copy destination path.
+     * @param providerUrl    URL for the Provider API, as accessed from the Consumer runtime.
+     * @param requestFactory Factory for creating transfer request payloads.
      */
     private static ChainBuilder startTransfer(String providerUrl, TransferRequestFactory requestFactory) {
         String connectorAddress = format("%s/api/v1/ids/data", providerUrl);
@@ -227,7 +227,7 @@ public abstract class TransferSimulationUtils {
                 "connectorAddress", providerUrl,
                 "protocol", "ids-multipart",
                 "offer", Map.of(
-                        "offerId", "1:1",
+                        "offerId", "4a75736e-001d-4364-8bd4-9888490edb56:0a3dbe71-2ddf-4c3a-b72e-d190bb4d3c58",
                         "assetId", PROVIDER_ASSET_ID,
                         "policy", policy
                 )

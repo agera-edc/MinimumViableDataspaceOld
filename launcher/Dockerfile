@@ -20,7 +20,6 @@ ENTRYPOINT java \
     -Dedc.ids.description="Eclipse Dataspace Connector with IDS extensions" \
     -Dedc.ids.maintainer="https://example.maintainer.com" \
     -Dedc.ids.curator="https://example.maintainer.com" \
-    -Dids.webhook.address="http://localhost:8181" \
     -Dweb.http.port="8181" \
     -Dweb.http.path="/api" \
     -Dweb.http.data.port="9191" \

@@ -47,7 +47,6 @@ dependencies {
     implementation("${edcGroup}:data-plane-selector-core:${edcVersion}")
     implementation("${edcGroup}:data-plane-framework:${edcVersion}")
     implementation("${edcGroup}:data-plane-azure-storage:${edcVersion}")
-    implementation("${edcGroup}:data-plane-azure-common:${edcVersion}")
 }
 
 application {
