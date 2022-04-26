@@ -34,8 +34,8 @@ data "azurerm_container_registry" "registry" {
 }
 
 locals {
-  container_name   = "${var.prefix}-${var.participant_name}-edc"
-  container_ids_port = 8282
+  edc_dns_label = "${var.prefix}-${var.participant_name}-edc-mvd"
+  edc_ids_port  = 8282
 }
 
 resource "azurerm_container_group" "edc" {
@@ -43,7 +43,7 @@ resource "azurerm_container_group" "edc" {
   location            = var.location
   resource_group_name = azurerm_resource_group.participant.name
   ip_address_type     = "Public"
-  dns_name_label      = "${var.prefix}-${var.participant_name}-edc-mvd"
+  dns_name_label      = local.edc_dns_label
   os_type             = "Linux"
 
   image_registry_credential {
@@ -53,7 +53,7 @@ resource "azurerm_container_group" "edc" {
   }
 
   container {
-    name   = local.container_name
+    name   = "edc"
     image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
@@ -63,7 +63,7 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     ports {
-      port     = local.container_ids_port
+      port     = local.edc_ids_port
       protocol = "TCP"
     }
     ports {
@@ -71,12 +71,12 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     environment_variables = {
-      EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
-      EDC_VAULT_NAME = azurerm_key_vault.participant.name
-      EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
-      EDC_VAULT_CLIENTID = var.application_sp_client_id
+      EDC_IDS_ID             = "urn:connector:${var.prefix}-${var.participant_name}"
+      EDC_VAULT_NAME         = azurerm_key_vault.participant.name
+      EDC_VAULT_TENANTID     = data.azurerm_client_config.current_client.tenant_id
+      EDC_VAULT_CLIENTID     = var.application_sp_client_id
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
-      IDS_WEBHOOK_ADDRESS = "http://${local.container_name}.${var.location}.azurecontainer.io:${local.container_ids_port}"
+      IDS_WEBHOOK_ADDRESS    = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
     }
   }
 }
@@ -150,9 +150,9 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 }
 
 resource "azurerm_key_vault_secret" "did_key" {
-  name         = var.participant_name
+  name = var.participant_name
   # Create did_key secret only if key_file value is provided. Default key_file value is null.
-  count = var.key_file == null ? 0 : 1
+  count        = var.key_file == null ? 0 : 1
   value        = file(var.key_file)
   key_vault_id = azurerm_key_vault.participant.id
   depends_on = [
@@ -161,10 +161,10 @@ resource "azurerm_key_vault_secret" "did_key" {
 }
 
 resource "azurerm_storage_blob" "did" {
-  name                   = "did.json"
-  storage_account_name   = azurerm_storage_account.did.name
+  name                 = "did.json"
+  storage_account_name = azurerm_storage_account.did.name
   # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
-  count = var.public_key_jwk_file == null ? 0 : 1
+  count                  = var.public_key_jwk_file == null ? 0 : 1
   storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
@@ -176,9 +176,9 @@ resource "azurerm_storage_blob" "did" {
     ],
     "verificationMethod" = [
       {
-        "id"         = "#identity-key-1",
-        "controller" = "",
-        "type"       = "JsonWebKey2020",
+        "id"           = "#identity-key-1",
+        "controller"   = "",
+        "type"         = "JsonWebKey2020",
         "publicKeyJwk" = jsondecode(file(var.public_key_jwk_file))
       }
     ],
