@@ -34,8 +34,10 @@ data "azurerm_container_registry" "registry" {
 }
 
 locals {
-  edc_dns_label = "${var.prefix}-${var.participant_name}-edc-mvd"
-  edc_ids_port  = 8282
+  edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
+  edc_control_port    = 8181
+  edc_ids_port        = 8282
+  edc_management_port = 9191
 }
 
 resource "azurerm_container_group" "edc" {
@@ -59,7 +61,7 @@ resource "azurerm_container_group" "edc" {
     memory = var.container_memory
 
     ports {
-      port     = 8181
+      port     = local.edc_control_port
       protocol = "TCP"
     }
     ports {
@@ -67,7 +69,7 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     ports {
-      port     = 9191
+      port     = local.edc_management_port
       protocol = "TCP"
     }
     environment_variables = {
