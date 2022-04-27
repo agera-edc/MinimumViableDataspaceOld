@@ -17,3 +17,8 @@ output "did_endpoint" {
 output "webapp_url" {
   value = "http://${azurerm_container_group.webapp.fqdn}"
 }
+
+output "api_key" {
+  value     = local.api_key
+  sensitive = true
+}

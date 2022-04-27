@@ -27,6 +27,10 @@ resource "random_password" "apikey" {
   length = 16
 }
 
+locals {
+  api_key = random_password.apikey.result
+}
+
 resource "azurerm_resource_group" "participant" {
   name     = var.resource_group
   location = var.location
@@ -80,14 +84,17 @@ resource "azurerm_container_group" "edc" {
       port     = local.edc_default_port
       protocol = "TCP"
     }
+
     ports {
       port     = local.edc_ids_port
       protocol = "TCP"
     }
+
     ports {
       port     = local.edc_management_port
       protocol = "TCP"
     }
+
     environment_variables = {
       EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
 
@@ -100,14 +107,17 @@ resource "azurerm_container_group" "edc" {
 
       IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
 
-      EDC_API_CONTROL_AUTH_APIKEY_VALUE = random_password.apikey.result
+      EDC_API_CONTROL_AUTH_APIKEY_VALUE = local.api_key
+      EDC_API_AUTH_KEY                  = local.api_key
 
       NODES_JSON_DIR          = "/catalog"
       NODES_JSON_FILES_PREFIX = local.catalog_files_prefix
     }
+
     secure_environment_variables = {
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
     }
+
     volume {
       storage_account_name = data.azurerm_storage_account.catalog.name
       storage_account_key  = data.azurerm_storage_account.catalog.primary_access_key
@@ -151,7 +161,7 @@ resource "azurerm_container_group" "webapp" {
           "dataManagementApiUrl" = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
           "catalogUrl"           = "http://${azurerm_container_group.edc.fqdn}:${local.edc_default_port}/api/federatedcatalog"
           "storageAccount"       = azurerm_storage_account.inbox.name
-          "apiKey"               = random_password.apikey.result
+          "apiKey"               = local.api_key
         }))
       }
     }
