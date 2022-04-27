@@ -47,7 +47,7 @@ locals {
   catalog_files_prefix = "${var.prefix}-"
 
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
-  edc_control_port    = 8181
+  edc_default_port    = 8181
   edc_ids_port        = 8282
   edc_management_port = 9191
 }
@@ -73,7 +73,7 @@ resource "azurerm_container_group" "edc" {
     memory = var.container_memory
 
     ports {
-      port     = local.edc_control_port
+      port     = local.edc_default_port
       protocol = "TCP"
     }
     ports {
