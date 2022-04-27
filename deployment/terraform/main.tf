@@ -51,7 +51,7 @@ locals {
   catalog_files_prefix = "${var.prefix}-"
 
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
-  edc_control_port    = 8181
+  edc_default_port    = 8181
   edc_ids_port        = 8282
   edc_management_port = 9191
 }
@@ -77,7 +77,7 @@ resource "azurerm_container_group" "edc" {
     memory = var.container_memory
 
     ports {
-      port     = local.edc_control_port
+      port     = local.edc_default_port
       protocol = "TCP"
     }
     ports {
@@ -91,9 +91,9 @@ resource "azurerm_container_group" "edc" {
     environment_variables = {
       EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
 
-      EDC_VAULT_NAME         = azurerm_key_vault.participant.name
-      EDC_VAULT_TENANTID     = data.azurerm_client_config.current_client.tenant_id
-      EDC_VAULT_CLIENTID     = var.application_sp_client_id
+      EDC_VAULT_NAME     = azurerm_key_vault.participant.name
+      EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
+      EDC_VAULT_CLIENTID = var.application_sp_client_id
 
       IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
 
@@ -145,9 +145,10 @@ resource "azurerm_container_group" "webapp" {
       mount_path = "/usr/share/nginx/html/assets/config"
       secret = {
         "app.config.json" = base64encode(jsonencode({
-          "connectorUrl"   = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
-          "storageAccount" = azurerm_storage_account.inbox.name
-          "apiKey"         = random_password.apikey.result
+          "dataManagementApiUrl" = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
+          "catalogUrl"           = "http://${azurerm_container_group.edc.fqdn}:${local.edc_default_port}/api/federatedcatalog"
+          "storageAccount"       = azurerm_storage_account.inbox.name
+          "apiKey"               = random_password.apikey.result
         }))
       }
     }
