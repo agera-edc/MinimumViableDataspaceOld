@@ -45,6 +45,7 @@ data "azurerm_storage_share" "catalog" {
 
 locals {
   catalog_files_prefix = "${var.prefix}-"
+
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_control_port    = 8181
   edc_ids_port        = 8282
@@ -209,7 +210,7 @@ resource "azurerm_storage_blob" "did" {
 resource "local_file" "catalog_entry" {
   content = jsonencode({
     name               = var.participant_name,
-    url                = "http://${azurerm_container_group.edc.fqdn}:8282",
+    url                = "http://${azurerm_container_group.edc.fqdn}:${local.edc_ids_port}",
     supportedProtocols = ["ids-multipart"]
   })
   filename = "${path.module}/build/${var.participant_name}.json"
