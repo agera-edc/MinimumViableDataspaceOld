@@ -35,7 +35,15 @@ variable "container_memory" {
 }
 
 variable "application_sp_object_id" {
-  description = "id of application's service principal object"
+  description = "object id of application's service principal object"
+}
+
+variable "application_sp_client_id" {
+  description = "client id of application's service principal object"
+}
+
+variable "application_sp_client_secret" {
+  description = "client secret of application's service principal object"
 }
 
 variable "key_file" {

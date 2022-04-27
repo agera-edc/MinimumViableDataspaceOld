@@ -84,8 +84,16 @@ resource "azurerm_container_group" "edc" {
       port     = local.edc_management_port
       protocol = "TCP"
     }
-
     environment_variables = {
+      EDC_IDS_ID             = "urn:connector:${var.prefix}-${var.participant_name}"
+
+      EDC_VAULT_NAME         = azurerm_key_vault.participant.name
+      EDC_VAULT_TENANTID     = data.azurerm_client_config.current_client.tenant_id
+      EDC_VAULT_CLIENTID     = var.application_sp_client_id
+      EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
+
+      IDS_WEBHOOK_ADDRESS    = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
+
       NODES_JSON_DIR          = "/catalog"
       NODES_JSON_FILES_PREFIX = local.catalog_files_prefix
     }
@@ -169,9 +177,9 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 }
 
 resource "azurerm_key_vault_secret" "did_key" {
-  name         = var.participant_name
+  name = var.participant_name
   # Create did_key secret only if key_file value is provided. Default key_file value is null.
-  count = var.key_file == null ? 0 : 1
+  count        = var.key_file == null ? 0 : 1
   value        = file(var.key_file)
   key_vault_id = azurerm_key_vault.participant.id
   depends_on = [
@@ -180,10 +188,10 @@ resource "azurerm_key_vault_secret" "did_key" {
 }
 
 resource "azurerm_storage_blob" "did" {
-  name                   = "did.json"
-  storage_account_name   = azurerm_storage_account.did.name
+  name                 = "did.json"
+  storage_account_name = azurerm_storage_account.did.name
   # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
-  count = var.public_key_jwk_file == null ? 0 : 1
+  count                  = var.public_key_jwk_file == null ? 0 : 1
   storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
@@ -195,9 +203,9 @@ resource "azurerm_storage_blob" "did" {
     ],
     "verificationMethod" = [
       {
-        "id"         = "#identity-key-1",
-        "controller" = "",
-        "type"       = "JsonWebKey2020",
+        "id"           = "#identity-key-1",
+        "controller"   = "",
+        "type"         = "JsonWebKey2020",
         "publicKeyJwk" = jsondecode(file(var.public_key_jwk_file))
       }
     ],
