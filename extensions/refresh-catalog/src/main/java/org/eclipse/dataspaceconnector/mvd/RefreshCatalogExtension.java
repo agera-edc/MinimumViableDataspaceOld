@@ -20,9 +20,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 public class RefreshCatalogExtension implements ServiceExtension {
     @Inject
-    private FederatedCacheNodeDirectory nodeDirectory;
+    FederatedCacheNodeDirectory nodeDirectory;
 
     private Path nodeJsonPath;
     private Monitor monitor;
