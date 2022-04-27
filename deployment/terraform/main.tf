@@ -34,7 +34,7 @@ data "azurerm_container_registry" "registry" {
 }
 
 data "azurerm_storage_account" "catalog" {
-  name                = var.catalog_share
+  name                = var.catalog_storage_account
   resource_group_name = var.catalog_resource_group
 }
 
@@ -88,6 +88,7 @@ resource "azurerm_container_group" "edc" {
     volume {
       storage_account_name = data.azurerm_storage_account.catalog.name
       storage_account_key  = data.azurerm_storage_account.catalog.primary_access_key
+      share_name           = data.azurerm_storage_share.catalog.name
       mount_path           = "/catalog"
       name                 = "catalog"
     }
