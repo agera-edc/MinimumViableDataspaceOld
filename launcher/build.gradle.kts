@@ -35,6 +35,7 @@ dependencies {
     implementation("${edcGroup}:filesystem-configuration:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("${edcGroup}:policy-store-memory:${edcVersion}")
+    implementation("${edcGroup}:catalog-cache:${edcVersion}")
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")

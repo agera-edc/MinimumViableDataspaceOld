@@ -23,6 +23,10 @@ data "azurerm_subscription" "current_subscription" {
 data "azurerm_client_config" "current_client" {
 }
 
+resource "random_password" "apikey" {
+  length = 16
+}
+
 resource "azurerm_resource_group" "participant" {
   name     = var.resource_group
   location = var.location
@@ -73,12 +77,56 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     environment_variables = {
-      EDC_IDS_ID             = "urn:connector:${var.prefix}-${var.participant_name}"
+      EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
+
       EDC_VAULT_NAME         = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID     = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID     = var.application_sp_client_id
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
-      IDS_WEBHOOK_ADDRESS    = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
+
+      IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
+
+      EDC_API_CONTROL_AUTH_APIKEY_VALUE = random_password.apikey.result
+
+    }
+  }
+}
+
+resource "azurerm_container_group" "webapp" {
+  name                = "${var.prefix}-${var.participant_name}-webapp"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.participant.name
+  ip_address_type     = "Public"
+  dns_name_label      = "${var.prefix}-${var.participant_name}-mvd"
+  os_type             = "Linux"
+
+  image_registry_credential {
+    username = data.azurerm_container_registry.registry.admin_username
+    password = data.azurerm_container_registry.registry.admin_password
+    server   = data.azurerm_container_registry.registry.login_server
+  }
+
+  container {
+    name   = "edc"
+    image  = "${data.azurerm_container_registry.registry.login_server}/edc-showcase/edc-data-dashboard:27"
+    cpu    = 1
+    memory = 1
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+
+    volume {
+      name       = "appconfig"
+      mount_path = "/usr/share/nginx/html/assets/config"
+      secret = {
+        "app.config.json" = base64encode(jsonencode({
+          "connectorUrl"   = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
+          "storageAccount" = azurerm_storage_account.inbox.name
+          "apiKey"         = random_password.apikey.result
+        }))
+      }
     }
   }
 }
@@ -127,6 +175,15 @@ resource "azurerm_storage_account" "did" {
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
   static_website {}
+}
+
+resource "azurerm_storage_account" "inbox" {
+  name                     = "${var.prefix}${var.participant_name}inbox"
+  resource_group_name      = azurerm_resource_group.participant.name
+  location                 = azurerm_resource_group.participant.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  account_kind             = "StorageV2"
 }
 
 resource "azurerm_storage_container" "assets_container" {
