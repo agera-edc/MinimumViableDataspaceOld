@@ -210,6 +210,15 @@ resource "azurerm_storage_account" "inbox" {
   account_kind             = "StorageV2"
 }
 
+resource "azurerm_key_vault_secret" "inbox_storage_key" {
+  name         = "${azurerm_storage_account.inbox.name}-key1"
+  value        = azurerm_storage_account.inbox.primary_access_key
+  key_vault_id = azurerm_key_vault.participant.id
+  depends_on = [
+    azurerm_role_assignment.current-user-secretsofficer
+  ]
+}
+
 resource "azurerm_storage_container" "assets_container" {
   name                 = "src-container"
   storage_account_name = azurerm_storage_account.assets.name
