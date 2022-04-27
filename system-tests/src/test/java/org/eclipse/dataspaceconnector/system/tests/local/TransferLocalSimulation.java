@@ -15,7 +15,6 @@
 package org.eclipse.dataspaceconnector.system.tests.local;
 
 import io.gatling.javaapi.core.Simulation;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.dataspaceconnector.system.tests.utils.TransferRequestFactory;
 
 import java.util.Objects;
@@ -43,11 +42,14 @@ public class TransferLocalSimulation extends Simulation {
     private static final double SUCCESS_PERCENTAGE = Double.parseDouble(propOrEnv("success.percentage", "100.0"));
 
     public TransferLocalSimulation(TransferRequestFactory requestFactory) {
+        var httpProtocol = http
+                .baseUrl(requiredPropOrEnv("CONSUMER_MANAGEMENT_URL") + "/" + CONSUMER_MANAGEMENT_PATH)
+                .header("x-api-key", requiredPropOrEnv("API_KEY"));
         setUp(scenario(DESCRIPTION)
                 .repeat(REPEAT)
-                .on(contractNegotiationAndTransfer(getFromEnv("PROVIDER_IDS_URL"), requestFactory))
+                .on(contractNegotiationAndTransfer(requiredPropOrEnv("PROVIDER_IDS_URL"), requestFactory))
                 .injectOpen(atOnceUsers(AT_ONCE_USERS)))
-                .protocols(http.baseUrl(getFromEnv("CONSUMER_MANAGEMENT_URL") + "/" + CONSUMER_MANAGEMENT_PATH))
+                .protocols(httpProtocol)
                 .assertions(
                         details(TRANSFER_SUCCESSFUL).successfulRequests().count().is((long) (AT_ONCE_USERS * REPEAT)),
                         global().responseTime().max().lt(MAX_RESPONSE_TIME),
@@ -55,7 +57,7 @@ public class TransferLocalSimulation extends Simulation {
                 );
     }
 
-    private static String getFromEnv(String env) {
-        return Objects.requireNonNull(StringUtils.trimToNull(System.getenv(env)), env);
+    private String requiredPropOrEnv(String key) {
+        return Objects.requireNonNull(propOrEnv(key, null), key);
     }
 }
