@@ -85,14 +85,14 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
     environment_variables = {
-      EDC_IDS_ID             = "urn:connector:${var.prefix}-${var.participant_name}"
+      EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
 
       EDC_VAULT_NAME         = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID     = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID     = var.application_sp_client_id
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
 
-      IDS_WEBHOOK_ADDRESS    = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
+      IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
 
       NODES_JSON_DIR          = "/catalog"
       NODES_JSON_FILES_PREFIX = local.catalog_files_prefix
