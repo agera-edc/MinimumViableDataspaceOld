@@ -45,6 +45,10 @@ data "azurerm_storage_share" "catalog" {
 
 locals {
   catalog_files_prefix = "${var.prefix}-"
+  edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
+  edc_control_port    = 8181
+  edc_ids_port        = 8282
+  edc_management_port = 9191
 }
 
 resource "azurerm_container_group" "edc" {
@@ -52,7 +56,7 @@ resource "azurerm_container_group" "edc" {
   location            = var.location
   resource_group_name = azurerm_resource_group.participant.name
   ip_address_type     = "Public"
-  dns_name_label      = "${var.prefix}-${var.participant_name}-edc-mvd"
+  dns_name_label      = local.edc_dns_label
   os_type             = "Linux"
 
   image_registry_credential {
@@ -62,21 +66,21 @@ resource "azurerm_container_group" "edc" {
   }
 
   container {
-    name   = "${var.prefix}-${var.participant_name}-edc"
+    name   = "edc"
     image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
 
     ports {
-      port     = 8181
+      port     = local.edc_control_port
       protocol = "TCP"
     }
     ports {
-      port     = 8282
+      port     = local.edc_ids_port
       protocol = "TCP"
     }
     ports {
-      port     = 9191
+      port     = local.edc_management_port
       protocol = "TCP"
     }
 
