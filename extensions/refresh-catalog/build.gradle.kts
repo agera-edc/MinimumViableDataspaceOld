@@ -4,7 +4,15 @@ plugins {
 
 val edcVersion: String by project
 val edcGroup: String by project
+val jupiterVersion: String by project
+val mockitoVersion: String by project
+val assertj: String by project
 
 dependencies {
     api("${edcGroup}:catalog-cache:${edcVersion}")
+
+    testImplementation("org.assertj:assertj-core:${assertj}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }
