@@ -92,8 +92,6 @@ jobs:
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
-          echo "::set-output name=${{ matrix.participant }}_key_vault2::KEY_VAULT"
-          echo "OUTPUT name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
         working-directory: deployment/terraform
         env:
 

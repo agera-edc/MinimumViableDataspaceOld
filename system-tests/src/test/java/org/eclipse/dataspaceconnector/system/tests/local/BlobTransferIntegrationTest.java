@@ -39,8 +39,8 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 public class BlobTransferIntegrationTest {
     public static final String CONSUMER_CONNECTOR_MANAGEMENT_URL = getEnv("CONSUMER_MANAGEMENT_URL");
     public static final String DST_KEY_VAULT_NAME = getEnv("CONSUMER_KEY_VAULT");
-    String BLOB_STORE_ENDPOINT_TEMPLATE = "https://%s.blob.core.windows.net";
-    String KEY_VAULT_ENDPOINT_TEMPLATE = "https://%s.vault.azure.net";
+    public static final String BLOB_STORE_ENDPOINT_TEMPLATE = "https://%s.blob.core.windows.net";
+    public static final String KEY_VAULT_ENDPOINT_TEMPLATE = "https://%s.vault.azure.net";
 
 
     @Test
@@ -83,7 +83,6 @@ public class BlobTransferIntegrationTest {
     private String getProvisionedContainerName() {
         ResponseBodyExtractionOptions body = given()
                 .baseUri(CONSUMER_CONNECTOR_MANAGEMENT_URL + CONSUMER_MANAGEMENT_PATH)
-                .log().all()
                 .when()
                 .get(TRANSFER_PROCESSES_PATH)
                 .then()
