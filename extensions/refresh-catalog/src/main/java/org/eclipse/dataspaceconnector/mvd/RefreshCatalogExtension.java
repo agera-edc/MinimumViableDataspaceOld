@@ -10,33 +10,36 @@ import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class RefreshCatalogExtension implements ServiceExtension {
     @Inject
     private FederatedCacheNodeDirectory nodeDirectory;
 
-    private File nodesDirectory;
+    private Path nodeJsonPath;
     private Monitor monitor;
     private ObjectMapper mapper;
     private ScheduledExecutorService executor;
+    private String prefix;
 
     @Override
     public void initialize(ServiceExtensionContext context) {
         monitor = context.getMonitor();
-        nodesDirectory = new File(Objects.requireNonNull(System.getenv("NODES_JSON_DIR"), "Env var NODES_JSON_DIR is null"));
+        nodeJsonPath = Path.of(Objects.requireNonNull(System.getenv("NODES_JSON_DIR"), "Env var NODES_JSON_DIR is null"));
+        prefix = Objects.requireNonNull(System.getenv("NODES_JSON_FILES_PREFIX"), "Env var NODES_JSON_FILES_PREFIX is null");
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        if (!nodesDirectory.isDirectory()) {
-            throw new EdcException(nodesDirectory + " should be a directory");
+        if (!nodeJsonPath.toFile().isDirectory()) {
+            throw new EdcException(nodeJsonPath + " should be a directory");
         }
         executor = Executors.newSingleThreadScheduledExecutor();
     }
@@ -53,18 +56,26 @@ public class RefreshCatalogExtension implements ServiceExtension {
     }
 
     private void saveNodeEntries() {
-        File[] array = nodesDirectory.listFiles();
-        monitor.info("Refreshing catalog from " + array.length + " entries");
-        List<FederatedCacheNode> existingNodes = nodeDirectory.getAll();
-        Arrays.stream(array)
-                .map(this::getFileFederatedCacheNodeFunction)
-                .filter(n -> !existingNodes.stream().anyMatch(m -> Objects.equals(m.getName(), n.getName())))
-                .forEach(this::insertNode);
+        try {
+            var files = Files.find(nodeJsonPath, 1,
+                    (path, attrs) -> path.toFile().getName().startsWith(prefix));
+            monitor.info("Refreshing catalog from " +
+
+            Files.find(nodeJsonPath, 1,
+                    (path, attrs) -> path.toFile().getName().startsWith(prefix)).collect(Collectors.toList()).size());
+            List<FederatedCacheNode> existingNodes = nodeDirectory.getAll();
+            files
+                    .map(this::getFileFederatedCacheNodeFunction)
+                    .filter(n -> !existingNodes.stream().anyMatch(m -> Objects.equals(m.getName(), n.getName())))
+                    .forEach(this::insertNode);
+        } catch (IOException e) {
+            throw new EdcException(e);
+        }
     }
 
-    private FederatedCacheNode getFileFederatedCacheNodeFunction(File file) {
+    private FederatedCacheNode getFileFederatedCacheNodeFunction(Path file) {
         try {
-            return mapper.readValue(file, FederatedCacheNode.class);
+            return mapper.readValue(file.toFile(), FederatedCacheNode.class);
         } catch (IOException e) {
             throw new EdcException(e);
         }
