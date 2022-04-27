@@ -40,11 +40,13 @@ public class TransferLocalSimulation extends Simulation {
     private static final int AT_ONCE_USERS = Integer.parseInt(propOrEnv("at.once.users", "1"));
     private static final int MAX_RESPONSE_TIME = Integer.parseInt(propOrEnv("max.response.time", "5000"));
     private static final double SUCCESS_PERCENTAGE = Double.parseDouble(propOrEnv("success.percentage", "100.0"));
+    public static final String API_KEY_HEADER = "x-api-key";
+    public static final String API_KEY = requiredPropOrEnv("API_KEY");
 
     public TransferLocalSimulation(TransferRequestFactory requestFactory) {
         var httpProtocol = http
                 .baseUrl(requiredPropOrEnv("CONSUMER_MANAGEMENT_URL") + "/" + CONSUMER_MANAGEMENT_PATH)
-                .header("x-api-key", requiredPropOrEnv("API_KEY"));
+                .header(API_KEY_HEADER, API_KEY);
         setUp(scenario(DESCRIPTION)
                 .repeat(REPEAT)
                 .on(contractNegotiationAndTransfer(requiredPropOrEnv("PROVIDER_IDS_URL"), requestFactory))
@@ -57,7 +59,7 @@ public class TransferLocalSimulation extends Simulation {
                 );
     }
 
-    private String requiredPropOrEnv(String key) {
+    private static String requiredPropOrEnv(String key) {
         return Objects.requireNonNull(propOrEnv(key, null), key);
     }
 }
