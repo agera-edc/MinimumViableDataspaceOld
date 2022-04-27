@@ -91,6 +91,9 @@ resource "azurerm_container_group" "edc" {
     environment_variables = {
       EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
 
+      EDC_WEB_REST_CORS_ENABLED = "true"
+      EDC_WEB_REST_CORS_HEADERS = "origin,content-type,accept,authorization,x-api-key"
+
       EDC_VAULT_NAME     = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID = var.application_sp_client_id
