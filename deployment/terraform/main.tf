@@ -37,7 +37,19 @@ data "azurerm_container_registry" "registry" {
   resource_group_name = var.acr_resource_group
 }
 
+data "azurerm_storage_account" "catalog" {
+  name                = var.catalog_storage_account
+  resource_group_name = var.catalog_resource_group
+}
+
+data "azurerm_storage_share" "catalog" {
+  name                 = var.catalog_share
+  storage_account_name = data.azurerm_storage_account.catalog.name
+}
+
 locals {
+  catalog_files_prefix = "${var.prefix}-"
+
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_control_port    = 8181
   edc_ids_port        = 8282
@@ -88,6 +100,15 @@ resource "azurerm_container_group" "edc" {
 
       EDC_API_CONTROL_AUTH_APIKEY_VALUE = random_password.apikey.result
 
+      NODES_JSON_DIR          = "/catalog"
+      NODES_JSON_FILES_PREFIX = local.catalog_files_prefix
+    }
+    volume {
+      storage_account_name = data.azurerm_storage_account.catalog.name
+      storage_account_key  = data.azurerm_storage_account.catalog.primary_access_key
+      share_name           = data.azurerm_storage_share.catalog.name
+      mount_path           = "/catalog"
+      name                 = "catalog"
     }
   }
 }
@@ -245,4 +266,19 @@ resource "azurerm_storage_blob" "did" {
       "#identity-key-1"
   ] })
   content_type = "application/json"
+}
+
+resource "local_file" "catalog_entry" {
+  content = jsonencode({
+    name               = var.participant_name,
+    url                = "http://${azurerm_container_group.edc.fqdn}:${local.edc_ids_port}",
+    supportedProtocols = ["ids-multipart"]
+  })
+  filename = "${path.module}/build/${var.participant_name}.json"
+}
+
+resource "azurerm_storage_share_file" "catalog_entry" {
+  name             = "${local.catalog_files_prefix}${var.participant_name}.json"
+  storage_share_id = data.azurerm_storage_share.catalog.id
+  source           = local_file.catalog_entry.filename
 }

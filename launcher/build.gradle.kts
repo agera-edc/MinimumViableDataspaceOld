@@ -22,6 +22,7 @@ val edcVersion: String by project
 val edcGroup: String by project
 
 dependencies {
+    implementation(project(":extensions:refresh-catalog"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:ids:${edcVersion}")
     implementation("${edcGroup}:control-api:${edcVersion}")
@@ -35,7 +36,6 @@ dependencies {
     implementation("${edcGroup}:filesystem-configuration:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("${edcGroup}:policy-store-memory:${edcVersion}")
-    implementation("${edcGroup}:catalog-cache:${edcVersion}")
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")
@@ -48,6 +48,11 @@ dependencies {
     implementation("${edcGroup}:data-plane-selector-core:${edcVersion}")
     implementation("${edcGroup}:data-plane-framework:${edcVersion}")
     implementation("${edcGroup}:data-plane-azure-storage:${edcVersion}")
+
+    // Federated catalog
+    implementation("${edcGroup}:catalog-cache:${edcVersion}")
+    implementation("${edcGroup}:catalog-node-directory-memory:${edcVersion}")
+    implementation("${edcGroup}:catalog-cache-store-memory:${edcVersion}")
 }
 
 application {
