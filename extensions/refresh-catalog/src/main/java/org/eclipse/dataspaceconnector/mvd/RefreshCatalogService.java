@@ -1,33 +1,51 @@
+/*
+ *  Copyright (c) 2022 Microsoft Corporation
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       Microsoft Corporation - initial API and implementation
+ *
+ */
+
 package org.eclipse.dataspaceconnector.mvd;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Service to refresh the federated catalog on start-up, using a set of JSON files as input.
  */
 class RefreshCatalogService {
     private final FederatedCacheNodeDirectory nodeDirectory;
     private final Path nodeJsonDir;
     private final String nodeJsonPrefix;
     private final Monitor monitor;
-    private final ScheduledExecutorService executor;
-    private final ObjectMapper mapper;
+    private final TypeManager typeManager;
 
-    RefreshCatalogService(FederatedCacheNodeDirectory nodeDirectory, Path nodeJsonDir, String nodeJsonPrefix, Monitor monitor) {
+    /**
+     * Constructs a new instance of {@link RefreshCatalogService}.
+     *
+     * @param nodeDirectory  directory service to populate
+     * @param nodeJsonDir    directory containing source JSON files
+     * @param nodeJsonPrefix prefix to filter source JSON files on
+     * @param monitor        monitor service
+     * @param typeManager    type manager service
+     */
+    RefreshCatalogService(FederatedCacheNodeDirectory nodeDirectory, Path nodeJsonDir, String nodeJsonPrefix, Monitor monitor, TypeManager typeManager) {
         if (!nodeJsonDir.toFile().isDirectory()) {
             throw new EdcException(nodeJsonDir + " should be a directory");
         }
@@ -35,28 +53,20 @@ class RefreshCatalogService {
         this.nodeJsonDir = nodeJsonDir;
         this.nodeJsonPrefix = nodeJsonPrefix;
         this.monitor = monitor;
-        this.executor = Executors.newSingleThreadScheduledExecutor();
-        mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.typeManager = typeManager;
     }
 
-    void start() {
-        saveNodeEntries();
-        executor.scheduleWithFixedDelay(this::saveNodeEntries, 5, 5, TimeUnit.SECONDS);
-    }
-
-    void shutdown() {
-        executor.shutdown();
-    }
-
-    private void saveNodeEntries() {
+    /**
+     * Populates federated catalog based on JSON files.
+     */
+    void saveNodeEntries() {
         try {
             monitor.info("Refreshing catalog");
             var files = Files.find(nodeJsonDir, 1,
                     (path, attrs) -> path.toFile().getName().startsWith(nodeJsonPrefix));
             List<FederatedCacheNode> existingNodes = nodeDirectory.getAll();
             files
-                    .map(this::getFileFederatedCacheNodeFunction)
+                    .map(this::parseFederatedCacheNode)
                     .filter(n -> existingNodes.stream().noneMatch(m -> Objects.equals(m.getName(), n.getName())))
                     .forEach(this::insertNode);
         } catch (IOException e) {
@@ -64,9 +74,9 @@ class RefreshCatalogService {
         }
     }
 
-    private FederatedCacheNode getFileFederatedCacheNodeFunction(Path file) {
+    private FederatedCacheNode parseFederatedCacheNode(Path path) {
         try {
-            return mapper.readValue(file.toFile(), FederatedCacheNode.class);
+            return typeManager.readValue(Files.readString(path), FederatedCacheNode.class);
         } catch (IOException e) {
             throw new EdcException(e);
         }

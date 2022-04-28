@@ -57,14 +57,14 @@ jobs:
       company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
       company1_key_vault: ${{ steps.runterraform.outputs.company1_key_vault }}
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
-      company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
-      company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
       company1_edc_aci_name: ${{ steps.runterraform.outputs.company1_edc_aci_name }}
       company2_edc_aci_name: ${{ steps.runterraform.outputs.company2_edc_aci_name }}
       company1_resource_group: ${{ steps.runterraform.outputs.company1_resource_group }}
       company2_resource_group: ${{ steps.runterraform.outputs.company2_resource_group }}
       company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
       company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
+      company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
+      company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
 
     strategy:
       matrix:
@@ -95,10 +95,10 @@ jobs:
           EDC_HOST=$(terraform output -raw edc_host)
           ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
           KEY_VAULT=$(terraform output -raw key_vault)
-          WEBAPP_URL=$(terraform output -raw webapp_url)
-          API_KEY=$(terraform output -raw api_key)
           EDC_ACI_NAME=$(terraform output -raw edc_aci_name)
           RESOURCE_GROUP=$(terraform output -raw resource_group)
+          WEBAPP_URL=$(terraform output -raw webapp_url)
+          API_KEY=$(terraform output -raw api_key)
           #TODO echo "::add-mask::${API_KEY}"
           echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
@@ -151,6 +151,10 @@ jobs:
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
+  # Until https://github.com/eclipse-dataspaceconnector/DataSpaceConnector/issues/1230 is done,
+  # connectors must be restarted for catalog to be populated (once catalog files have all been stored).
+  # Data must be seeded after restart, since in-memory stores are used.
+  # When that EDC feature is delivered, we can merge this with the Deploy job and seed the data immediately.
   Seed:
     needs:
       - Deploy
@@ -208,6 +212,10 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
+      # Extra delay to ensure restarted connectors are up. This can be removed after the restart job becomes unnecessary.
+      - name: 'Delay'
+        run: sleep 60
+
       - name: 'System tests'
         run: |
           ./gradlew :system-tests:test
@@ -217,4 +225,3 @@ jobs:
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
-

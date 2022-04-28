@@ -14,6 +14,14 @@ output "did_endpoint" {
   value = length(azurerm_storage_blob.did) > 0 ? "${azurerm_storage_account.did.primary_web_endpoint}${azurerm_storage_blob.did[0].name}" : null
 }
 
+output "edc_aci_name" {
+  value = azurerm_container_group.edc.name
+}
+
+output "resource_group" {
+  value = azurerm_container_group.edc.resource_group_name
+}
+
 output "webapp_url" {
   value = "http://${azurerm_container_group.webapp.fqdn}"
 }
@@ -21,10 +29,4 @@ output "webapp_url" {
 output "api_key" {
   value     = local.api_key
   sensitive = true
-}
-output "edc_aci_name" {
-  value = azurerm_container_group.edc.name
-}
-output "resource_group" {
-  value = azurerm_container_group.edc.resource_group_name
 }
