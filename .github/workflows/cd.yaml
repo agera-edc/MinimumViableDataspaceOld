@@ -61,8 +61,8 @@ jobs:
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
-      company1_aci_name: ${{ steps.runterraform.outputs.company1_aci_name }}
-      company2_aci_name: ${{ steps.runterraform.outputs.company2_aci_name }}
+      company1_edc_aci_name: ${{ steps.runterraform.outputs.company1_edc_aci_name }}
+      company2_edc_aci_name: ${{ steps.runterraform.outputs.company2_edc_aci_name }}
       company1_resource_group: ${{ steps.runterraform.outputs.company1_resource_group }}
       company2_resource_group: ${{ steps.runterraform.outputs.company2_resource_group }}
       company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
@@ -99,6 +99,8 @@ jobs:
           KEY_VAULT=$(terraform output -raw key_vault)
           WEBAPP_URL=$(terraform output -raw webapp_url)
           API_KEY=$(terraform output -raw api_key)
+          EDC_ACI_NAME=$(terraform output -raw edc_aci_name)
+          RESOURCE_GROUP=$(terraform output -raw resource_group)
           #TODO echo "::add-mask::${API_KEY}"
           echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
@@ -108,7 +110,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
-          echo "::set-output name=${{ matrix.participant }}_aci_name::${ACI_NAME}"
+          echo "::set-output name=${{ matrix.participant }}_edc_aci_name::${EDC_ACI_NAME}"
           echo "::set-output name=${{ matrix.participant }}_resource_group::${RESOURCE_GROUP}"
           echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
@@ -170,10 +172,18 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: 'Restart'
-        run: az container restart --name "$ACI_NAME" --resource-group "$RESOURCE_GROUP"
+        run:
+          az container restart --name "$EDC_ACI_NAME" --resource-group "$RESOURCE_GROUP"
+          # az rest --url "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.ContainerInstance/containerGroups/$EDC_ACI_NAME/restart?api-version=2018-06-01" --method POST
         env:
-          ACI_NAME: ${{ needs.Deploy.outputs[format('{0}_aci_name', matrix.participant)] }}
+          EDC_ACI_NAME: ${{ needs.Deploy.outputs[format('{0}_edc_aci_name', matrix.participant)] }}
           RESOURCE_GROUP: ${{ needs.Deploy.outputs[format('{0}_resource_group', matrix.participant)] }}
+          # SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Verify deployed EDC is up'
+        run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
+        env:
+          EDC_HOST: ${{ needs.Deploy.outputs[format('{0}_edc_host', matrix.participant)] }}
 
       - name: 'Seed data'
         run: |
