@@ -61,6 +61,8 @@ jobs:
       company2_edc_aci_name: ${{ steps.runterraform.outputs.company2_edc_aci_name }}
       company1_resource_group: ${{ steps.runterraform.outputs.company1_resource_group }}
       company2_resource_group: ${{ steps.runterraform.outputs.company2_resource_group }}
+      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
+      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
 
     strategy:
       matrix:
@@ -100,6 +102,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_edc_aci_name::${EDC_ACI_NAME}"
           echo "::set-output name=${{ matrix.participant }}_resource_group::${RESOURCE_GROUP}"
+          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
         working-directory: deployment/terraform
         env:
@@ -204,3 +207,4 @@ jobs:
           PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
+          CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
