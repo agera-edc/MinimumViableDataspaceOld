@@ -23,7 +23,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
@@ -32,6 +34,10 @@ class CatalogClientTest {
 
     @Test
     void containsAsset() {
+        await().atMost(10, MINUTES).untilAsserted(() -> verifyAsset());
+    }
+
+    private void verifyAsset() {
         var nodes = given()
                 .contentType("application/json")
                 .body(FederatedCatalogCacheQuery.Builder.newInstance().build())

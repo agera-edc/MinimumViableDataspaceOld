@@ -143,6 +143,10 @@ jobs:
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
+  # Until https://github.com/eclipse-dataspaceconnector/DataSpaceConnector/issues/1230 is done,
+  # connectors must be restarted for catalog to be populated (once catalog files have all been stored).
+  # Data must be seeded after restart, since in-memory stores are used.
+  # When that EDC feature is delivered, we can merge this with the Deploy job and seed the data immediately.
   Seed:
     needs:
       - Deploy
@@ -199,6 +203,7 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
+      # Extra delay to ensure restarted connectors are up. This can be removed after the restart job becomes unnecessary.
       - name: 'Delay'
         run: sleep 60
 
