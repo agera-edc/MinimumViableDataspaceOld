@@ -71,6 +71,12 @@ jobs:
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company1_aci_name: ${{ steps.runterraform.outputs.company1_aci_name }}
+      company2_aci_name: ${{ steps.runterraform.outputs.company2_aci_name }}
+      company1_resource_group: ${{ steps.runterraform.outputs.company1_resource_group }}
+      company2_resource_group: ${{ steps.runterraform.outputs.company2_resource_group }}
+      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
+      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
 
     strategy:
       matrix:
@@ -104,7 +110,7 @@ jobs:
           WEBAPP_URL=$(terraform output -raw webapp_url)
           API_KEY=$(terraform output -raw api_key)
           #TODO echo "::add-mask::${API_KEY}"
-          echo "::notice title=MVD WebApp::$WEBAPP_URL"
+          echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
@@ -112,6 +118,10 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::set-output name=${{ matrix.participant }}_aci_name::${ACI_NAME}"
+          echo "::set-output name=${{ matrix.participant }}_resource_group::${RESOURCE_GROUP}"
+          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
+
         working-directory: deployment/terraform
         env:
 
@@ -151,13 +161,43 @@ jobs:
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
+  Seed:
+    needs:
+      - Deploy
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        participant: [company1, company2]
+
+    steps:
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Restart'
+        run: az container restart --name "$ACI_NAME" --resource-group "$RESOURCE_GROUP"
+        env:
+          ACI_NAME: ${{ needs.Deploy.outputs[format('{0}_aci_name', matrix.participant)] }}
+          RESOURCE_GROUP: ${{ needs.Deploy.outputs[format('{0}_resource_group', matrix.participant)] }}
+
       - name: 'Seed data'
         run: |
           npm install -g newman
           deployment/seed-data.sh
+        env:
+          EDC_HOST: ${{ needs.Deploy.outputs[format('{0}_edc_host', matrix.participant)] }}
+          ASSETS_STORAGE_ACCOUNT: ${{ needs.Deploy.outputs[format('{0}_assets_storage_account', matrix.participant)] }}
+          API_KEY: ${{ needs.Deploy.outputs[format('{0}_api_key', matrix.participant)] }}
 
   Verify:
-    needs: Deploy
+    needs:
+      - Deploy
+      - Seed
     runs-on: ubuntu-latest
     steps:
       # Checkout MVD code
