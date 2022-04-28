@@ -161,6 +161,7 @@ jobs:
         participant: [company1, company2]
 
     steps:
+      - uses: actions/checkout@v2
 
       - name: 'Az CLI login'
         uses: azure/login@v1
@@ -170,13 +171,10 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: 'Restart'
-        run:
-          az container restart --name "$EDC_ACI_NAME" --resource-group "$RESOURCE_GROUP"
-          # az rest --url "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.ContainerInstance/containerGroups/$EDC_ACI_NAME/restart?api-version=2018-06-01" --method POST
+        run: az container restart --name "$EDC_ACI_NAME" --resource-group "$RESOURCE_GROUP"
         env:
           EDC_ACI_NAME: ${{ needs.Deploy.outputs[format('{0}_edc_aci_name', matrix.participant)] }}
           RESOURCE_GROUP: ${{ needs.Deploy.outputs[format('{0}_resource_group', matrix.participant)] }}
-          # SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: 'Verify deployed EDC is up'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
