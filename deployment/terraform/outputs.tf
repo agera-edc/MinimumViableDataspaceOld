@@ -22,3 +22,9 @@ output "api_key" {
   value     = local.api_key
   sensitive = true
 }
+output "edc_aci_name" {
+  value = azurerm_container_group.edc.name
+}
+output "resource_group" {
+  value = azurerm_container_group.edc.resource_group_name
+}
