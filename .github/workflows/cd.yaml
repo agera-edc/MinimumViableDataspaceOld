@@ -50,9 +50,7 @@ jobs:
 
   # Deploy dataspace participants in parallel.
   Deploy:
-    needs:
-      - Build
-      - Catalog
+    needs: Build
     runs-on: ubuntu-latest
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
