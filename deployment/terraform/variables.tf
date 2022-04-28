@@ -57,11 +57,14 @@ variable "public_key_jwk_file" {
   default     = null
 }
 variable "catalog_resource_group" {
+  description = "resource group of the catalog JSON documents file share storage account"
 }
 
 variable "catalog_storage_account" {
+  description = "name of the catalog JSON documents file share storage account"
 }
 
 variable "catalog_share" {
+  description = "name of the catalog JSON documents file share"
 }
 
