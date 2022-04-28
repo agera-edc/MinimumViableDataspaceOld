@@ -216,3 +216,53 @@ jobs:
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
+
+  # Delete deployed Azure resource groups for each dataspace participant.
+  Destroy:
+    continue-on-error: true
+    needs:
+      - Deploy
+      - Verify
+    runs-on: ubuntu-latest
+    if: always()
+    strategy:
+      matrix:
+        participant: [company1, company2]
+
+    steps:
+      - uses: actions/checkout@v2
+      # Az login is needed to delete the blob terraform state.
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      - uses: actions/download-artifact@v3
+        name: 'Download backend conf'
+        with:
+          name: terraform-${{ matrix.participant }}-backend-conf
+          path: deployment/terraform/
+
+      - name: 'Delete terraform resources'
+        run: |
+          terraform init -backend-config=backend.conf
+          terraform destroy -auto-approve
+          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ matrix.participant }}${{ github.run_number }}.tfstate
+        working-directory: deployment/terraform
+        env:
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+          # Passing dummy variables to terraform destroy, because destroy needs input variables to be defined, but uses the state.
+          TF_VAR_runtime_image: dummy
+          TF_VAR_application_sp_object_id: dummy
+          TF_VAR_application_sp_client_id: dummy
+          TF_VAR_application_sp_client_secret: dummy
+          TF_VAR_catalog_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
+          TF_VAR_catalog_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
+          TF_VAR_catalog_share: ${{ secrets.CATALOG_SHARE }}
