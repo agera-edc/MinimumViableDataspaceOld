@@ -199,6 +199,9 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
+      - name: 'Delay'
+        run: sleep 60
+
       - name: 'System tests'
         run: |
           ./gradlew :system-tests:test
