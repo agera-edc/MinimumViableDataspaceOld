@@ -22,11 +22,13 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
 import io.restassured.response.ResponseBodyExtractionOptions;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import static ch.qos.logback.core.util.OptionHelper.getEnv;
+import java.util.Objects;
+
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +45,6 @@ public class BlobTransferIntegrationTest {
     public static final String DST_KEY_VAULT_NAME = getEnv("CONSUMER_KEY_VAULT");
     public static final String BLOB_STORE_ENDPOINT_TEMPLATE = "https://%s.blob.core.windows.net";
     public static final String KEY_VAULT_ENDPOINT_TEMPLATE = "https://%s.vault.azure.net";
-
 
     @Test
     public void transferBlob_success() {
@@ -93,5 +94,9 @@ public class BlobTransferIntegrationTest {
                 .extract().body();
         return body
                 .jsonPath().getString("[0].dataDestination.container");
+    }
+
+    private static String getEnv(String key) {
+        return Objects.requireNonNull(StringUtils.trimToNull(System.getenv(key)), key);
     }
 }
