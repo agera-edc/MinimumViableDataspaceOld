@@ -54,6 +54,8 @@ data "azurerm_storage_share" "catalog" {
 locals {
   catalog_files_prefix = "${var.prefix}-"
 
+  connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
+
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_default_port    = 8181
   edc_ids_port        = 8282
@@ -96,7 +98,8 @@ resource "azurerm_container_group" "edc" {
     }
 
     environment_variables = {
-      EDC_IDS_ID = "urn:connector:${var.prefix}-${var.participant_name}"
+      EDC_IDS_ID         = local.connector_id
+      EDC_CONNECTOR_NAME = local.connector_id
 
       EDC_VAULT_NAME     = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
@@ -295,7 +298,9 @@ resource "azurerm_storage_blob" "did" {
 
 resource "local_file" "catalog_entry" {
   content = jsonencode({
-    name               = var.participant_name,
+    # `name` must be identical to EDC connector EDC_CONNECTOR_NAME setting for catalog asset filtering to
+    # exclude assets from own connector.
+    name               = local.connector_id,
     url                = "http://${azurerm_container_group.edc.fqdn}:${local.edc_ids_port}",
     supportedProtocols = ["ids-multipart"]
   })
