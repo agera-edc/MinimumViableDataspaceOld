@@ -14,8 +14,6 @@
 
 package org.eclipse.dataspaceconnector.system.tests.utils;
 
-import io.gatling.javaapi.core.Simulation;
-
 import java.util.Objects;
 
 import static org.eclipse.dataspaceconnector.common.configuration.ConfigurationFunctions.propOrEnv;
