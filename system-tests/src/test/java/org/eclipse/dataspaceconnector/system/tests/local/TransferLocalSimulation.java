@@ -26,6 +26,7 @@ import static io.gatling.javaapi.core.CoreDsl.global;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static org.eclipse.dataspaceconnector.common.configuration.ConfigurationFunctions.propOrEnv;
+import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.DESCRIPTION;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.TRANSFER_SUCCESSFUL;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.contractNegotiationAndTransfer;
@@ -53,9 +54,5 @@ public class TransferLocalSimulation extends Simulation {
                         global().responseTime().max().lt(MAX_RESPONSE_TIME),
                         global().successfulRequests().percent().is(SUCCESS_PERCENTAGE)
                 );
-    }
-
-    private static String getFromEnv(String env) {
-        return Objects.requireNonNull(StringUtils.trimToNull(System.getenv(env)), env);
     }
 }
