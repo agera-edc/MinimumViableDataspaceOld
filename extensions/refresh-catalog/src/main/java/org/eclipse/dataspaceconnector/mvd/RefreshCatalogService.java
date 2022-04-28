@@ -1,3 +1,17 @@
+/*
+ *  Copyright (c) 2022 Microsoft Corporation
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       Microsoft Corporation - initial API and implementation
+ *
+ */
+
 package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
@@ -13,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ * Service to refresh the federated catalog on start-up, using a set of JSON files as input.
  */
 class RefreshCatalogService {
     private final FederatedCacheNodeDirectory nodeDirectory;
@@ -22,6 +36,15 @@ class RefreshCatalogService {
     private final Monitor monitor;
     private final TypeManager typeManager;
 
+    /**
+     * Constructs a new instance of {@link RefreshCatalogService}.
+     *
+     * @param nodeDirectory  directory service to populate
+     * @param nodeJsonDir    directory containing source JSON files
+     * @param nodeJsonPrefix prefix to filter source JSON files on
+     * @param monitor        monitor service
+     * @param typeManager    type manager service
+     */
     RefreshCatalogService(FederatedCacheNodeDirectory nodeDirectory, Path nodeJsonDir, String nodeJsonPrefix, Monitor monitor, TypeManager typeManager) {
         if (!nodeJsonDir.toFile().isDirectory()) {
             throw new EdcException(nodeJsonDir + " should be a directory");
@@ -33,6 +56,9 @@ class RefreshCatalogService {
         this.typeManager = typeManager;
     }
 
+    /**
+     * Populates federated catalog based on JSON files.
+     */
     void saveNodeEntries() {
         try {
             monitor.info("Refreshing catalog");

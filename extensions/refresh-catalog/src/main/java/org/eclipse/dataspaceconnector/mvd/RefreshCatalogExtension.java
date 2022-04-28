@@ -1,3 +1,17 @@
+/*
+ *  Copyright (c) 2022 Microsoft Corporation
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       Microsoft Corporation - initial API and implementation
+ *
+ */
+
 package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
@@ -10,7 +24,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /**
- *
+ * Extension to refresh the federated catalog on start-up, using a set of JSON files as input.
  */
 public class RefreshCatalogExtension implements ServiceExtension {
     @Inject
