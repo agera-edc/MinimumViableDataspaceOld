@@ -48,21 +48,9 @@ jobs:
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
-  Catalog:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Az CLI login'
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
-          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-
   # Deploy dataspace participants in parallel.
   Deploy:
-    needs:
-      - Build
-      - Catalog
+    needs: Build
     runs-on: ubuntu-latest
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
