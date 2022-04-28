@@ -144,7 +144,7 @@ resource "azurerm_container_group" "webapp" {
 
   container {
     name   = "edc"
-    image  = "${data.azurerm_container_registry.registry.login_server}/edc-showcase/edc-data-dashboard:1a817587746f78ab85f20d961668124541f4e917"
+    image  = "${data.azurerm_container_registry.registry.login_server}/edc-showcase/edc-data-dashboard:75e3549814dd50346695f51a93cc3a760855f298"
     cpu    = 1
     memory = 1
 
