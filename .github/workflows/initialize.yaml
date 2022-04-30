@@ -18,8 +18,8 @@ jobs:
       COMMON_RESOURCE_GROUP_LOCATION: ${{ secrets.COMMON_RESOURCE_GROUP_LOCATION }}
       TERRAFORM_STATE_STORAGE_ACCOUNT: ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}
       TERRAFORM_STATE_CONTAINER: ${{ secrets.TERRAFORM_STATE_CONTAINER }}
-      CATALOG_STORAGE_ACCOUNT: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
-      CATALOG_SHARE: ${{ secrets.CATALOG_SHARE }}
+      REGISTRY_STORAGE_ACCOUNT: ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
+      REGISTRY_SHARE: ${{ secrets.REGISTRY_SHARE }}
       ACR_NAME: ${{ secrets.ACR_NAME }}
 
     steps:
@@ -41,7 +41,7 @@ jobs:
       - name: "Create Azure Container Registry"
         run: az acr create --resource-group "$COMMON_RESOURCE_GROUP" --name "$ACR_NAME" --sku Basic --admin-enabled -o table
 
-      - name: "Create Catalog Storage account"
+      - name: "Create Registry Storage account"
         run: |
-          az storage account create --name ${CATALOG_STORAGE_ACCOUNT} --resource-group ${COMMON_RESOURCE_GROUP}
-          az storage share create --name ${CATALOG_SHARE} --account-name ${CATALOG_STORAGE_ACCOUNT}
+          az storage account create --name ${REGISTRY_STORAGE_ACCOUNT} --resource-group ${COMMON_RESOURCE_GROUP}
+          az storage share create --name ${REGISTRY_SHARE} --account-name ${REGISTRY_STORAGE_ACCOUNT}

@@ -126,9 +126,9 @@ jobs:
           TF_VAR_application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}
           TF_VAR_application_sp_client_id: ${{ secrets.APP_CLIENT_ID }}
           TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}
-          TF_VAR_catalog_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
-          TF_VAR_catalog_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
-          TF_VAR_catalog_share: ${{ secrets.CATALOG_SHARE }}
+          TF_VAR_registry_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
+          TF_VAR_registry_storage_account: ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
+          TF_VAR_registry_share: ${{ secrets.REGISTRY_SHARE }}
 
       - uses: actions/upload-artifact@v3
         name: 'Publish Backend conf'
@@ -144,7 +144,7 @@ jobs:
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
 
   # Until https://github.com/eclipse-dataspaceconnector/DataSpaceConnector/issues/1230 is done,
-  # connectors must be restarted for catalog to be populated (once catalog files have all been stored).
+  # connectors must be restarted for catalog to be populated (once registry files have all been stored).
   # Data must be seeded after restart, since in-memory stores are used.
   # When that EDC feature is delivered, we can merge this with the Deploy job and seed the data immediately.
   Seed:
@@ -263,6 +263,6 @@ jobs:
           TF_VAR_application_sp_object_id: dummy
           TF_VAR_application_sp_client_id: dummy
           TF_VAR_application_sp_client_secret: dummy
-          TF_VAR_catalog_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
-          TF_VAR_catalog_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
-          TF_VAR_catalog_share: ${{ secrets.CATALOG_SHARE }}
+          TF_VAR_registry_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
+          TF_VAR_registry_storage_account: ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
+          TF_VAR_registry_share: ${{ secrets.REGISTRY_SHARE }}
