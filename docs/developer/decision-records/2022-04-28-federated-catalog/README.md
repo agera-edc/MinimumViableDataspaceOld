@@ -8,6 +8,8 @@ The deployment pipeline for each participant creates a file in common folder in 
 - `280-company1.json`
 - `280-company2.json`
 
+Here `280-` is an arbitrary prefix for one dataspace (in continuous delivery, one deployment).
+
 Each file contains a serialized EDC `FederatedCacheNode` object, for example:
 
 ```json
