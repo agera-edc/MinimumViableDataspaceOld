@@ -41,20 +41,18 @@ data "azurerm_container_registry" "registry" {
   resource_group_name = var.acr_resource_group
 }
 
-data "azurerm_storage_account" "catalog" {
-  name                = var.catalog_storage_account
-  resource_group_name = var.catalog_resource_group
+data "azurerm_storage_account" "registry" {
+  name                = var.registry_storage_account
+  resource_group_name = var.registry_resource_group
 }
 
-data "azurerm_storage_share" "catalog" {
-  name                 = var.catalog_share
-  storage_account_name = data.azurerm_storage_account.catalog.name
+data "azurerm_storage_share" "registry" {
+  name                 = var.registry_share
+  storage_account_name = data.azurerm_storage_account.registry.name
 }
 
 locals {
-  catalog_files_prefix = "${var.prefix}-"
-
-  connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
+  registry_files_prefix = "${var.prefix}-"
 
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_default_port    = 8181
@@ -113,8 +111,8 @@ resource "azurerm_container_group" "edc" {
       EDC_API_CONTROL_AUTH_APIKEY_VALUE = local.api_key
       EDC_API_AUTH_KEY                  = local.api_key
 
-      NODES_JSON_DIR          = "/catalog"
-      NODES_JSON_FILES_PREFIX = local.catalog_files_prefix
+      NODES_JSON_DIR          = "/registry"
+      NODES_JSON_FILES_PREFIX = local.registry_files_prefix
     }
 
     secure_environment_variables = {
@@ -122,11 +120,11 @@ resource "azurerm_container_group" "edc" {
     }
 
     volume {
-      storage_account_name = data.azurerm_storage_account.catalog.name
-      storage_account_key  = data.azurerm_storage_account.catalog.primary_access_key
-      share_name           = data.azurerm_storage_share.catalog.name
-      mount_path           = "/catalog"
-      name                 = "catalog"
+      storage_account_name = data.azurerm_storage_account.registry.name
+      storage_account_key  = data.azurerm_storage_account.registry.primary_access_key
+      share_name           = data.azurerm_storage_share.registry.name
+      mount_path           = "/registry"
+      name                 = "registry"
     }
   }
 }
@@ -296,7 +294,7 @@ resource "azurerm_storage_blob" "did" {
   content_type = "application/json"
 }
 
-resource "local_file" "catalog_entry" {
+resource "local_file" "registry_entry" {
   content = jsonencode({
     # `name` must be identical to EDC connector EDC_CONNECTOR_NAME setting for catalog asset filtering to
     # exclude assets from own connector.
@@ -307,8 +305,8 @@ resource "local_file" "catalog_entry" {
   filename = "${path.module}/build/${var.participant_name}.json"
 }
 
-resource "azurerm_storage_share_file" "catalog_entry" {
-  name             = "${local.catalog_files_prefix}${var.participant_name}.json"
-  storage_share_id = data.azurerm_storage_share.catalog.id
-  source           = local_file.catalog_entry.filename
+resource "azurerm_storage_share_file" "registry_entry" {
+  name             = "${local.registry_files_prefix}${var.participant_name}.json"
+  storage_share_id = data.azurerm_storage_share.registry.id
+  source           = local_file.registry_entry.filename
 }
