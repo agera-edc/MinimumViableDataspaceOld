@@ -54,6 +54,8 @@ data "azurerm_storage_share" "registry" {
 locals {
   registry_files_prefix = "${var.prefix}-"
 
+  connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
+
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_default_port    = 8181
   edc_ids_port        = 8282
