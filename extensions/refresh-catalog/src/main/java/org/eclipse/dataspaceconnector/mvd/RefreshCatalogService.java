@@ -23,8 +23,6 @@ import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Service to refresh the federated catalog on start-up, using a set of JSON files as input.
@@ -64,10 +62,8 @@ class RefreshCatalogService {
             monitor.info("Refreshing catalog");
             var files = Files.find(nodeJsonDir, 1,
                     (path, attrs) -> path.toFile().getName().startsWith(nodeJsonPrefix));
-            List<FederatedCacheNode> existingNodes = nodeDirectory.getAll();
             files
                     .map(this::parseFederatedCacheNode)
-                    .filter(n -> existingNodes.stream().noneMatch(m -> Objects.equals(m.getName(), n.getName())))
                     .forEach(this::insertNode);
         } catch (IOException e) {
             throw new EdcException(e);
