@@ -22,6 +22,9 @@ variable "acr_resource_group" {
   default = "agera-mvd-common"
 }
 
+variable "acr_dashboard_image_version" {
+}
+
 variable "resource_group" {
   default = "test-resource-group"
 }
