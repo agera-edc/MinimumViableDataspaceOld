@@ -99,7 +99,6 @@ jobs:
           RESOURCE_GROUP=$(terraform output -raw resource_group)
           WEBAPP_URL=$(terraform output -raw webapp_url)
           API_KEY=$(terraform output -raw api_key)
-          #TODO echo "::add-mask::${API_KEY}"
           echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
@@ -108,6 +107,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::add-mask::${API_KEY}"
           echo "::set-output name=${{ matrix.participant }}_edc_aci_name::${EDC_ACI_NAME}"
           echo "::set-output name=${{ matrix.participant }}_resource_group::${RESOURCE_GROUP}"
           echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
@@ -274,5 +274,5 @@ jobs:
           TF_VAR_application_sp_client_id: dummy
           TF_VAR_application_sp_client_secret: dummy
           TF_VAR_registry_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
-          TF_VAR_registry_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
-          TF_VAR_registry_share: ${{ secrets.CATALOG_SHARE }}
+          TF_VAR_registry_storage_account: ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
+          TF_VAR_registry_share: ${{ secrets.REGISTRY_SHARE }}
