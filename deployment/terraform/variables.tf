@@ -22,9 +22,6 @@ variable "acr_resource_group" {
   default = "agera-mvd-common"
 }
 
-variable "acr_dashboard_image_version" {
-}
-
 variable "resource_group" {
   default = "test-resource-group"
 }
@@ -70,4 +67,10 @@ variable "registry_storage_account" {
 variable "registry_share" {
   description = "name of the registry JSON documents file share"
 }
+
+variable "data_dashboard_image_tag" {
+  description = "tag of the Data Dashboard web app image to deploy"
+  default = "9a96f66ed72c4bd01b282a8b7d5d8e2281d6e7f2"
+}
+
 
