@@ -95,4 +95,8 @@ public class BlobTransferIntegrationTest {
         return body
                 .jsonPath().getString("[0].dataDestination.properties.container");
     }
+
+    private static String getEnv(String key) {
+        return Objects.requireNonNull(StringUtils.trimToNull(System.getenv(key)), key);
+    }
 }
