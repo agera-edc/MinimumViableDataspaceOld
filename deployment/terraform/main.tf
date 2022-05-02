@@ -110,7 +110,7 @@ resource "azurerm_container_group" "edc" {
 
       IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
 
-      EDC_API_AUTH_KEY                  = local.api_key
+      EDC_API_AUTH_KEY = local.api_key
 
       NODES_JSON_DIR          = "/registry"
       NODES_JSON_FILES_PREFIX = local.registry_files_prefix
