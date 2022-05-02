@@ -93,6 +93,7 @@ Configure the following GitHub secrets:
 | `TERRAFORM_STATE_CONTAINER` | The name of the container used to store the Terraform state blob. |
 | `REGISTRY_STORAGE_ACCOUNT` | The name of the storage account used to store the Dataspace Registry file share. |
 | `REGISTRY_SHARE` | The name of the file share used to store the Dataspace Registry files. |
+| `RESOURCE_NAME_STATIC_PREFIX` | A static prefix used to help guarantee that resource names are unique across fork repositories. |
 
 ### Deploying CD resources
 
