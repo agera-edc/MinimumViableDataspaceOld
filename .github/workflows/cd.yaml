@@ -273,6 +273,6 @@ jobs:
           TF_VAR_application_sp_object_id: dummy
           TF_VAR_application_sp_client_id: dummy
           TF_VAR_application_sp_client_secret: dummy
-          TF_VAR_catalog_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
-          TF_VAR_catalog_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
-          TF_VAR_catalog_share: ${{ secrets.CATALOG_SHARE }}
+          TF_VAR_registry_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
+          TF_VAR_registry_storage_account: ${{ secrets.CATALOG_STORAGE_ACCOUNT }}
+          TF_VAR_registry_share: ${{ secrets.CATALOG_SHARE }}
