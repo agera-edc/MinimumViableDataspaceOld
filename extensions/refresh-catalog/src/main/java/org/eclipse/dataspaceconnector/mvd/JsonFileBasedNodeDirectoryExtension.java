@@ -24,10 +24,10 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /**
- * Extension to ...
+ * Extension to set up federated cache directory using a set of JSON files as backend.
  */
 @Provides(FederatedCacheNodeDirectory.class)
-public class RefreshCatalogExtension implements ServiceExtension {
+public class JsonFileBasedNodeDirectoryExtension implements ServiceExtension {
     @Override
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();

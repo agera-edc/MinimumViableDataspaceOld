@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service to ...
+ * Federated cache directory using a set of JSON files as backend.
  */
 class JsonFileBasedNodeDirectory implements FederatedCacheNodeDirectory {
     private final Path nodeJsonDir;
