@@ -59,8 +59,6 @@ jobs:
       company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
       company1_key_vault: ${{ steps.runterraform.outputs.company1_key_vault }}
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
-      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
-      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
 
@@ -103,7 +101,6 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
-          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
         working-directory: deployment/terraform
         env:
@@ -148,11 +145,6 @@ jobs:
         run: |
           npm install -g newman
           deployment/seed-data.sh
-        env:
-          EDC_HOST: ${{ needs.Deploy.outputs[format('{0}_edc_host', matrix.participant)] }}
-          ASSETS_STORAGE_ACCOUNT: ${{ needs.Deploy.outputs[format('{0}_assets_storage_account', matrix.participant)] }}
-          API_KEY: ${{ needs.Deploy.outputs[format('{0}_api_key', matrix.participant)] }}
-
 
   Verify:
     needs: Deploy
