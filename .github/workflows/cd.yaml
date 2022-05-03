@@ -7,7 +7,6 @@ on:
       - 'docs/**'
 
 env:
-  # Update this value with a unique name to guarantee uniqueness of resource names and avoid conflicts between fork repositories.
   RESOURCES_PREFIX: mvd
 
 # Grant permissions to obtain federated identity credentials
