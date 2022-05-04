@@ -94,8 +94,8 @@ Configure the following GitHub secrets:
 | `REGISTRY_STORAGE_ACCOUNT` | The name of the storage account used to store the Dataspace Registry file share. |
 | `REGISTRY_SHARE` | The name of the file share used to store the Dataspace Registry files. |
 
-Update the default value of the `RESOURCES_PREFIX` env  [cd.yaml](./.github/workflows/cd.yaml) file. This prefix should help
-having unique resource names across fork repositories.
+Update the default value of the `CD_RESOURCES_PREFIX` env in the [cd.yaml](./.github/workflows/cd.yaml) file.
+This prefix should help have unique resource names across fork repositories when running CD workflow.
 
 ### Deploying CD resources
 
