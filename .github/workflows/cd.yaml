@@ -96,6 +96,7 @@ jobs:
             echo "RESOURCES_PREFIX=${{ env.DEFAULT_RESOURCES_PREFIX }}${{ github.run_number }}" >> $GITHUB_ENV
           else
             echo "RESOURCES_PREFIX=${{ github.event.inputs.resources_prefix }}" >> $GITHUB_ENV
+          fi
 
       - name: 'Run terraform'
         id: runterraform
