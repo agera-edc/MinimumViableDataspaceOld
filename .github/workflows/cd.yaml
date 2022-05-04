@@ -92,7 +92,7 @@ jobs:
 
       - name: 'Set up resources prefix'
         run: |
-          if [[ ${{ github.event.action }} == 'pull_request' ]]; then
+          if [[ ${{ github.event_name }} == 'pull_request' ]]; then
             echo "RESOURCES_PREFIX=${{ env.DEFAULT_RESOURCES_PREFIX }}${{ github.run_number }}" >> $GITHUB_ENV
           else
             echo "RESOURCES_PREFIX=${{ github.event.inputs.resources_prefix }}" >> $GITHUB_ENV
