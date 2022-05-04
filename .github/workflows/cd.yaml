@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       resources_prefix:
-        description: 'Resources prefix'
+        description: 'Resources name prefix used to avoid naming conflicts between resources created via MVD fork repository.'
         required: true
         type: string
 
