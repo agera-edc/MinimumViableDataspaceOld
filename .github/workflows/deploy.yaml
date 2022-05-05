@@ -14,8 +14,6 @@ on:
         description: 'Resources name prefix used to avoid naming conflicts between resources created via MVD fork repository.'
         required: true
         type: string
-env:
-  RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
 
 jobs:
 
@@ -70,6 +68,9 @@ jobs:
         participant: [company1, company2]
 
     steps:
+      - name: 'Set up resource prefix'
+        run: echo 'RESOURCES_PREFIX=${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}' >> $GITHUB_ENV
+
       - uses: actions/checkout@v2
 
       - name: 'Generate key'
