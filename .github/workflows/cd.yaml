@@ -21,6 +21,8 @@ jobs:
   # Used a step to setup resources_prefix as an output because env context is not available from a caller workflow
   set-resources-prefix:
     runs-on: ubuntu-latest
+    steps:
+      - run: exit 0
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
 
