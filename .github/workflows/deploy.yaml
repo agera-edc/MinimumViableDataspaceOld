@@ -30,14 +30,6 @@ jobs:
       # Checkout MVD code
       - uses: actions/checkout@v2
 
-      - uses: ./.github/actions/gradle-setup
-
-      # Build MVD runtime JAR locally.
-      # The result is a JAR file in MVD/launcher/build/libs.
-      - name: 'Build runtime JAR'
-        run: |
-          ./gradlew launcher:shadowJar
-
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
@@ -49,6 +41,14 @@ jobs:
         run: az acr login -n $ACR_NAME
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
+
+      - uses: ./.github/actions/gradle-setup
+
+      # Build MVD runtime JAR locally.
+      # The result is a JAR file in MVD/launcher/build/libs.
+      - name: 'Build runtime JAR'
+        run: |
+          ./gradlew launcher:shadowJar
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
