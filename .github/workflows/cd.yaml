@@ -22,21 +22,18 @@ jobs:
   set-resources-prefix:
     runs-on: ubuntu-latest
     outputs:
-      resources_prefix: ${{ steps.intermediate.outputs.resources_prefix }}
-    steps:
-      - id: intermediate
-        shell: bash
-        run: echo "::set-output name::something=$INPUT"
+      resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
+
   deploy:
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
     with:
-      resources_prefix: agc${{ github.run_number }}
+      resources_prefix: ${{ needs.set-resources-prefix.outputs.resources_prefix }}
 
   destroy:
     uses: ./.github/workflows/destroy.yaml
     needs: deploy
     secrets: inherit
     with:
-      resources_prefix: agc${{ github.run_number }}
+      resources_prefix: ${{ needs.set-resources-prefix.outputs.resources_prefix }}
 
