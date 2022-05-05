@@ -26,6 +26,7 @@ jobs:
 
   destroy:
     uses: ./.github/workflows/destroy.yaml
+    needs: deploy
     secrets: inherit
     with:
       resources_prefix: ${CD_RESOURCES_PREFIX}
