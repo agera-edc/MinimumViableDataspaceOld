@@ -7,7 +7,5 @@ on:
       - 'docs/**'
 
 jobs:
-  checkout:
-    uses: actions/checkout@v2
   deploy:
     uses: ./.github/workflows/deploy.yml
