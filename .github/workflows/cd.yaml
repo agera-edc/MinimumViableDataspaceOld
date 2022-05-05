@@ -21,6 +21,6 @@ jobs:
   deploy:
     uses: ./.github/workflows/deploy.yaml
   destroy:
-    uses: ./.github/worlflows/destroy.yaml
+    uses: ./.github/workflows/destroy.yaml
     with:
       resources_prefix: ${CD_RESOURCES_PREFIX}
