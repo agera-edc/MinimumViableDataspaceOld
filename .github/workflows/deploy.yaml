@@ -21,6 +21,12 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
+     - name: Display resources prefix for tests'
+       run: |
+         echo '${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}'
+         echo '${{ github.event.inputs.resources_prefix'
+         echo '${{ inputs.resources_prefix }}'
+
       # Checkout MVD code
       - uses: actions/checkout@v2
 
