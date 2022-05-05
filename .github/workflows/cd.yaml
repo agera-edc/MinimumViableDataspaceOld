@@ -20,6 +20,9 @@ env:
 jobs:
   deploy:
     uses: ./.github/workflows/deploy.yaml
+    with:
+      resources_prefix: ${CD_RESOURCES_PREFIX}
+
   destroy:
     uses: ./.github/workflows/destroy.yaml
     with:
