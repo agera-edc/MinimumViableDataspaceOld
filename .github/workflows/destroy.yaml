@@ -44,7 +44,7 @@ jobs:
         run: |
           terraform init -backend-config=backend.conf
           terraform destroy -auto-approve
-          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ matrix.participant }}${{ github.run_number }}.tfstate
+          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ (github.event.inputs || inputs).resources_prefix }}.tfstate
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider

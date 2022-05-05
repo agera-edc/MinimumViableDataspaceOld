@@ -29,5 +29,5 @@ jobs:
     needs: deploy
     secrets: inherit
     with:
-      resources_prefix: ${CD_RESOURCES_PREFIX}
+      resources_prefix: ${CD_RESOURCES_PREFIX}${{ github.run_number }}
 
