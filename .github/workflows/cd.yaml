@@ -27,3 +27,4 @@ jobs:
     uses: ./.github/workflows/destroy.yaml
     with:
       resources_prefix: ${CD_RESOURCES_PREFIX}
+
