@@ -12,9 +12,9 @@ permissions:
   id-token: write
   contents: read
 
+# Update this value with a unique name to guarantee uniqueness of resource names and avoid conflicts between fork repositories when running CD workflow.
+# CD workflow creates resources with this prefix and destroy them.
 env:
-  # Update this value with a unique name to guarantee uniqueness of resource names and avoid conflicts between fork repositories when running CD workflow.
-  # CD workflow creates resources with this prefix and destroy them.
   CD_RESOURCES_PREFIX: agc
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
-      - run: exit 0
+      - run: echo 'resources_prefix = ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}'
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
 
