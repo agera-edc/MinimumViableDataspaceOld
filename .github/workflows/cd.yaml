@@ -6,10 +6,7 @@ on:
     paths-ignore:
       - 'docs/**'
 
+
 jobs:
   deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: MinimumViableDataspace/MinimumViableDataspace/.github/workflows/deploy.yml
+    uses: MinimumViableDataspace/MinimumViableDataspace/.github/workflows/deploy.yml
