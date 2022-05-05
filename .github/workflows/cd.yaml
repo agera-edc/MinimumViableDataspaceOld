@@ -8,4 +8,4 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/deploy.yaml
