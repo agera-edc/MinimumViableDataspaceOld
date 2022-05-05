@@ -24,6 +24,7 @@ _This document serves database for ideas, discussions, technical details and spe
 - <a name="connectorId">connector ID</a> (=participant agent ID): human-readable name identifying the connector.
 - <a name="connectorUrl">connector URL</a> (no ports!): root URL of the connector to which the various context paths (e.g. IDS) are appended.
 - `did:web` key
+- the IDS URL, i.e. the endpoint at which the connector listens to IDS requests, e.g. `http://some.connector.com:8181/api/v1/ids/`
 - Company Description, free text. Optional.
 - Tax-ID number. Optional.
 - (GAIA-X) Self Description (embedded, JSON)
