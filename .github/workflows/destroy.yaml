@@ -15,6 +15,9 @@ on:
         required: true
         type: string
 
+env:
+  RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
+
 jobs:
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
@@ -44,7 +47,7 @@ jobs:
         run: |
           terraform init -backend-config=backend.conf
           terraform destroy -auto-approve
-          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ (github.event.inputs || inputs).resources_prefix }}.tfstate
+          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ matrix.participant }}${RESOURCES_PREFIX}.tfstate
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider

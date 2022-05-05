@@ -18,6 +18,15 @@ env:
   CD_RESOURCES_PREFIX: agc
 
 jobs:
+  # Used a step to setup resources_prefix as an output because env context is not available from a caller workflow
+  set-resources-prefix:
+    runs-on: ubuntu-latest
+    outputs:
+      resources_prefix: ${{ steps.intermediate.outputs.resources_prefix }}
+    steps:
+      - id: intermediate
+        shell: bash
+        run: echo "::set-output name::something=$INPUT"
   deploy:
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
