@@ -18,10 +18,11 @@ env:
   CD_RESOURCES_PREFIX: agc
 
 jobs:
-  # Used a step to set up resources_prefix as an output, because env context is not available from a caller workflow
+  # The purpose of this job is only to set up resources_prefix as an output, because env context is not available from a caller workflow
   # See this discussion for more context: https://github.community/t/reusable-workflow-env-context-not-available-in-jobs-job-id-with/206111/13
   set-resources-prefix:
     runs-on: ubuntu-latest
+    # Added a step doing nothing, because a job needs to have at least one step.
     steps:
       - run: exit 0
     outputs:
