@@ -20,11 +20,11 @@ env:
 jobs:
   # The purpose of this job is only to set up resources_prefix as an output, because env context is not available from a caller workflow
   # See this discussion for more context: https://github.community/t/reusable-workflow-env-context-not-available-in-jobs-job-id-with/206111/13
-  set-resources-prefix:
+  setprefix:
     runs-on: ubuntu-latest
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
-      - id: set-resources-prefix
+      - id: setprefix
         run: echo 'resources_prefix = ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}'
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
@@ -33,12 +33,12 @@ jobs:
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
     with:
-      resources_prefix: ${{ needs.set-resources-prefix.outputs.resources_prefix }}
+      resources_prefix: ${{ needs.setprefix.outputs.resources_prefix }}
 
   destroy:
     uses: ./.github/workflows/destroy.yaml
     needs: deploy
     secrets: inherit
     with:
-      resources_prefix: ${{ needs.set-resources-prefix.outputs.resources_prefix }}
+      resources_prefix: ${{ needs.setprefix.outputs.resources_prefix }}
 
