@@ -29,14 +29,13 @@ jobs:
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
   deploy:
-    if: success()
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
+    needs: set_resources_prefix
     with:
       resources_prefix: ${{ needs.set_resources_prefix.outputs.resources_prefix }}
 
   destroy:
-    if: always()
     uses: ./.github/workflows/destroy.yaml
     needs: deploy
     secrets: inherit
