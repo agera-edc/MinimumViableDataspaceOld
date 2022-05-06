@@ -23,7 +23,6 @@ val edcGroup: String by project
 
 dependencies {
     implementation(project(":extensions:refresh-catalog"))
-    implementation(project(":extensions:mock-credentials-verifier"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:ids:${edcVersion}")
     implementation("${edcGroup}:control-api:${edcVersion}")
@@ -38,7 +37,7 @@ dependencies {
     // DID authentication for IDS API
     implementation("${edcGroup}:identity-did-core:${edcVersion}")
     implementation("${edcGroup}:identity-did-service:${edcVersion}")
-    implementation("${edcGroup}:identity-did-web:${edcVersion}")
+    implementation("${edcGroup}:dummy-credentials-verifier:${edcVersion}")
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")
