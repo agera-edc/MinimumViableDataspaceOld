@@ -21,6 +21,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
+
 jobs:
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
@@ -52,7 +55,7 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ github.run_number }} .
+        run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -74,10 +77,6 @@ jobs:
         participant: [company1, company2]
 
     steps:
-      - name: 'Set up resource prefix'
-        # inputs.<input-name> is the way to get input passed by a caller workflow.
-        run: echo 'RESOURCES_PREFIX=${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}' >> $GITHUB_ENV
-
       - uses: actions/checkout@v2
 
       - name: 'Generate key'
@@ -130,8 +129,8 @@ jobs:
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_participant_name: ${{ matrix.participant }}
           TF_VAR_prefix: ${{ env.RESOURCES_PREFIX }}
-          TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ github.run_number }}
-          TF_VAR_runtime_image: mvd-edc/connector:${{ github.run_number }}
+          TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}
+          TF_VAR_runtime_image: mvd-edc/connector:${{ env.RESOURCES_PREFIX }}
           TF_VAR_application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}
           TF_VAR_application_sp_client_id: ${{ secrets.APP_CLIENT_ID }}
           TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}

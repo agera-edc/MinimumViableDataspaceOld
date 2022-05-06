@@ -21,6 +21,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
+
 jobs:
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
@@ -32,10 +35,6 @@ jobs:
         participant: [ company1, company2 ]
 
     steps:
-      - name: 'Set up resource prefix'
-        # inputs.<input-name> is the way to get input passed by a caller workflow.
-        run: echo 'RESOURCES_PREFIX=${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}' >> $GITHUB_ENV
-
       - uses: actions/checkout@v2
 
       # Az login is needed to delete the blob terraform state.
