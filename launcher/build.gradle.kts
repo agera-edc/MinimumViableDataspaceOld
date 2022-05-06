@@ -41,6 +41,7 @@ dependencies {
 
     // DID authentication for IDS API
     implementation("${edcGroup}:identity-did-service:${edcVersion}")
+    // implementation("${edcGroup}:dummy-credentials-verifier:${edcVersion}")
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")
