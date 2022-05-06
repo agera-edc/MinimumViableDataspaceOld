@@ -59,8 +59,6 @@ locals {
 
   did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
 
-  did_url = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
-
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_default_port    = 8181
   edc_ids_port        = 8282
