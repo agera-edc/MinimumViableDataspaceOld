@@ -8,12 +8,22 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://provider:8282
+      EDC_CONNECTOR_NAME: connector-company1
+      EDC_IDENTITY_DID_URL: did:web:mvd400company1did.z16.web.core.windows.net
       EDC_VAULT_NAME: ${PROVIDER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
       EDC_VAULT_CLIENTSECRET: ${EDC_VAULT_CLIENTSECRET}
+      EDC_API_AUTH_KEY: sekrit
+      NODES_JSON_FILES_PREFIX: registry-
+      NODES_JSON_DIR: /resources
+      EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 1
+      EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 1
     ports:
-      - 9191:9191
+      - "9191:9191"
+      - "8181:8181"
+    volumes:
+      - ./resources:/resources
 
   consumer:
     container_name: consumer
@@ -21,9 +31,19 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://consumer:8282
+      EDC_CONNECTOR_NAME: connector-company2
+      EDC_IDENTITY_DID_URL: did:web:mvd400company2did.z16.web.core.windows.net
       EDC_VAULT_NAME: ${CONSUMER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
       EDC_VAULT_CLIENTSECRET: ${EDC_VAULT_CLIENTSECRET}
+      EDC_API_AUTH_KEY: sekrit
+      NODES_JSON_FILES_PREFIX: registry-
+      NODES_JSON_DIR: /resources
+      EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 1
+      EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 1
     ports:
-      - 9192:9191
+      - "9192:9191"
+      - "8182:8181"
+    volumes:
+      - ./resources:/resources

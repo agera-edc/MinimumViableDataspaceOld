@@ -55,6 +55,9 @@ locals {
   registry_files_prefix = "${var.prefix}-"
 
   connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
+  connector_name = "connector-${var.participant_name}"
+
+  did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
 
   did_url = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
 
@@ -101,18 +104,18 @@ resource "azurerm_container_group" "edc" {
 
     environment_variables = {
       EDC_IDS_ID         = local.connector_id
-      EDC_CONNECTOR_NAME = local.connector_id
+      EDC_CONNECTOR_NAME = local.connector_name
 
       EDC_VAULT_NAME     = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID = var.application_sp_client_id
 
+      EDC_IDENTITY_DID_URL = local.did_url
+
       EDC_WEB_REST_CORS_ENABLED = "true"
       EDC_WEB_REST_CORS_HEADERS = "origin,content-type,accept,authorization,x-api-key"
 
       IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
-
-      EDC_API_AUTH_KEY = local.api_key
 
       NODES_JSON_DIR          = "/registry"
       NODES_JSON_FILES_PREFIX = local.registry_files_prefix
@@ -124,6 +127,8 @@ resource "azurerm_container_group" "edc" {
 
     secure_environment_variables = {
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
+
+      EDC_API_AUTH_KEY = local.api_key
     }
 
     volume {
@@ -264,7 +269,7 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 }
 
 resource "azurerm_key_vault_secret" "did_key" {
-  name = var.participant_name
+  name = local.connector_name
   # Create did_key secret only if key_file value is provided. Default key_file value is null.
   count        = var.key_file == null ? 0 : 1
   value        = file(var.key_file)
@@ -275,7 +280,7 @@ resource "azurerm_key_vault_secret" "did_key" {
 }
 
 resource "azurerm_storage_blob" "did" {
-  name                 = "did.json"
+  name                 = ".well-known/did.json" # `.well-known` path is defined by did:web specification
   storage_account_name = azurerm_storage_account.did.name
   # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
   count                  = var.public_key_jwk_file == null ? 0 : 1
