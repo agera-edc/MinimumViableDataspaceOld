@@ -8,7 +8,8 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://provider:8282
-      EDC_IDENTITY_DID_URL: did:web:didserver:provider
+      EDC_CONNECTOR_NAME: connector-company1
+      EDC_IDENTITY_DID_URL: did:web:mvd400company1did.z16.web.core.windows.net
       EDC_VAULT_NAME: ${PROVIDER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
@@ -30,7 +31,8 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://consumer:8282
-      EDC_IDENTITY_DID_URL: did:web:didserver:consumer
+      EDC_CONNECTOR_NAME: connector-company2
+      EDC_IDENTITY_DID_URL: did:web:mvd400company2did.z16.web.core.windows.net
       EDC_VAULT_NAME: ${CONSUMER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
@@ -45,10 +47,3 @@ services:
       - "8182:8181"
     volumes:
       - ./resources:/resources
-
-  didserver:
-    image: nginx
-    ports:
-      - 8000:80
-    volumes:
-      - ./resources/did:/usr/share/nginx/html
