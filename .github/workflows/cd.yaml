@@ -30,7 +30,6 @@ jobs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
   displayprefix:
     runs-on: ubuntu-latest
-    needs: setprefix
     steps:
       - name: 'Display prefix'
         run: echo '${{ needs.set_resources_prefix.outputs.resources_prefix }}'
