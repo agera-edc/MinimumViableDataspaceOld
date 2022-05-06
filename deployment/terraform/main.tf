@@ -56,7 +56,7 @@ locals {
 
   connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
 
-  did_url = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
+  did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
 
   edc_dns_label       = "${var.prefix}-${var.participant_name}-edc-mvd"
   edc_default_port    = 8181
@@ -279,10 +279,10 @@ resource "azurerm_storage_blob" "did" {
   storage_container_name = "$web"
   type                   = "Block"
   source_content = jsonencode({
-    id = "did:web:${azurerm_storage_account.did.primary_web_host}:identity",
+    id = local.did_url
     "@context" = ["https://www.w3.org/ns/did/v1",
       {
-        "@base" = "did:web:${azurerm_storage_account.did.primary_web_host}:identity"
+        "@base" = local.did_url
       }
     ],
     "verificationMethod" = [
