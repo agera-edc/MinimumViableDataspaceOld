@@ -55,6 +55,7 @@ locals {
   registry_files_prefix = "${var.prefix}-"
 
   connector_id = "urn:connector:${var.prefix}-${var.participant_name}"
+  connector_name = "connector-${var.participant_name}"
 
   did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
 
@@ -101,7 +102,7 @@ resource "azurerm_container_group" "edc" {
 
     environment_variables = {
       EDC_IDS_ID         = local.connector_id
-      EDC_CONNECTOR_NAME = local.connector_id
+      EDC_CONNECTOR_NAME = local.connector_name
 
       EDC_VAULT_NAME     = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
@@ -265,7 +266,7 @@ resource "azurerm_key_vault_secret" "asset_storage_key" {
 }
 
 resource "azurerm_key_vault_secret" "did_key" {
-  name = var.participant_name
+  name = local.connector_name
   # Create did_key secret only if key_file value is provided. Default key_file value is null.
   count        = var.key_file == null ? 0 : 1
   value        = file(var.key_file)
