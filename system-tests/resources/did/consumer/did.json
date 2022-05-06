@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "@base": "did:web:didserver:consumer"
+    }
+  ],
+  "authentication": [
+    "#identity-key-1"
+  ],
+  "id": "did:web:didserver:consumer",
+  "verificationMethod": [
+    {
+      "controller": "",
+      "id": "#identity-key-1",
+      "publicKeyJwk": {
+        "crv": "P-256",
+        "kid": "VNND-VzLU-MXqwKRKr7VKmaJxkU85bfrJSVQ1SlcnUY",
+        "kty": "EC",
+        "x": "3xw9J0wS_JAv0LTTwrymKmLDHF_OZLeYQ1WEXZPLYI0",
+        "y": "j4Gg5_H7Uj6v1H1-UY_riet_0iaHwqSa06m8pNJWi0Q"
+      },
+      "type": "JsonWebKey2020"
+    }
+  ]
+}
