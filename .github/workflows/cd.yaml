@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
-        - name: 'Set prefix'
+      - name: 'Set prefix'
         id: setprefix
         run: echo "::set-output name::resources_prefix=${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}"
 
