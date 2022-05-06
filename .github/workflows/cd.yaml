@@ -28,6 +28,7 @@ jobs:
         run: exit 0
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
+
   deploy:
     uses: ./.github/workflows/deploy.yaml
     secrets: inherit
