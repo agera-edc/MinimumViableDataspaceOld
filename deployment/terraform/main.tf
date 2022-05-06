@@ -277,7 +277,7 @@ resource "azurerm_key_vault_secret" "did_key" {
 }
 
 resource "azurerm_storage_blob" "did" {
-  name                 = "did.json"
+  name                 = ".well-known/did.json" # `.well-known` path is defined by did:web specification
   storage_account_name = azurerm_storage_account.did.name
   # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
   count                  = var.public_key_jwk_file == null ? 0 : 1
