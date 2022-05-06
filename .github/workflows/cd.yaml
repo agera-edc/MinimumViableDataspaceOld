@@ -216,8 +216,8 @@ jobs:
         run: |
           ./gradlew :launcher:shadowJar
           docker-compose -f system-tests/docker-compose.yml up --build --detach
-          curl --retry 6 --fail http://localhost:8181/api/check/health
-          curl --retry 6 --fail http://localhost:8182/api/check/health
+          curl --retry 6 --retry-all-errors --fail http://localhost:8181/api/check/health
+          curl --retry 6 --retry-all-errors --fail http://localhost:8182/api/check/health
 
       - name: 'Unit and system tests'
         run: |
