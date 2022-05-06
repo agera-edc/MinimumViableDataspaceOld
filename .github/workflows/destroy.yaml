@@ -46,14 +46,15 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - uses: actions/download-artifact@v3
-        name: 'Download backend conf'
-        with:
-          name: terraform-${{ matrix.participant }}-backend-conf
-          path: deployment/terraform/
-
       - name: 'Delete terraform resources'
         run: |
+          # Create backend.conf file to retrieve the remote terraform state during terraform init.
+          echo '
+            resource_group_name  = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+            storage_account_name = "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}"
+            container_name       = "${{ secrets.TERRAFORM_STATE_CONTAINER }}"
+            key                  = "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate"
+          ' >> backend.conf
           terraform init -backend-config=backend.conf
           terraform destroy -auto-approve
           az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ matrix.participant }}${RESOURCES_PREFIX}.tfstate

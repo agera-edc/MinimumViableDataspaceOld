@@ -139,13 +139,6 @@ jobs:
           TF_VAR_registry_storage_account: ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
           TF_VAR_registry_share: ${{ secrets.REGISTRY_SHARE }}
 
-      - uses: actions/upload-artifact@v3
-        name: 'Publish Backend conf'
-        with:
-          name: terraform-${{ matrix.participant }}-backend-conf
-          path: deployment/terraform/backend.conf
-          retention-days: 1
-
       - name: 'Verify did endpoint is available'
         run: curl $DID_ENDPOINT | jq '.id'
 
