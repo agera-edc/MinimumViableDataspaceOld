@@ -8,7 +8,7 @@ Follow the instructions [to set up your own MinimumViableDataspace fork reposito
 
 ## Deploy your own DataSpace
 
-To be able to deploy your own DataSpace, you need first to set up your own MinimumViableDataspace fork repository.
+To be able to deploy your own DataSpace, you first need to set up your own MinimumViableDataspace fork repository.
 
 - Go to your Github repository MinimumViableDataspace fork.
 - Select the tab called `Actions`.
