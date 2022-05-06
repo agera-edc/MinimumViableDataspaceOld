@@ -28,5 +28,5 @@ API_KEY=sekrit EDC_HOST=localhost ASSETS_STORAGE_ACCOUNT={storage_account} ./dep
 
 Run test:
 ```
-API_KEY=sekrit PROVIDER_MANAGEMENT_URL=http://localhost:9191 CONSUMER_MANAGEMENT_URL=http://localhost:9192 PROVIDER_IDS_URL=http://provider:8282 CONSUMER_KEY_VAULT={key_vault_name} ./gradlew :system-tests:test
+API_KEY=sekrit PROVIDER_MANAGEMENT_URL=http://localhost:9191 CONSUMER_MANAGEMENT_URL=http://localhost:9192 PROVIDER_IDS_URL=http://provider:8282 CONSUMER_KEY_VAULT={key_vault_name} CONSUMER_CATALOG_URL=http://localhost:8182/api/federatedcatalog ./gradlew :system-tests:test
 ```

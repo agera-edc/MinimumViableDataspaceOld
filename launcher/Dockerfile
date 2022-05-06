@@ -6,6 +6,7 @@ COPY ./build/libs/app.jar /app
 
 EXPOSE 8181
 EXPOSE 9191
+EXPOSE 8282
 
 # health status is determined by the availability of the /health endpoint
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail -X GET http://localhost:8181/api/check/health || exit 1
