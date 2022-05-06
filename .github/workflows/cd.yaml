@@ -71,6 +71,8 @@ jobs:
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company1_did_endpoint: ${{ steps.runterraform.outputs.company1_did_endpoint }}
+      company2_did_endpoint: ${{ steps.runterraform.outputs.company2_did_endpoint }}
 
     strategy:
       matrix:
@@ -120,6 +122,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::set-output name=${{ matrix.participant }}_did_endpoint::${DID_ENDPOINT}"
 
         working-directory: deployment/terraform
         env:
@@ -191,6 +194,47 @@ jobs:
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
           API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
+
+  # Verify docker-compose setup for local testing
+  VerifyLocalTests:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout MVD code
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/gradle-setup
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Run EDC instances in docker-compose'
+        run: |
+          ./gradlew :launcher:shadowJar
+          docker-compose -f system-tests/docker-compose.yml up --build --detach
+          curl --retry 6 --fail http://localhost:8181/api/check/health
+          curl --retry 6 --fail http://localhost:8182/api/check/health
+
+      - name: 'Unit and system tests'
+        run: |
+          ./gradlew test
+        env:
+          CONSUMER_MANAGEMENT_URL: http://localhost:9192
+          PROVIDER_MANAGEMENT_URL: http://localhost:9191
+          PROVIDER_IDS_URL: http://provider:8282
+          CONSUMER_CATALOG_URL: http://localhost:8182/api/federatedcatalog
+          API_KEY: sekrit
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
+          PROVIDER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          EDC_VAULT_CLIENTID: ${{ secrets.APP_CLIENT_ID }}
+          EDC_VAULT_TENANTID: ${{ secrets.ARM_TENANT_ID }}
+          EDC_VAULT_CLIENTSECRET: ${{ secrets.APP_CLIENT_SECRET }}
+          CONSUMER_EDC_IDENTITY_DID_URL: did:web:${{ needs.Deploy.outputs.company1_did_endpoint }}
+          PROVIDER_EDC_IDENTITY_DID_URL: did:web:${{ needs.Deploy.outputs.company2_did_endpoint }}
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
