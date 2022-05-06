@@ -24,10 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
-      - id: setprefix
-        run: echo 'resources_prefix = ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}'
-    outputs:
-      resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
+        - name: 'Set prefix'
+        id: setprefix
+        run: echo "::set-output name::resources_prefix=${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}"
 
   deploy:
     uses: ./.github/workflows/deploy.yaml
