@@ -242,6 +242,7 @@ jobs:
     needs:
       - Deploy
       - Verify
+      - VerifyLocalTests
     runs-on: ubuntu-latest
     if: always()
     strategy:
