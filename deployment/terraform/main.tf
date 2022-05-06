@@ -169,6 +169,7 @@ resource "azurerm_container_group" "webapp" {
           "dataManagementApiUrl" = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
           "catalogUrl"           = "http://${azurerm_container_group.edc.fqdn}:${local.edc_default_port}/api/federatedcatalog"
           "storageAccount"       = azurerm_storage_account.inbox.name
+          "storageExplorerLinkTemplate" = "storageexplorer://v=1&accountid=${azurerm_resource_group.participant.id}/providers/Microsoft.Storage/storageAccounts/{{account}}&subscriptionid=${data.azurerm_subscription.current_subscription.subscription_id}&resourcetype=Azure.BlobContainer&resourcename={{container}}",
           "apiKey"               = local.api_key
         }))
       }
