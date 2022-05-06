@@ -20,7 +20,7 @@ env:
 
 jobs:
   # Delete deployed Azure resource groups for each dataspace participant.
-  Destroy_Participant:
+  Destroy:
     continue-on-error: true
     runs-on: ubuntu-latest
     if: always()

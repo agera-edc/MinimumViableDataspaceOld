@@ -58,7 +58,7 @@ jobs:
           ACR_NAME: ${{ secrets.ACR_NAME }}
 
   # Deploy dataspace participants in parallel.
-  Deploy_Participant:
+  Deploy:
     needs: Build
     runs-on: ubuntu-latest
     outputs:
