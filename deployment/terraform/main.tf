@@ -116,6 +116,10 @@ resource "azurerm_container_group" "edc" {
 
       NODES_JSON_DIR          = "/registry"
       NODES_JSON_FILES_PREFIX = local.registry_files_prefix
+
+      # Refresh catalog frequently to accelerate scenarios
+      EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
+      EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
     }
 
     secure_environment_variables = {
@@ -276,7 +280,7 @@ resource "azurerm_storage_blob" "did" {
   storage_account_name = azurerm_storage_account.did.name
   # Create did blob only if public_key_jwk_file is provided. Default public_key_jwk_file value is null.
   count                  = var.public_key_jwk_file == null ? 0 : 1
-  storage_container_name = "$web"
+  storage_container_name = "$web" # container used to serve static files (see static_website property on storage account)
   type                   = "Block"
   source_content = jsonencode({
     id = local.did_url
@@ -287,9 +291,9 @@ resource "azurerm_storage_blob" "did" {
     ],
     "verificationMethod" = [
       {
-        "id"           = "#identity-key-1",
-        "controller"   = "",
-        "type"         = "JsonWebKey2020",
+        "id"           = "#identity-key-1"
+        "controller"   = ""
+        "type"         = "JsonWebKey2020"
         "publicKeyJwk" = jsondecode(file(var.public_key_jwk_file))
       }
     ],
