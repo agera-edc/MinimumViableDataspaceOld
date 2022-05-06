@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
-      - name: 'Set resources prefix.'
+      - name: 'Empty step.'
         run: exit 0
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
