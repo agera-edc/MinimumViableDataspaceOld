@@ -25,7 +25,7 @@ jobs:
     # Added a step doing nothing, because a job needs to have at least one step.
     steps:
       - name: 'Set resources prefix.'
-        run: exit 0
+        run: exit 1
     outputs:
       resources_prefix: ${{ env.CD_RESOURCES_PREFIX }}${{ github.run_number }}
 
