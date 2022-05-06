@@ -4,14 +4,14 @@ on:
   workflow_call:
     inputs:
       resources_prefix:
-        description: 'Resources name prefix used to avoid naming conflicts between resources created via MVD fork repository.'
+        description: 'Resources name prefix used to avoid naming conflicts between resources of different DataSpaces.'
         required: true
         type: string
 
   workflow_dispatch:
     inputs:
       resources_prefix:
-        description: 'Resources name prefix used to avoid naming conflicts between resources created via MVD fork repository.'
+        description: 'Resources name prefix used to avoid naming conflicts between resources of different DataSpaces.'
         required: true
         type: string
 
