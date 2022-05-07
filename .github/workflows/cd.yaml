@@ -219,6 +219,12 @@ jobs:
         run: |
           ./gradlew :launcher:shadowJar
           docker-compose -f system-tests/docker-compose.yml up --build --detach
+        timeout-minutes: 1
+
+      - name: 'docker-compose logs'
+        run: |
+          docker-compose -f system-tests/docker-compose.yml logs
+        if: always()
 
       - name: 'Unit and system tests'
         run: |
