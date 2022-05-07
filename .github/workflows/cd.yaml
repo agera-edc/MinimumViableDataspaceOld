@@ -73,6 +73,8 @@ jobs:
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
       company1_did_endpoint: ${{ steps.runterraform.outputs.company1_did_endpoint }}
       company2_did_endpoint: ${{ steps.runterraform.outputs.company2_did_endpoint }}
+      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
+      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
 
     strategy:
       matrix:
@@ -123,6 +125,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
           echo "::set-output name=${{ matrix.participant }}_did_endpoint::${DID_ENDPOINT}"
+          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
         working-directory: deployment/terraform
         env:
@@ -228,6 +231,7 @@ jobs:
           EDC_VAULT_CLIENTSECRET: ${{ secrets.APP_CLIENT_SECRET }}
           CONSUMER_EDC_IDENTITY_DID_URL: did:web:${{ needs.Deploy.outputs.company1_did_endpoint }}
           PROVIDER_EDC_IDENTITY_DID_URL: did:web:${{ needs.Deploy.outputs.company2_did_endpoint }}
+          PROVIDER_ASSETS_STORAGE_ACCOUNT: ${{ needs.Deploy.outputs.company2_assets_storage_account }}
 
       - name: 'Unit and system tests'
         run: |

@@ -42,9 +42,18 @@ services:
     volumes:
       - ./resources:/resources
 
-  nginx:
-    container_name: services_up
-    image: nginx
+  newman:
+    container_name: newman
+    image: postman/newman
+    entrypoint: /bin/sh
+    command: deployment/seed-data.sh
+    volumes:
+      - ../deployment/:/deployment
+    working_dir: /
+    environment:
+      API_KEY: sekrit
+      EDC_HOST: provider
+      ASSETS_STORAGE_ACCOUNT: ${PROVIDER_ASSETS_STORAGE_ACCOUNT}
     depends_on:
       consumer:
         condition: service_healthy
