@@ -236,7 +236,7 @@ jobs:
 
       - name: 'Unit and system tests'
         run: |
-          ./gradlew test
+          ./gradlew test --tests "org.eclipse.dataspaceconnector.system.tests.catalog.CatalogClientTest"
         env:
           CONSUMER_MANAGEMENT_URL: http://localhost:9192
           PROVIDER_MANAGEMENT_URL: http://localhost:9191
