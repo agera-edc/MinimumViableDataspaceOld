@@ -26,13 +26,6 @@ env:
 
 jobs:
 
-  Debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Build runtime JAR'
-        run: |
-          which docker-compose 
-
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build:
     runs-on: ubuntu-latest
@@ -218,6 +211,9 @@ jobs:
           client-id: ${{ secrets.ARM_CLIENT_ID }}
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Update docker-compose'
+        run: sudo curl -L https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 
       - name: 'Run EDC instances in docker-compose'
         run: |
