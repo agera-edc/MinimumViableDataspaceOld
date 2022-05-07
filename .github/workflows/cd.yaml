@@ -235,7 +235,7 @@ jobs:
 
       - name: 'Unit and system tests'
         run: |
-          ./gradlew test --tests org.eclipse.dataspaceconnector.system.tests.local.BlobTransferIntegrationTest
+          ./gradlew test --tests "org.eclipse.dataspaceconnector.system.tests.catalog.CatalogClientTest"
         timeout-minutes: 10
         env:
           CONSUMER_MANAGEMENT_URL: http://localhost:9192
