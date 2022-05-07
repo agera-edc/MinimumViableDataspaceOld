@@ -1,6 +1,8 @@
 # -buster is required to have apt available
 FROM openjdk:17-slim-buster
 
+RUN apt update && apt install curl -y && rm -rf /var/cache/apt/archives /var/lib/apt/lists
+
 WORKDIR /app
 COPY ./build/libs/app.jar /app
 
@@ -9,7 +11,7 @@ EXPOSE 9191
 EXPOSE 8282
 
 # health status is determined by the availability of the /health endpoint
-HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail -X GET http://localhost:8181/api/check/health || exit 1
+HEALTHCHECK --interval=5s --timeout=5s --retries=10 CMD curl --fail http://localhost:8181/api/check/health
 
 ENV WEB_HTTP_PORT="8181"
 ENV WEB_HTTP_PATH="/api"
