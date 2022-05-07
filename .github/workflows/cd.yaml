@@ -219,7 +219,7 @@ jobs:
         run: |
           ./gradlew :launcher:shadowJar
           docker-compose -f system-tests/docker-compose.yml up --build --detach
-        timeout-minutes: 1
+        timeout-minutes: 10
         env:
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           PROVIDER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
@@ -232,6 +232,7 @@ jobs:
       - name: 'Unit and system tests'
         run: |
           ./gradlew test --tests org.eclipse.dataspaceconnector.system.tests.local.BlobTransferIntegrationTest
+        timeout-minutes: 10
         env:
           CONSUMER_MANAGEMENT_URL: http://localhost:9192
           PROVIDER_MANAGEMENT_URL: http://localhost:9191
