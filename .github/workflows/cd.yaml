@@ -26,6 +26,13 @@ env:
 
 jobs:
 
+  Debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build runtime JAR'
+        run: |
+          docker-compose --version
+
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build:
     runs-on: ubuntu-latest
