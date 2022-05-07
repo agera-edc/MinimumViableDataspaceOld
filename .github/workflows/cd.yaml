@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Build runtime JAR'
         run: |
-          docker-compose --version
+          which docker-compose 
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build:
