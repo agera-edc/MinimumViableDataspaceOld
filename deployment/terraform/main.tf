@@ -131,7 +131,7 @@ resource "azurerm_container_group" "edc" {
     liveness_probe {
       http_get {
         port = 8181
-        path = "api/check/health"
+        path = "/api/check/health"
       }
     }
   }
