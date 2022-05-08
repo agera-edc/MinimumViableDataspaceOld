@@ -233,8 +233,7 @@ jobs:
 
       - name: 'Unit and system tests'
         run: |
-          # FIXME ./gradlew test
-          ./gradlew :system-tests:test --tests "org.eclipse.dataspaceconnector.system.tests.catalog.CatalogClientTest"
+          ./gradlew test
         timeout-minutes: 10
         env:
           CONSUMER_MANAGEMENT_URL: http://localhost:9192
@@ -249,8 +248,7 @@ jobs:
           EDC_VAULT_CLIENTSECRET: ${{ secrets.APP_CLIENT_SECRET }}
 
       - name: 'docker-compose logs'
-        run: |
-          docker-compose -f system-tests/docker-compose.yml logs
+        run: docker-compose -f system-tests/docker-compose.yml logs
         if: always()
 
   # Delete deployed Azure resource groups for each dataspace participant.
