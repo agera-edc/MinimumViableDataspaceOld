@@ -79,7 +79,9 @@ jobs:
 
   # Deploy dataspace participants in parallel.
   Deploy:
-    needs: Build
+    needs:
+      - Build
+      - Matrix
     runs-on: ubuntu-latest
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
