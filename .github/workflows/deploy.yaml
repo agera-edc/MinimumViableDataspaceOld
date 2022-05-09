@@ -33,6 +33,9 @@ jobs:
       # Checkout MVD code
       - uses: actions/checkout@v2
 
+      - name: 'fail for test'
+        run: exit 1
+
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
