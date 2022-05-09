@@ -39,7 +39,9 @@ jobs:
 
   Destroy:
     uses: ./.github/workflows/destroy.yaml
-    needs: [SetResourcesPrefix, Deploy]
+    needs:
+      - SetResourcesPrefix
+      - Deploy
     secrets: inherit
     with:
       resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
