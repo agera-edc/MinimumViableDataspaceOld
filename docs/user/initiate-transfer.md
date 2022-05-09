@@ -12,7 +12,7 @@ The Provider does not notify the Consumer when a transfer has completed (succeed
 
 To perform a data transfer, the Consumer must first have successfully executed a Contract Negotiation with the Provider.
 
-### Initiating a transfer
+## Initiating a transfer
 
 In the *Contract Viewer* pane, click the *Transfer* button under an asset that was successfully negotiated. Select a destination (only *Azure Storage* is currently implemented). Click Start transfer to begin the process.
 
