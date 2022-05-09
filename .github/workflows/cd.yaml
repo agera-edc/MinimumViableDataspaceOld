@@ -18,7 +18,7 @@ env:
   CD_RESOURCES_PREFIX: mvd
 
 jobs:
-  # The purpose of this job is only to set up resources_prefix as an output, because env context is not available from a caller workflow
+  # The purpose of this job is only to set up resources_prefix as an output, because env context is not available in arguments to a called workflow
   # See this discussion for more context: https://github.community/t/reusable-workflow-env-context-not-available-in-jobs-job-id-with/206111/13
   SetResourcesPrefix:
     name: 'Set Resources Prefix'
