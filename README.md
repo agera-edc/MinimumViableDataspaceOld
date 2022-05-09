@@ -13,7 +13,7 @@ To be able to deploy your own DataSpace, you first need to set up your own Minim
 - Go to your Github repository MinimumViableDataspace fork.
 - Select the tab called `Actions`.
 - Select the workflow called `Deploy`.
-- Provide your own resources name prefix.
+- Provide your own resources name prefix. Please, use at most 3 characters, composed of lower case letters and numbers.
   This name prefix guarantees the resources name's uniqueness and avoids resource name conflicts.
   Note down the used prefix.
 - Click on `Run workflow` to trigger the deployment.
