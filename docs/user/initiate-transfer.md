@@ -1,6 +1,6 @@
 # Initiating a Data Transfer
 
-### Overview
+## Overview
 
 Data Transfer in EDC is an operation by which a Consumer and a Provider connectors, having previously negotiated a Contract Agreement, execute the Contract Agreement to have the Provider transfer data to the Consumer.
 
