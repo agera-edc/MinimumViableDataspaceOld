@@ -29,7 +29,6 @@ jobs:
   Destroy:
     continue-on-error: true
     runs-on: ubuntu-latest
-    if: always()
     strategy:
       matrix:
         participant: [ company1, company2 ]
