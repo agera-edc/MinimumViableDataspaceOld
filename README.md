@@ -16,7 +16,6 @@ To be able to deploy your own DataSpace, you first need to set up your own Minim
 - Provide your own resources name prefix.
   This name prefix guarantees the resources name's uniqueness and avoids resource name conflicts.
   Note down the used prefix.
-- Click on `Run workflow`.
 - Click on `Run workflow` to trigger the deployment.
 
 ## Destroy your deployed DataSpace
