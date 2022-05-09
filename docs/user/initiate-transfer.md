@@ -8,7 +8,7 @@ The operation is initiated on the Consumer side. A transfer request is initiated
 
 The Provider does not notify the Consumer when a transfer has completed (succeeded or failed). Depending on the type of destination, the Consumer polls the output (e.g. cloud object storage) to wait for data to be produced.
 
-### Prerequisites
+## Prerequisites
 
 To perform a data transfer, the Consumer must first have successfully executed a Contract Negotiation with the Provider.
 
