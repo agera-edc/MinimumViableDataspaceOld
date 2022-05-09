@@ -8,8 +8,8 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://provider:8282
-      EDC_CONNECTOR_NAME: connector-company1
-      EDC_IDENTITY_DID_URL: did:web:mvd400company1did.z16.web.core.windows.net
+      EDC_CONNECTOR_NAME: ${PROVIDER_CONNECTOR_NAME}
+      EDC_IDENTITY_DID_URL: ${PROVIDER_DID_URL}
       EDC_VAULT_NAME: ${PROVIDER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
@@ -31,8 +31,8 @@ services:
       context: ../launcher
     environment:
       IDS_WEBHOOK_ADDRESS: http://consumer:8282
-      EDC_CONNECTOR_NAME: connector-company2
-      EDC_IDENTITY_DID_URL: did:web:mvd400company2did.z16.web.core.windows.net
+      EDC_CONNECTOR_NAME: ${CONSUMER_CONNECTOR_NAME}
+      EDC_IDENTITY_DID_URL: ${CONSUMER_DID_URL}
       EDC_VAULT_NAME: ${CONSUMER_KEY_VAULT}
       EDC_VAULT_TENANTID: ${EDC_VAULT_TENANTID}
       EDC_VAULT_CLIENTID: ${EDC_VAULT_CLIENTID}
