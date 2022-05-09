@@ -110,14 +110,14 @@ resource "azurerm_container_group" "edc" {
 
       IDS_WEBHOOK_ADDRESS = "http://${local.edc_dns_label}.${var.location}.azurecontainer.io:${local.edc_ids_port}"
 
+      EDC_API_AUTH_KEY = local.api_key
+
       NODES_JSON_DIR          = "/registry"
       NODES_JSON_FILES_PREFIX = local.registry_files_prefix
     }
 
     secure_environment_variables = {
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
-
-      EDC_API_AUTH_KEY = local.api_key
     }
 
     volume {
@@ -126,13 +126,6 @@ resource "azurerm_container_group" "edc" {
       share_name           = data.azurerm_storage_share.registry.name
       mount_path           = "/registry"
       name                 = "registry"
-    }
-
-    liveness_probe {
-      http_get {
-        port = 8181
-        path = "/api/check/health"
-      }
     }
   }
 }
