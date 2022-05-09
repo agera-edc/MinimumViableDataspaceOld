@@ -1,6 +1,9 @@
 # -buster is required to have apt available
 FROM openjdk:17-slim-buster
 
+# Optional JVM arguments, such as memory settings
+ARG JVM_ARGS=""
+
 WORKDIR /app
 COPY ./build/libs/app.jar /app
 
