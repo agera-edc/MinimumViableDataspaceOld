@@ -1,6 +1,9 @@
 # -buster is required to have apt available
 FROM openjdk:17-slim-buster
 
+# Optional JVM arguments, such as memory settings
+ARG JVM_ARGS=""
+
 RUN apt update && apt install curl -y && rm -rf /var/cache/apt/archives /var/lib/apt/lists
 
 WORKDIR /app
