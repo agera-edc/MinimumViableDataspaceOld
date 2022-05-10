@@ -90,7 +90,7 @@ jobs:
       company3_api_key: ${{ steps.runterraform.outputs.company3_api_key }}
 
     strategy:
-      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v2

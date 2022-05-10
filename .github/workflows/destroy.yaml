@@ -38,10 +38,11 @@ jobs:
 
   # Delete deployed Azure resource groups for each dataspace participant.
   Destroy:
+    needs: Matrix
     continue-on-error: true
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v2
