@@ -81,10 +81,13 @@ jobs:
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
       company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
+      company3_edc_host: ${{ steps.runterraform.outputs.company3_edc_host }}
       company1_key_vault: ${{ steps.runterraform.outputs.company1_key_vault }}
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
+      company3_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company3_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
 
     strategy:
       matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
@@ -178,7 +181,7 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: 'System tests'
+      - name: 'System tests company 1 - company 2'
         run: |
           ./gradlew :system-tests:test
         env:
@@ -188,3 +191,15 @@ jobs:
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
           API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
+
+      - name: 'System tests company 2 - company 3'
+        run: |
+          ./gradlew :system-tests:test
+        env:
+          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
+          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company3_edc_host }}:9191
+          PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company3_edc_host }}:8282
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8181/api/federatedcatalog
+          API_KEY: ${{ needs.Deploy.outputs.company2_api_key }}
+
