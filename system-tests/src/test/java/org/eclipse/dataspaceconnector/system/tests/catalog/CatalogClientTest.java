@@ -31,13 +31,13 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
 class CatalogClientTest {
-    static final String US_CONSUMER_CATALOG_URL = requiredPropOrEnv("US_CONSUMER_CATALOG_URL");
-    static final String EU_CONSUMER_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
+    static final String CONSUMER_US_CATALOG_URL = requiredPropOrEnv("CONSUMER_US_CATALOG_URL");
+    static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
 
     @Test
     void containsOnlyNonRestrictedAsset() {
         await().atMost(10, MINUTES).untilAsserted(() -> {
-            var nodes = getNodesFromCatalog(US_CONSUMER_CATALOG_URL);
+            var nodes = getNodesFromCatalog(CONSUMER_US_CATALOG_URL);
             assertThat(nodes).satisfiesExactly(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
         });
@@ -46,7 +46,7 @@ class CatalogClientTest {
     @Test
     void containsAllAssets() {
         await().atMost(10, MINUTES).untilAsserted(() -> {
-            var nodes = getNodesFromCatalog(EU_CONSUMER_CATALOG_URL);
+            var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
             assertThat(nodes).satisfiesExactlyInAnyOrder(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_ASSET_ID));
