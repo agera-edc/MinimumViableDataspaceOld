@@ -209,7 +209,7 @@
 					"response": []
 				},
 				{
-					"name": "Publish ContractDefinition 1 Copy",
+					"name": "Publish ContractDefinition 2",
 					"event": [
 						{
 							"listen": "test",
