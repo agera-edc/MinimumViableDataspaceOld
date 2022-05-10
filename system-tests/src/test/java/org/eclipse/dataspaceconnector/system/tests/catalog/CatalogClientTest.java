@@ -14,10 +14,13 @@
 
 package org.eclipse.dataspaceconnector.system.tests.catalog;
 
-import io.restassured.common.mapper.TypeRef;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.eclipse.dataspaceconnector.catalog.spi.model.FederatedCatalogCacheQuery;
+import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
+import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -33,6 +36,13 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 class CatalogClientTest {
     static final String CONSUMER_US_CATALOG_URL = requiredPropOrEnv("CONSUMER_US_CATALOG_URL");
     static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
+
+    static TypeManager typeManager = new TypeManager();
+
+    @BeforeAll
+    static void setUp() {
+        PolicyRegistrationTypes.TYPES.forEach(typeManager::registerTypes);
+    }
 
     @Test
     void containsOnlyNonRestrictedAsset() {
@@ -54,15 +64,14 @@ class CatalogClientTest {
     }
 
     private List<ContractOffer> getNodesFromCatalog(String euConsumerCatalogUrl) {
-        return given()
+        var nodesJson = given()
                 .contentType("application/json")
                 .body(FederatedCatalogCacheQuery.Builder.newInstance().build())
                 .when()
                 .post(euConsumerCatalogUrl)
                 .then()
                 .statusCode(200)
-                .extract().body().as(new TypeRef<List<ContractOffer>>() {
-                });
+                .extract().body().asString();
+        return typeManager.readValue(nodesJson, new TypeReference<List<ContractOffer>>(){});
     }
-
 }
