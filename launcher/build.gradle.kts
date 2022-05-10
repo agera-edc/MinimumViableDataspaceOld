@@ -23,6 +23,8 @@ val edcGroup: String by project
 
 dependencies {
     implementation(project(":extensions:refresh-catalog"))
+    implementation(project(":extensions:policies"))
+
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:ids:${edcVersion}")
     implementation("${edcGroup}:control-api:${edcVersion}")
@@ -49,6 +51,9 @@ dependencies {
 
     // Federated catalog
     implementation("${edcGroup}:catalog-cache:${edcVersion}")
+
+    // IDS policy
+    implementation("${edcGroup}:ids-policy:${edcVersion}")
 }
 
 application {

@@ -27,27 +27,42 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
+import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.EU_RESTRICTED_ASSET_ID;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
 class CatalogClientTest {
-    static final String CONSUMER_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
+    static final String US_CONSUMER_CATALOG_URL = requiredPropOrEnv("US_CONSUMER_CATALOG_URL");
+    static final String EU_CONSUMER_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
 
     @Test
-    void containsAsset() {
-        await().atMost(10, MINUTES).untilAsserted(() -> verifyAsset());
+    void containsOnlyNonRestrictedAsset() {
+        await().atMost(10, MINUTES).untilAsserted(() -> {
+            var nodes = getNodesFromCatalog(US_CONSUMER_CATALOG_URL);
+            assertThat(nodes).satisfiesExactly(
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
+        });
     }
 
-    private void verifyAsset() {
-        var nodes = given()
+    @Test
+    void containsAllAssets() {
+        await().atMost(10, MINUTES).untilAsserted(() -> {
+            var nodes = getNodesFromCatalog(EU_CONSUMER_CATALOG_URL);
+            assertThat(nodes).satisfiesExactlyInAnyOrder(
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_ASSET_ID));
+        });
+    }
+
+    private List<ContractOffer> getNodesFromCatalog(String euConsumerCatalogUrl) {
+        return given()
                 .contentType("application/json")
                 .body(FederatedCatalogCacheQuery.Builder.newInstance().build())
                 .when()
-                .post(CONSUMER_CATALOG_URL)
+                .post(euConsumerCatalogUrl)
                 .then()
                 .statusCode(200)
                 .extract().body().as(new TypeRef<List<ContractOffer>>() {
                 });
-        assertThat(nodes).anySatisfy(
-                n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
     }
+
 }
