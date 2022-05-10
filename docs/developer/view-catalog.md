@@ -10,4 +10,4 @@ Dataspace participants can use EDC data dashboard to view what all contract offe
 * Click on `Additional Properties` section to view complete details of the contract offer.
 * If you want to perform negotiation on a contract offer, click on `Negotiate` button on the bottom of contract offer card.
 * After clicking on `Negotiate` button, a contract offer negotiation will start in background and this will take some time.
-* Once the negotiation is complete, you will see a popup with message `Contract Negotiation complete!` and here you can click on link `Show Me` and this will take you to `Contracts` pane. Here you can start a transfer as per instruction given on (Initiate Transfer)(./initiate-transfer.md) doc.
+* Once the negotiation is complete, you will see a popup with message `Contract Negotiation complete!` and here you can click on link `Show Me` and this will take you to `Contracts` pane. Here you can start a transfer as per instruction given on [Initiate Transfer](./initiate-transfer.md) doc.
