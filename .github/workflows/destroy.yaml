@@ -41,8 +41,7 @@ jobs:
     continue-on-error: true
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v2
