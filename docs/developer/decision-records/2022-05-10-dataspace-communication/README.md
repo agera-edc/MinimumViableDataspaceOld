@@ -8,15 +8,24 @@
   - Manages policies defining who is allowed to participate in the dataspace.
   - Publishes a self-description document.
 
-- **DID Document**: A [Web DID](https://w3c-ccg.github.io/did-method-web) Document containing:
+- **DID Document**: A publicly accessible [Web DID](https://w3c-ccg.github.io/did-method-web) Document containing:
 
   - A DID
   - A set of public keys
-  - A set of service endpoints and authentication methods
+  - A set of service endpoints and authentication methods, containing only:
+    - Self-description document location
+
+- **Self-description document**: A publicly accessible Document containing:
+
+  - A set of service endpoints and authentication methods, such as:
     - Identity Hub
+    - Enrollment endpoint (if a Dataspace Authority)
+    - Registry endpoint (if a Dataspace Authority)
   - Self-description
   - Timestamp
   - Signature
+
+  NB: Per the Web DID specification, these items could also be contained in the DID Document. However, storing them in a separate document reduces coupling with the Web DID protocol.
 
 - **Verifiable Credentials** (VC): information about a subject, that is cryptographically signed 
 
@@ -65,11 +74,12 @@ None
 1. The Client for Participant A (which could be EDC, or any other application) sends a request to Participant B's API. The client needs access to Participant A's Private Key to sign a JWS. It also sends a time-limited bearer token granting access to its Identity Hub.
 2. Participant B retrieves the DID Document based on the DID URI contained in the JWS.
 3. Participant B authenticates the request by validating the JWS signature against the public key in the DID Document.
-4. Participant B finds Participant A's Identity Hub URL in the DID Document. It authorizes the request by obtaining VCs for Participant A at its Identity Hub, using the bearer token sent initially by Participant A.
-5. Participant A's Identity Hub verifiies the bearer token validity.
-6. Participant A's Identity Hub returns Participant A's Verifiable Credentials.
-7. Participant B applies its access policy for the given service. This applies expiration dates and Certificate Revocation Lists to filter valid Verifiable Credentials, and rules specific to a given service. For example, the caller must be a dataspace participant (i.e. have a valid Verifiable Credential signed by the Dataspace Authority, that establishes its dataspace membership).
-8. Participant B returns the service response if the request was successfully authorized, otherwise, an error response. Depending on the flow, the response can be synchronously or asynchronously returned.
+4. Participant B retrieves the Self-description Document based on the URL contained in the DID Document.
+5. Participant B finds Participant A's Identity Hub URL in the Self-description Document. It authorizes the request by obtaining VCs for Participant A at its Identity Hub, using the bearer token sent initially by Participant A.
+6. Participant A's Identity Hub verifies the bearer token validity.
+7. Participant A's Identity Hub returns Participant A's Verifiable Credentials.
+8. Participant B applies its access policy for the given service. This applies expiration dates and Certificate Revocation Lists to filter valid Verifiable Credentials, and rules specific to a given service. For example, the caller must be a dataspace participant (i.e. have a valid Verifiable Credential signed by the Dataspace Authority, that establishes its dataspace membership).
+9. Participant B returns the service response if the request was successfully authorized, otherwise, an error response. Depending on the flow, the response can be synchronously or asynchronously returned.
 
 ### Dataspace enrollment flow
 
@@ -103,16 +113,17 @@ In simple scenarios, enrollement could be fast and fully automated. However, in 
 
 ![dataspace-enrollment](dataspace-enrollment.png)
 
-1. The Client for Company1 initiates the enrollment process based on the Dataspace DID URL. It retrieves the DID Document and parses it to determine the Dataspace enrollment HTTP endpoint.
-1. The client needs access to the Company1 Private Key to sign a JWS. The client sends an HTTP request to the Dataspace Authority enrollement endpoint. The request is accepted for asynchronous processing.
-1. The DA uses the Distributed authorization sub-flow (see above) to authenticate the request...
-1. ... and retrieve credentials from Company1's Identity Hub.
-1. The DA authorizes the request by applying the Dataspace enrollment policy on the obtained Verifiable Credentials.
-1. The DA stores membership information in its registry. At the very least, this includes Company 1's DID URL.
-1. The DA issues and signs a membership Verifiable Credential as an X.509 Certificate.
-1. The DA stores the Certificate in its log, for audit and revocation.
-1. The DA sends the Verifiable Credential to Company1's Identity Hub for storage. It uses the Identity Hub bearer token (from the Distributed authorization sub-flow) to authenticate the request.
-10. Company1's Identity Hub validates the bearer token and stores the membership Verifiable Credential.
+1. The Client for Company1 initiates the enrollment process based on the Dataspace DID URL. It retrieves the DID Document, and parses it to determine the Self-description document endpoint.
+2. The Client for Company1 retrieves the Self-description document, and parses it to retrieve the Dataspace enrollment HTTP endpoint.
+3. The client needs access to the Company1 Private Key to sign a JWS. The client sends an HTTP request to the Dataspace Authority enrollement endpoint. The request is accepted for asynchronous processing.
+4. The DA uses the Distributed authorization sub-flow (see above) to authenticate the request...
+5. ... and retrieve credentials from Company1's Identity Hub.
+6. The DA authorizes the request by applying the Dataspace enrollment policy on the obtained Verifiable Credentials.
+7. The DA stores membership information in its registry. At the very least, this includes Company 1's DID URL.
+8. The DA issues and signs a membership Verifiable Credential as an X.509 Certificate.
+9. The DA stores the Certificate in its log, for audit and revocation.
+10. The DA sends the Verifiable Credential to Company1's Identity Hub for storage. It uses the Identity Hub bearer token (from the Distributed authorization sub-flow) to authenticate the request.
+11. Company1's Identity Hub validates the bearer token and stores the membership Verifiable Credential.
 
 ### List participants flow
 
@@ -140,14 +151,15 @@ None
 
 ![list-participants](list-participants.png)
 
-1. The EDC for Company1 determines the Dataspace Registry endpoint from the Dataspace DID Document.
-2. The EDC for Company1 issues a request to the Dataspace Registry, to list participants.
-3. The Registry uses the Distributed authorization sub-flow (see above) to authenticate the request...
-4. ... and retrieve credentials from Company1's Identity Hub.
-5. The Registry authorizes the request by applying the Registry access policy on the obtained Verifiable Credentials. For example, the caller must be a valid Dataspace Participant.
-6. The Registry obtains the list of Dataspace Participant DID URIs from its storage...
-7. ... and returns it synchronously to the caller (Company1 EDC).
-8. The EDC for Company1 iterates through the Participants' DID URIs, and retrieves the collection of their IDS endpoints from their DID Documents.
+1. The EDC for Company1 determines the Self-description document endpoint from the Dataspace DID Document.
+2. The EDC for Company1 determines the Dataspace Registry endpoint from the Self-description document.
+3. The EDC for Company1 issues a request to the Dataspace Registry, to list participants.
+4. The Registry uses the Distributed authorization sub-flow (see above) to authenticate the request...
+5. ... and retrieve credentials from Company1's Identity Hub.
+6. The Registry authorizes the request by applying the Registry access policy on the obtained Verifiable Credentials. For example, the caller must be a valid Dataspace Participant.
+7. The Registry obtains the list of Dataspace Participant DID URIs from its storage...
+8. ... and returns it synchronously to the caller (Company1 EDC).
+9. The EDC for Company1 iterates through the Participants' DID URIs, and retrieves the collection of their IDS endpoints from their DID Documents.
 
 ### IDS flows
 
