@@ -26,6 +26,17 @@ env:
 
 jobs:
 
+  Matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          matrix=$(jq -c . participants.json)
+          echo "::set-output name=matrix::$matrix"
+
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build:
     runs-on: ubuntu-latest
@@ -62,7 +73,9 @@ jobs:
 
   # Deploy dataspace participants in parallel.
   Deploy:
-    needs: Build
+    needs:
+      - Build
+      - Matrix
     runs-on: ubuntu-latest
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
@@ -73,8 +86,7 @@ jobs:
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
 
     strategy:
-      matrix:
-        participant: [company1, company2]
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v2
@@ -128,6 +140,7 @@ jobs:
           TF_VAR_acr_resource_group: ${{ secrets.COMMON_RESOURCE_GROUP }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_participant_name: ${{ matrix.participant }}
+          TF_VAR_participant_region: ${{ matrix.region }}
           TF_VAR_prefix: ${{ env.RESOURCES_PREFIX }}
           TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}
           TF_VAR_runtime_image: mvd-edc/connector:${{ env.RESOURCES_PREFIX }}
