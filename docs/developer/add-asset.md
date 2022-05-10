@@ -4,7 +4,7 @@
 
 A new asset can be added through MVD UI, in this process we actually point to an pre-existing asset in participant's respective object storage account. In this version of MVD, only Azure Object Storage is supported.
 
-So for instance if we want to add and asset named as `test-document` then this asset must be already available in the participant's object storage account under container named as `src-container` before we can add it via MVD UI. Refer to the following link for more details about how to upload an asset in Azure Object Storage:
+So for instance if we want to add and asset named as `test-document` then this asset must be already available in the participant's object storage account under container named as `src-container` before we can add it via MVD UI. Refer to the following links for more details about how to upload an asset in Azure Object Storage:
 
 * [Create a container](https://docs.microsoft.com/azure/storage/blobs/storage-quickstart-blobs-portal#create-a-container)
 * [Upload a blob](https://docs.microsoft.com/azure/storage/blobs/storage-quickstart-blobs-portal#upload-a-block-blob)
