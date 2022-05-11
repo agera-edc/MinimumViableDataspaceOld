@@ -295,6 +295,7 @@ resource "azurerm_storage_blob" "did" {
       {
         "id": "#identity-hub-url",
         "type": "IdentityHub",
+        // Only the query parameters are used, see MockCredentialsVerifier class
         "serviceEndpoint": "http://dummy?region=eu"
       }
     ],

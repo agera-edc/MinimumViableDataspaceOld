@@ -9,6 +9,9 @@ import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.iam.did.spi.document.DidConstants.DID_URL_SETTING;
 
+/**
+ * Extension to set up the {@link MockCredentialsVerifier} service to generate stub claims.
+ */
 @Provides(CredentialsVerifier.class)
 public class MockCredentialsVerifierExtension implements ServiceExtension {
 
