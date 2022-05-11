@@ -16,7 +16,7 @@ To perform a data transfer, the Consumer must first have successfully executed a
 
 ## Initiating a transfer
 
-In the *Contract Viewer* pane, click the *Transfer* button under an asset that was successfully negotiated. Select a destination (only *Azure Storage* is currently implemented). Click Start transfer to begin the process.
+In the *Contracts* pane, click the *Transfer* button under an asset that was successfully negotiated. Select a destination (only *Azure Storage* is currently implemented). Click Start transfer to begin the process.
 
 The UI displays the transfer state as it progresses. When the transfer reaches the *COMPLETED* state, a pop-up appears to indicate completion.
 
