@@ -86,6 +86,8 @@ jobs:
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
       company1_did_endpoint: ${{ steps.runterraform.outputs.company1_did_endpoint }}
       company2_did_endpoint: ${{ steps.runterraform.outputs.company2_did_endpoint }}
+      company1_connector_name: ${{ steps.runterraform.outputs.company1_connector_name }}
+      company2_connector_name: ${{ steps.runterraform.outputs.company2_connector_name }}
       company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
       company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
 
@@ -113,6 +115,7 @@ jobs:
           ' >> backend.conf
           terraform init -backend-config=backend.conf
           terraform apply -auto-approve
+          CONNECTOR_NAME=$(terraform output -raw connector_name)
           DID_ENDPOINT=$(terraform output -raw did_endpoint)
           EDC_HOST=$(terraform output -raw edc_host)
           ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
@@ -127,6 +130,7 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::set-output name=${{ matrix.participant }}_connector_name::${CONNECTOR_NAME}"
           echo "::set-output name=${{ matrix.participant }}_did_endpoint::${DID_ENDPOINT}"
           echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
@@ -221,6 +225,10 @@ jobs:
           EDC_VAULT_CLIENTID=${{ secrets.APP_CLIENT_ID }}
           EDC_VAULT_TENANTID=${{ secrets.ARM_TENANT_ID }}
           EDC_VAULT_CLIENTSECRET=<client secret>
+          CONSUMER_DID_URL=did:web:${{ needs.Deploy.outputs.company1_did_endpoint }}
+          PROVIDER_DID_URL=did:web:${{ needs.Deploy.outputs.company2_did_endpoint }}
+          CONSUMER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company1_connector_name }}
+          PROVIDER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company2_connector_name }}
           PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy.outputs.company2_assets_storage_account }}
           EOF
 
