@@ -8,7 +8,7 @@ A transfer request is initiated on the Consumer side, sent over to the Provider,
 
 The Consumer provides the Provider with a data destination (such as a cloud object storage with temporary credentials).
 
-The Provider does not notify the Consumer when a transfer has completed (succeeded or failed). Depending on the type of destination, the Consumer polls the output (e.g. cloud object storage) to wait for data to be produced.
+The Provider does not notify the Consumer when a transfer has completed (succeeded or failed), see [EDC developer documentation](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector/tree/main/docs/developer/decision-records/2022-04-21-dpf-blob-data-transfer). Depending on the type of destination, the Consumer polls the output (e.g. cloud object storage) to wait for data to be produced.
 
 ## Prerequisites
 
