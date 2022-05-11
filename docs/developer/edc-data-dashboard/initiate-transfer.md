@@ -16,8 +16,18 @@ To perform a data transfer, the Consumer must first have successfully executed a
 
 ## Initiating a transfer
 
-In the *Contracts* pane, click the *Transfer* button under an asset that was successfully negotiated. Select a destination (only *Azure Storage* is currently implemented). Click Start transfer to begin the process.
+In the *Contracts* pane, click the *Transfer* button under an asset that was successfully negotiated.
+
+![contracts-transfer](contracts-transfer.png)
+
+Select a destination (only *Azure Storage* is currently implemented). Click Start transfer to begin the process.
+
+![contracts-transfer-start](contracts-transfer-start.png)
 
 The UI displays the transfer state as it progresses. When the transfer reaches the *COMPLETED* state, a pop-up appears to indicate completion.
 
-In the *Transfer History* pane you should see the transfer that was just performed. The "Open Storage Explorer" button opens the destination storage container in [Azure Storage Explorer](https://azure.microsoft.com/features/storage-explorer) (you will need to install the software beforehand if not available on your machine). You can see the created assets, as well as a `.complete` marker blob used for the Consumer to detect transfer completion.
+In the *Transfer History* pane you should see the transfer that was just performed. The "Open Storage Explorer" button opens the destination storage container in [Azure Storage Explorer](https://azure.microsoft.com/features/storage-explorer) (you will need to install the software beforehand if not available on your machine).
+
+![transfer-history](transfer-history.png)
+
+You can see the created assets, as well as a `.complete` marker blob used for the Consumer to detect transfer completion.
