@@ -28,7 +28,7 @@ jobs:
       - name: 'Empty step.'
         run: exit 0
     outputs:
-      resources_prefix: demo
+      resources_prefix: demo2
 
   Deploy:
     uses: ./.github/workflows/deploy.yaml
