@@ -31,7 +31,6 @@ dependencies {
     implementation("${edcGroup}:control-api:${edcVersion}")
     implementation("${edcGroup}:observability-api:${edcVersion}")
     implementation("${edcGroup}:data-management-api:${edcVersion}")
-    implementation("${edcGroup}:iam-mock:${edcVersion}")
     implementation("${edcGroup}:filesystem-configuration:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
 

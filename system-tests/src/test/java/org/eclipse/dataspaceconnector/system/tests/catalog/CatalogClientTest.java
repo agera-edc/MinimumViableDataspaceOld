@@ -30,7 +30,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
-import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.EU_RESTRICTED_ASSET_ID;
+import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.EU_RESTRICTED_PROVIDER_ASSET_ID;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
 class CatalogClientTest {
@@ -59,7 +59,7 @@ class CatalogClientTest {
             var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
             assertThat(nodes).satisfiesExactlyInAnyOrder(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_ASSET_ID));
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_PROVIDER_ASSET_ID));
         });
     }
 
