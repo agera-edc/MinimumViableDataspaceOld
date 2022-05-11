@@ -84,6 +84,10 @@ jobs:
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company1_did_endpoint: ${{ steps.runterraform.outputs.company1_did_endpoint }}
+      company2_did_endpoint: ${{ steps.runterraform.outputs.company2_did_endpoint }}
+      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
+      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
 
     strategy:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
@@ -123,6 +127,8 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::set-output name=${{ matrix.participant }}_did_endpoint::${DID_ENDPOINT}"
+          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
         working-directory: deployment/terraform
         env:
@@ -187,3 +193,56 @@ jobs:
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
           CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
           API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
+
+  # Verify docker-compose setup for local testing
+  VerifyLocalTests:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/gradle-setup
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Run EDC instances in docker-compose'
+        run: ./gradlew :launcher:shadowJar
+
+      - name: 'create env file'
+        run: |-
+          cat <<EOF > system-tests/.env
+          CONSUMER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
+          PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
+          EDC_VAULT_CLIENTID=${{ secrets.APP_CLIENT_ID }}
+          EDC_VAULT_TENANTID=${{ secrets.ARM_TENANT_ID }}
+          EDC_VAULT_CLIENTSECRET=<client secret>
+          PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy.outputs.company2_assets_storage_account }}
+          EOF
+
+      - name: 'Publish env file'
+        uses: actions/upload-artifact@v3
+        with:
+          name: testing-configuration
+          path: system-tests/.env
+
+      - name: 'Run EDC instances in docker-compose'
+        run: docker-compose -f system-tests/docker-compose.yml up --build --detach
+        timeout-minutes: 10
+        env:
+          EDC_VAULT_CLIENTSECRET: ${{ secrets.APP_CLIENT_SECRET }}
+
+      - name: 'Unit and system tests'
+        run: ./gradlew test
+        timeout-minutes: 10
+        env:
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
+
+      - name: 'docker-compose logs'
+        run: docker-compose -f system-tests/docker-compose.yml logs
+        if: always()
+

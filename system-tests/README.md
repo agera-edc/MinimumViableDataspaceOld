@@ -8,25 +8,22 @@ from provider to consumer storage account.
 Deploy MVD using the GitHub pipeline, adapting it in a branch to skip the destroy step.
 This leaves a storage account and a key vault for each of the consumer and the provider.
 
-Copy `system-tests/.env.example` to `system-tests/.env` and adapt the values.
+From the build result, download the artifact named `testing-configuration` and extract the file `.env` into
+the `system-tests` directory (note that the file could be hidden in your file explorer due to its prefix).
+
+In the file, add the application client secret value.
 
 Build and run EDC consumer and provider:
 
 ```
 ./gradlew :launcher:shadowJar
 
-docker-compose -f system-tests/docker-compose.yml build
-docker-compose -f system-tests/docker-compose.yml up
+docker-compose -f system-tests/docker-compose.yml up --build
 ```
 
-In the commands below, adapt the variables to the Storage Account and Key Vault used in your deployment. Do not change the API Key value `ApiKeyDefaultValue`, it is hard-coded in the `docker-compose.yml` file.
-
-Seed the provider data:
-```
-API_KEY=ApiKeyDefaultValue EDC_HOST=localhost ASSETS_STORAGE_ACCOUNT={storage_account} ./deployment/seed-data.sh
-```
+In the command below, adapt the variable value to use the value from the `.env` file.
 
 Run test:
 ```
-API_KEY=ApiKeyDefaultValue PROVIDER_MANAGEMENT_URL=http://localhost:9191 CONSUMER_MANAGEMENT_URL=http://localhost:9192 PROVIDER_IDS_URL=http://provider:8282 CONSUMER_KEY_VAULT={key_vault_name} CONSUMER_CATALOG_URL=http://localhost:8182/api/federatedcatalog ./gradlew :system-tests:test
+CONSUMER_KEY_VAULT={key_vault_name} ./gradlew :system-tests:test
 ```
