@@ -189,6 +189,6 @@ jobs:
           PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
           CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
-          CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
+          CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
           CONSUMER_US_CATALOG_URL: http://${{ needs.Deploy.outputs.company3_edc_host }}:8181/api/federatedcatalog
           API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}

@@ -35,7 +35,7 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulati
 
 class CatalogClientTest {
     static final String CONSUMER_US_CATALOG_URL = requiredPropOrEnv("CONSUMER_US_CATALOG_URL");
-    static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_CATALOG_URL");
+    static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_EU_CATALOG_URL");
 
     static TypeManager typeManager = new TypeManager();
 
