@@ -84,8 +84,8 @@ jobs:
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
-      company1_did_endpoint: ${{ steps.runterraform.outputs.company1_did_endpoint }}
-      company2_did_endpoint: ${{ steps.runterraform.outputs.company2_did_endpoint }}
+      company1_did_host: ${{ steps.runterraform.outputs.company1_did_host }}
+      company2_did_host: ${{ steps.runterraform.outputs.company2_did_host }}
       company1_connector_name: ${{ steps.runterraform.outputs.company1_connector_name }}
       company2_connector_name: ${{ steps.runterraform.outputs.company2_connector_name }}
       company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
@@ -116,7 +116,7 @@ jobs:
           terraform init -backend-config=backend.conf
           terraform apply -auto-approve
           CONNECTOR_NAME=$(terraform output -raw connector_name)
-          DID_ENDPOINT=$(terraform output -raw did_endpoint)
+          DID_HOST=$(terraform output -raw did_host)
           EDC_HOST=$(terraform output -raw edc_host)
           ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
           KEY_VAULT=$(terraform output -raw key_vault)
@@ -124,14 +124,14 @@ jobs:
           API_KEY=$(terraform output -raw api_key)
           echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
-          echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
+          echo "DID_HOST=$DID_HOST" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
           echo "API_KEY=$API_KEY" >> $GITHUB_ENV
           echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
           echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
           echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
           echo "::set-output name=${{ matrix.participant }}_connector_name::${CONNECTOR_NAME}"
-          echo "::set-output name=${{ matrix.participant }}_did_endpoint::${DID_ENDPOINT}"
+          echo "::set-output name=${{ matrix.participant }}_did_host::${DID_HOST}"
           echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
         working-directory: deployment/terraform
@@ -161,7 +161,7 @@ jobs:
           TF_VAR_registry_share: ${{ secrets.REGISTRY_SHARE }}
 
       - name: 'Verify did endpoint is available'
-        run: curl $DID_ENDPOINT | jq '.id'
+        run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
 
       - name: 'Verify deployed EDC is healthy'
         run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
@@ -225,8 +225,8 @@ jobs:
           EDC_VAULT_CLIENTID=${{ secrets.APP_CLIENT_ID }}
           EDC_VAULT_TENANTID=${{ secrets.ARM_TENANT_ID }}
           EDC_VAULT_CLIENTSECRET=<client secret>
-          CONSUMER_DID_URL=did:web:${{ needs.Deploy.outputs.company1_did_endpoint }}
-          PROVIDER_DID_URL=did:web:${{ needs.Deploy.outputs.company2_did_endpoint }}
+          CONSUMER_DID_URL=did:web:${{ needs.Deploy.outputs.company1_did_host }}
+          PROVIDER_DID_URL=did:web:${{ needs.Deploy.outputs.company2_did_host }}
           CONSUMER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company1_connector_name }}
           PROVIDER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company2_connector_name }}
           PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy.outputs.company2_assets_storage_account }}
