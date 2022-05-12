@@ -2,7 +2,7 @@
 
 ## Overview
 
-Dataspace participants can use EDC data dashboard to view what all contract offers are shared with them. It is called `Catalog` and it gets refreshed frequently as new contract offers are added by other participants.
+Dataspace participants can use the EDC data dashboard to view contract offers are shared with them. Contract offers are added to the `Catalog` which is refreshed frequently(the refresh interval is configurable per connector) as new contract offers are added by other participants.
 
 ## Viewing Catalog/Offers
 
