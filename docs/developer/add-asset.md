@@ -11,7 +11,7 @@ So for instance if we want to add an asset named as `test-document` then this as
 
 ## Prerequisites
 
-Actual asset must be already uploaded in object storage account under container named as `src-container`.
+Actual asset must be already uploaded in object storage account in a container named as `src-container`.
 
 ## Adding an asset
 
