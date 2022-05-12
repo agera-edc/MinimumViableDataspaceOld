@@ -30,5 +30,10 @@ Actual asset must be already uploaded in object storage account in a container n
 * Add object storage account name in text box named as `Account`.
 * `src-container` must pre-filled in the text box named as `Container`.
 * Add blob name in text box named as `Blob Name`.
+
+![create-assets-filled](create-assets-filled.png)
+
 * Click on `Create` button to add the asset.
 * `Assets` pane will be refreshed and you will see the newly created asset.
+
+![newly-added-assets](newly-added-assets.png)
