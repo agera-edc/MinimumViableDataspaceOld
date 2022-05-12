@@ -20,7 +20,7 @@ Actual asset must be already uploaded in object storage account in a container n
 * Add a unique ID e.g. UUID for the asset in text box named `id`.
 * Add name for the asset in text box named `name`.
 * Add content type for the asset in text box named `Content Type`. e.g. `text/plain`
-* `Azure Storage` must be pre-selected in the dropdown named as `Destination`.
+* `Azure Storage` is already pre-selected in the dropdown named as `Destination`.
 * Add object storage account name in text box named as `Account`.
 * `src-container` must pre-filled in the text box named as `Container`.
 * Add blob name in text box named as `Blob Name`.
