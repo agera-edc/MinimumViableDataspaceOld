@@ -15,8 +15,14 @@ Actual asset must be already uploaded in object storage account in a container n
 
 ## Adding an asset
 
-* Go to`Assets` pane and here you will see all existing assets if any.
+* Go to `Assets` pane and here you will see all existing assets if any.
+
+![assets](assets.png)
+
 * Click on `Create asset` button and this will open an UI popup where you can add further details.
+
+![create-assets](create-assets.png)
+
 * Add a unique ID e.g. UUID for the asset in text box named `id`.
 * Add name for the asset in text box named `name`.
 * Add content type for the asset in text box named `Content Type`. e.g. `text/plain`
