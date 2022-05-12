@@ -2,7 +2,7 @@
 
 ## Overview
 
-Publishing an asset in EDC is done by creating a new contract definition. Every contract definition has an access policy and contract policy associated with it. Along with this it also has at least one asset selector which defines the assets that are being published by the current contract definition.
+Publishing an asset in EDC is done by creating a new contract definition. Every contract definition has an access policy and contract policy associated with it. Along with this one or more assets can be chosen which defines the assets that are being published by the current contract definition.
 
 ## Prerequisites
 
