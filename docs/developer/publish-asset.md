@@ -19,7 +19,7 @@ To publish an asset followings are the prerequisites:
 * Select appropriate access policy from the dropdown.
 * Select appropriate contract policy from the dropdown.
 * Select the assets you want to add to the contract definition
-* More than one asset selectors can be added.
+  * More than one asset can be added to a contract definition.
 * Click on `Create` button to create the contract definition.
 * `Contract Definition` pane will be refreshed and you will see the newly created contract definition.
 * Soon this newly published asset will be available in the `Catalog` of other Dataspace participants. This depends on refresh rate of the catalog for the particular dataspace participant.
