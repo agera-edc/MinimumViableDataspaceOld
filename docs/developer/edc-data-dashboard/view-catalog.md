@@ -6,7 +6,7 @@ Dataspace participants can use the EDC data dashboard to view contract offers ar
 
 ## Viewing Catalog/Offers
 
-* Go to `Dataspace Catalog` pane and here you will see all existing contract offers which are shared with you.
+* Go to `Dataspace Catalog` pane to see list of all existing contract offers which are shared with current dataspce participant.
 * Click on `Additional Properties` section to view complete details of the contract offer.
 
 ![dataspace-catalog](dataspace-catalog.png)
