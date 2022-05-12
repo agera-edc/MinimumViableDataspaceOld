@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Contract Agreement is established after a Consumer connector, having obtained a Contract Offer from a Provider connector, negotiates the agreement with the Provider. The Contract Agreement can afterwards be executed to have the Provider transfer data to the Consumer.
+A Contract Agreement is established after a Consumer connector, having obtained a Contract Offer from a Provider connector, negotiates the agreement with the Provider. Afterwards the Contract Agreement can be executed to have the Provider transfer data to the Consumer.
 
 ## Browsing Contract Agreements
 
