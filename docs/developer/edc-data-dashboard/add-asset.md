@@ -25,7 +25,7 @@ Actual asset must be already uploaded in object storage account in a container n
 
 * Add a unique ID e.g. UUID for the asset in text box named `id`. This id will be used when selecting asset for publishing. Publishing an asset is covered under [publish-asset.md](./publish-asset.md).
 * Add name for the asset in text box named `name`.
-* Add content type for the asset in text box named `Content Type`. e.g. `text/plain`
+* Add content type for the asset in text box named `Content Type`. e.g. `text/plain`. It is just an additional metadata for the content of the asset and it is not used further in EDC data transfer.
 * Select the `Destination` type (`Azure Storage` in this case to transfer from Azure Blob Storage to Azure Blob Storage).
 * Add object storage account name in text box named as `Account`.
 * Define the container within the Azure Object Storage Account in `Container` (pre-defined as `src-container` for the MVD for simplicity reasons).
