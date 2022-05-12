@@ -13,7 +13,7 @@ To publish an asset followings are the prerequisites:
 
 ## Publishing an asset
 
-* Go to`Contract Definitions` pane and here you will see any existing contract definitions if any.
+* Go to`Contract Definitions` pane and here you will see any existing contract definitions, if any.
 * Click on `Create Contract Definition` button and this will open a UI popup where you can add further details.
 * Add a unique ID e.g. UUID for the contract definition in UI box named `ID`.
 * Select appropriate access policy from the dropdown.
