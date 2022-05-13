@@ -99,7 +99,7 @@ jobs:
 
       - name: 'Create tfvars file'
         run: |
-          cat > deployment/terraform/terraform.tfvars
+          cat > deployment/terraform/terraform.tfvars <<EOF
           key_file = "../../key.pem"
           public_key_jwk_file = "../../key.public.jwk"
           acr_resource_group = ${{ secrets.COMMON_RESOURCE_GROUP }}
@@ -114,7 +114,7 @@ jobs:
           registry_resource_group = ${{ secrets.COMMON_RESOURCE_GROUP }}
           registry_storage_account = ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
           registry_share = ${{ secrets.REGISTRY_SHARE }}
-
+          EOF
       - uses: actions/upload-artifact@v3
         with:
           name: terraform-variables-${{ env.RESOURCES_PREFIX }}-${{ matrix.participant }}
