@@ -27,6 +27,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
@@ -46,21 +47,17 @@ class CatalogClientTest {
 
     @Test
     void containsOnlyNonRestrictedAsset() {
-        await().atMost(10, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_US_CATALOG_URL);
             assertThat(nodes).satisfiesExactly(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
-        });
     }
 
     @Test
     void containsAllAssets() {
-        await().atMost(10, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
             assertThat(nodes).satisfiesExactlyInAnyOrder(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_PROVIDER_ASSET_ID));
-        });
     }
 
     private List<ContractOffer> getNodesFromCatalog(String euConsumerCatalogUrl) {

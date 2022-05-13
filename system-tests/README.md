@@ -23,10 +23,10 @@ In the commands below, adapt the variables to the Storage Account and Key Vault 
 
 Seed the provider data:
 ```
-API_KEY=ApiKeyDefaultValue EDC_HOST=localhost ASSETS_STORAGE_ACCOUNT={storage_account} ./deployment/seed-data.sh
+API_KEY=ApiKeyDefaultValue EDC_HOST=localhost ASSETS_STORAGE_ACCOUNT={company1_assets_storage_account} ./deployment/seed-data.sh
 ```
 
 Run test:
 ```
-API_KEY=ApiKeyDefaultValue PROVIDER_MANAGEMENT_URL=http://localhost:9191 CONSUMER_MANAGEMENT_URL=http://localhost:9192 PROVIDER_IDS_URL=http://provider:8282 CONSUMER_KEY_VAULT={key_vault_name} CONSUMER_EU_CATALOG_URL=http://localhost:8182/api/federatedcatalog CONSUMER_US_CATALOG_URL=http://localhost:8183/api/federatedcatalog ./gradlew :system-tests:test
+API_KEY=ApiKeyDefaultValue PROVIDER_MANAGEMENT_URL=http://localhost:9191 CONSUMER_MANAGEMENT_URL=http://localhost:9192 PROVIDER_IDS_URL=http://provider:8282 CONSUMER_EU_KEY_VAULT={company2_key_vault_name} CONSUMER_US_KEY_VAULT={company3_key_vault_name} CONSUMER_EU_CATALOG_URL=http://localhost:8182/api/federatedcatalog CONSUMER_US_CATALOG_URL=http://localhost:8183/api/federatedcatalog ./gradlew :system-tests:test
 ```
