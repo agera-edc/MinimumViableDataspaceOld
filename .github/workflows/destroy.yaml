@@ -50,6 +50,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: terraform-variables-${{ env.RESOURCES_PREFIX }}-${{ matrix.participant }}
+          path: deployment/terraform
 
       - name: 'FIXME'
         run: find .
