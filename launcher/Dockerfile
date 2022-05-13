@@ -4,7 +4,10 @@ FROM openjdk:17-slim-buster
 # Optional JVM arguments, such as memory settings
 ARG JVM_ARGS=""
 
-RUN apt update && apt install curl -y && rm -rf /var/cache/apt/archives /var/lib/apt/lists
+# Install curl, then delete apt indexes to save image space
+RUN apt update \
+    && apt install -y curl \
+    && rm -rf /var/cache/apt/archives /var/lib/apt/lists
 
 WORKDIR /app
 COPY ./build/libs/app.jar /app
