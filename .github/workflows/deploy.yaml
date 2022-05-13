@@ -102,18 +102,18 @@ jobs:
           cat > deployment/terraform/terraform.tfvars <<EOF
           key_file = "../../key.pem"
           public_key_jwk_file = "../../key.public.jwk"
-          acr_resource_group = ${{ secrets.COMMON_RESOURCE_GROUP }}
-          acr_name = ${{ secrets.ACR_NAME }}
-          participant_name = ${{ matrix.participant }}
-          participant_region = ${{ matrix.region }}
-          prefix = ${{ env.RESOURCES_PREFIX }}
-          resource_group = rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}
-          runtime_image = mvd-edc/connector:${{ env.RESOURCES_PREFIX }}
-          application_sp_object_id = ${{ secrets.APP_OBJECT_ID }}
-          application_sp_client_id = ${{ secrets.APP_CLIENT_ID }}
-          registry_resource_group = ${{ secrets.COMMON_RESOURCE_GROUP }}
-          registry_storage_account = ${{ secrets.REGISTRY_STORAGE_ACCOUNT }}
-          registry_share = ${{ secrets.REGISTRY_SHARE }}
+          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          acr_name = "${{ secrets.ACR_NAME }}"
+          participant_name = "${{ matrix.participant }}"
+          participant_region = "${{ matrix.region }}"
+          prefix = "${{ env.RESOURCES_PREFIX }}"
+          resource_group = "rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}"
+          runtime_image = "mvd-edc/connector:${{ env.RESOURCES_PREFIX }}"
+          application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
+          application_sp_client_id = "${{ secrets.APP_CLIENT_ID }}"
+          registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          registry_storage_account = "${{ secrets.REGISTRY_STORAGE_ACCOUNT }}"
+          registry_share = "${{ secrets.REGISTRY_SHARE }}"
           EOF
       - uses: actions/upload-artifact@v3
         with:
