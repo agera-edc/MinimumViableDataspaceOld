@@ -52,9 +52,6 @@ jobs:
           name: terraform-variables-${{ env.RESOURCES_PREFIX }}-${{ matrix.participant }}
           path: deployment/terraform
 
-      - name: 'FIXME'
-        run: find .
-
       # Az login is needed to delete the blob terraform state.
       - name: 'Az CLI login'
         uses: azure/login@v1
