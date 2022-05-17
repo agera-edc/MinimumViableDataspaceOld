@@ -79,8 +79,8 @@ jobs:
       - name: Checkout DD
         uses: actions/checkout@v2
         with:
-          repository: agera-edc/EDC-Data-Dashboard
-          ref: main # FIXME
+          repository: agera-edc/EDCDataDashboard
+          ref: 5396bfc0a1c5672e1858d2e9da3f374a436b19dc
 
       - name: 'Az CLI login'
         uses: azure/login@v1
