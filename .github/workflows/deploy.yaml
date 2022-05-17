@@ -100,7 +100,7 @@ jobs:
   Deploy:
     needs:
       - Build-Connector
-      = Build-Dashboard
+      - Build-Dashboard
       - Matrix
     runs-on: ubuntu-latest
     outputs:
