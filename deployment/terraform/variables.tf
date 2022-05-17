@@ -11,7 +11,11 @@ variable "participant_region" {
   default = "eu"
 }
 
-variable "runtime_image" {
+variable "connector_image" {
+}
+
+variable "data_dashboard_image" {
+  description = "Data Dashboard web app image to deploy"
 }
 
 variable "location" {
@@ -70,11 +74,6 @@ variable "registry_storage_account" {
 
 variable "registry_share" {
   description = "name of the registry JSON documents file share"
-}
-
-variable "data_dashboard_image_tag" {
-  description = "tag of the Data Dashboard web app image to deploy"
-  default     = "847c9dd40e0d2dc75818351718ea4d348ce202b5"
 }
 
 

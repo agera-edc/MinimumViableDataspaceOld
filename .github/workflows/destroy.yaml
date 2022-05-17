@@ -77,7 +77,8 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
           # Passing dummy variables to terraform destroy, because destroy needs input variables to be defined, but uses the state.
-          TF_VAR_runtime_image: dummy
+          TF_VAR_connector_image: dummy
+          TF_VAR_data_dashboard_image: dummy
           TF_VAR_application_sp_object_id: dummy
           TF_VAR_application_sp_client_id: dummy
           TF_VAR_application_sp_client_secret: dummy

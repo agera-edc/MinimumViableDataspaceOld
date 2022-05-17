@@ -1,4 +1,28 @@
-## Continuous Deployment
+# Deploying MVD
+
+## Overview
+
+The Minimum Viable Dataspace can be deployed by:
+
+- Planning a deployment, providing an Azure subscription and service principals.
+- Forking the repository.
+- Initializing an Azure environment, including configuring repository secrets and federated identity and deploying build infrastructure components.
+- Deploying a dataspace, by running the GitHub Actions workflow that provisions a dataspace with three participants.
+- Using the dataspace, for example by using the Data Dashboard developer UI, or connecting to the EDC API.
+- Destroying the dataspace after use.
+
+## Planning your deployment
+
+You will need to provide the following:
+
+- An Azure subscription
+- Two service principals (instructions below)
+
+## Forking the repository
+
+Fork the [MinimumViableDataspace](https://github.com/agera-edc/MinimumViableDataspace) repository.
+
+## Initializing an Azure environment
 
 ### Overview
 
@@ -9,17 +33,6 @@ A GitHub Actions workflow performs continuous integration and continuous deploym
 - An **Azure Container Registry** instance is deployed to contain docker images built in the CI job. These images are deployed to runtime environments in the CD process.
 - An **Azure Storage Account** and a storage container to store **Terraform state** between the deployment and destroy jobs.
 - An **Azure Storage Account** and a file share to store JSON files representing the **Dataspace Registry** across multiple participants.
-
-## Initializing an Azure environment for CD
-
-### Planning your deployment
-
-You will need to provide the following:
-
-- An Azure subscription
-- Two service principals (instructions below)
-
-A GitHub workflow then needs to be run to provision the Azure resources used for CD.
 
 ### Create a service identity for GitHub Actions
 
@@ -101,8 +114,46 @@ This prefix should help have unique resource names across fork repositories when
 
 Manually run the `Initialize CD` GitHub Actions workflow.
 
-### Deploying Data Dashboard
+## Deploying a dataspace
 
-Fork the **EDC Data Dashboard** web app and run its deploy action.
+- In your fork repository, select the `Actions` tab.
+- Select the `Deploy` workflow.
+- Click on `Run workflow`.
+- Provide your own resources name prefix. Use at most 3 characters, composed of lower case letters and numbers. This name prefix guarantees the resources name's uniqueness and avoids resource name conflicts. Note down the used prefix.
+- Click on `Run workflow` to trigger the deployment.
 
-Adapt the default value of the Data Dashboard image tag (`data_dashboard_image_tag` variable) in the [Terraform variables](deployment/terraform/variables.tf) to reflect the tag of the **EDC Data Dashboard** web app deployment.
+
+If deployment fails with an error such as `resource already exists` , try again with a different prefix value.
+
+The workflow runs the following jobs:
+
+- Build the EDC and the Data Dashboard into images stored in Azure Container Registry.
+- Deploy Azure resources using Terraform, for all participants in parallel. For each participant, Terraform deploys:
+  - One Azure Resource Group containing all resources for one participant.
+  - One Azure Container Instance for EDC.
+  - One Azure Key Vault for EDC, containing the DID private key.
+  - One Azure Storage Account to store assets, containing sample asset blob data. The storage account key is stored in the participant's Key Vault.
+  - One Azure Storage Account serving the DID Document on a public endpoint.
+  - One Azure Storage Account named "inbox", to receive transfers from other participants. The storage account key is stored in the participant's Key Vault.
+  - One file in the Registry file share, to make the participant discoverable for other participants (catalog federation).
+  - One Azure Container Instance for the Data Dashboard web application. The application is configured to connect to the deployed EDC endpoint for that participant.
+- Runs system tests that verify that federated catalogs are populated, and that contract negotiation and data transfer between two participants is successful.
+
+## Using the dataspace
+
+The Summary page of the GitHub Actions run lists the URLs for each dataspace participant.
+
+- The **Data Dashboard** can be accessed with a web browser.
+- The **EDC API** can be accessed with a tool such as [Postman](https://postman.com).
+
+## Destroying the dataspace
+
+Manually run the `Destroy` GitHub Actions workflow. Under the `resources_prefix` field, enter the same short alphanumeric prefix used when deploying the dataspace.
+
+- In your fork repository, select the `Actions` tab.
+- Select the `Destroy` workflow.
+- Click on `Run workflow`.
+- Provide the resources prefix that you used when you deployed your DataSpace.
+- Click on `Run workflow` to trigger the destruction.
+
+The common shared infrastructure is not destroyed. To destroy it, connect to the Azure portal and manually delete the resource group (used to define the `COMMON_RESOURCE_GROUP` secret).

@@ -81,7 +81,7 @@ resource "azurerm_container_group" "edc" {
 
   container {
     name   = "edc"
-    image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.connector_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
 
@@ -164,7 +164,7 @@ resource "azurerm_container_group" "webapp" {
 
   container {
     name   = "webapp"
-    image  = "${data.azurerm_container_registry.registry.login_server}/mvd-edc/data-dashboard:${var.data_dashboard_image_tag}"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.data_dashboard_image}"
     cpu    = 1
     memory = 1
 

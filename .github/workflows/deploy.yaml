@@ -38,8 +38,10 @@ jobs:
           echo "::set-output name=matrix::$matrix"
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
-  Build:
+  Build-Connector:
     runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
     steps:
       # Checkout MVD code
       - uses: actions/checkout@v2
@@ -53,8 +55,6 @@ jobs:
 
       - name: 'Login to ACR'
         run: az acr login -n $ACR_NAME
-        env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
 
       - uses: ./.github/actions/gradle-setup
 
@@ -68,13 +68,39 @@ jobs:
       - name: 'Build image'
         run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
-        env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
+
+  # Build runtime image in Azure Container Registry, tagged with the unique run_number.
+  Build-Dashboard:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      # Checkout DD code
+      - name: Checkout DD
+        uses: actions/checkout@v2
+        with:
+          repository: agera-edc/EDC-Data-Dashboard
+          ref: main # FIXME
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd-edc/data-dashboard:${{ env.RESOURCES_PREFIX }} .
 
   # Deploy dataspace participants in parallel.
   Deploy:
     needs:
-      - Build
+      - Build-Connector
+      = Build-Dashboard
       - Matrix
     runs-on: ubuntu-latest
     outputs:
@@ -115,7 +141,7 @@ jobs:
           KEY_VAULT=$(terraform output -raw key_vault)
           WEBAPP_URL=$(terraform output -raw webapp_url)
           API_KEY=$(terraform output -raw api_key)
-          echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
+          echo "::notice title=URLs for ${{ matrix.participant }}::Data Dashboard at $WEBAPP_URL, EDC API at http://${EDC_HOST}:9191"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
@@ -143,7 +169,8 @@ jobs:
           TF_VAR_participant_region: ${{ matrix.region }}
           TF_VAR_prefix: ${{ env.RESOURCES_PREFIX }}
           TF_VAR_resource_group: rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}
-          TF_VAR_runtime_image: mvd-edc/connector:${{ env.RESOURCES_PREFIX }}
+          TF_VAR_connector_image: mvd-edc/connector:${{ env.RESOURCES_PREFIX }}
+          TF_VAR_data_dashboard_image: mvd-edc/data-dashboard:${{ env.RESOURCES_PREFIX }}
           TF_VAR_application_sp_object_id: ${{ secrets.APP_OBJECT_ID }}
           TF_VAR_application_sp_client_id: ${{ secrets.APP_CLIENT_ID }}
           TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}
