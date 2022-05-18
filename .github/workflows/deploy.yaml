@@ -141,7 +141,7 @@ jobs:
           KEY_VAULT=$(terraform output -raw key_vault)
           WEBAPP_URL=$(terraform output -raw webapp_url)
           API_KEY=$(terraform output -raw api_key)
-          echo "::notice title=URLs for ${{ matrix.participant }}::Data Dashboard at $WEBAPP_URL, EDC API at http://${EDC_HOST}:9191"
+          echo "::notice title=Data Dashboard URL for ${{ matrix.participant }}::$WEBAPP_URL"
           echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
           echo "DID_ENDPOINT=$DID_ENDPOINT" >> $GITHUB_ENV
           echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
