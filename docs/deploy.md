@@ -20,13 +20,13 @@ You will need to provide the following:
 
 ## Forking the repository
 
-Fork the [MinimumViableDataspace](https://github.com/agera-edc/MinimumViableDataspace) repository.
+[Fork](https://docs.github.com/get-started/quickstart/fork-a-repo) the [MinimumViableDataspace](https://github.com/agera-edc/MinimumViableDataspace) repository.
 
 ## Initializing an Azure environment
 
 ### Overview
 
-A GitHub Actions workflow performs continuous integration and continuous deployment of the MVD to an Azure subscription. The workflow needs the following infrastructure to be deployed:
+A https://docs.github.com/actions/learn-github-actions/understanding-github-actions workflow performs continuous integration and continuous deployment of the MVD to an Azure subscription. The workflow needs the following infrastructure to be deployed:
 
 - An **application** is created to represent the action runner that provisions cloud resources. In Azure Active Directory, a service principal for the application is configured in the cloud tenant, and configured to trust the GitHub repository using Federated Identity Credentials.
 - Another **application** is created to represent the deployed runtimes for accessing Azure resources (such as Key Vault). For simplicity, all runtimes share a single application identity. In Azure Active Directory, a service principal for the application is configured in the cloud tenant. A client secret is configured to allow the runtime to authenticate.
@@ -112,9 +112,16 @@ This prefix should help have unique resource names across fork repositories when
 
 ### Deploying CD resources
 
-Manually run the `Initialize CD` GitHub Actions workflow.
+To deploy the shared Azure resources used by dataspace deployments, such as Azure Container Registry, manually [run](https://docs.github.com/actions/managing-workflow-runs/manually-running-a-workflow) the `Initialize CD` GitHub Actions workflow.
+
+- In your fork repository, select the `Actions` tab.
+- Select the `Initialize CD` workflow.
+- Click on `Run workflow`.
+- Click on `Run workflow` to trigger resource deployment.
 
 ## Deploying a dataspace
+
+To deploy a dataspace containing several participants, manually [run](https://docs.github.com/actions/managing-workflow-runs/manually-running-a-workflow) the `Deploy` GitHub Actions workflow.
 
 - In your fork repository, select the `Actions` tab.
 - Select the `Deploy` workflow.
@@ -145,6 +152,8 @@ The Summary page of the GitHub Actions run lists the URLs for each dataspace par
 
 - The **Data Dashboard** can be accessed with a web browser.
 - The **EDC API** can be accessed with a tool such as [Postman](https://postman.com).
+
+![URLs](deploy/urls.png)
 
 ## Destroying the dataspace
 
