@@ -8,14 +8,14 @@ variable "participant_name" {
 }
 
 variable "participant_region" {
-  default = "westeurope"
+  default = "northeurope"
 }
 
 variable "runtime_image" {
 }
 
 variable "location" {
-  default = "westeurope"
+  default = "northeurope"
 }
 
 variable "acr_name" {
