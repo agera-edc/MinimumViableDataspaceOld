@@ -148,10 +148,9 @@ The workflow runs the following jobs:
 
 ## Using the dataspace
 
-The Summary page of the GitHub Actions run lists the URLs for each dataspace participant.
+The Summary page of the GitHub Actions run lists the Data Dashboard URL for each dataspace participant. The Data Dashboard can be accessed with a web browser.
 
-- The **Data Dashboard** can be accessed with a web browser.
-- The **EDC API** can be accessed with a tool such as [Postman](https://postman.com).
+To access the EDC API directly with a tool such as [Postman](https://postman.com), add `/assets/config/app.config.json` to the Data Dashboard URL to retrieve the application configuration. This contains the URLs to the EDC APIs (federated catalog and data management) and the API Key.
 
 ![URLs](deploy/urls.png)
 
