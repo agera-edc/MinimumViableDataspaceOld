@@ -39,3 +39,9 @@ Run tests:
 ```
 CONSUMER_KEY_VAULT="$CONSUMER_KEY_VAULT" ./gradlew :system-tests:test
 ```
+
+### Debugging MVD locally
+
+Follow the instructions in the previous sections to run an MVD with a consumer and provider locally using docker-compose. 
+
+Once running, you can use the "EDC consumer" or "EDC provider" IntelliJ runtime configurations to remote debug the connector instances. 

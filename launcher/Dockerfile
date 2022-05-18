@@ -2,7 +2,9 @@
 FROM openjdk:17-slim-buster
 
 # Optional JVM arguments, such as memory settings
+# ARG can not be used in ENTRYPOINT so storing value in an ENV variable
 ARG JVM_ARGS=""
+ENV ENV_JVM_ARGS=$JVM_ARGS
 
 # Install curl, then delete apt indexes to save image space
 RUN apt update \
@@ -28,4 +30,4 @@ ENV WEB_HTTP_IDS_PATH="/api/v1/ids"
 
 # Use "exec" for graceful termination (SIGINT) to reach JVM.
 ENTRYPOINT [ "sh", "-c", \
-    "exec java $JVM_ARGS -jar app.jar"]
+    "exec java ${ENV_JVM_ARGS} -jar app.jar"]
