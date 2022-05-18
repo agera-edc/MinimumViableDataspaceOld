@@ -10,7 +10,7 @@ Deploy MVD using the GitHub `Deploy` pipeline. We will run EDC instances locally
 From the build result, download the artifact named `testing-configuration` and extract the file `.env` into
 the `system-tests` directory (note that the file could be hidden in your file explorer due to its prefix).
 
-In the file, add the application client secret value under the `EDC_VAULT_CLIENTSECRET` key.
+In the file, add the application client secret value under the `APP_CLIENT_SECRET` key. It is used to access Key Vault.
 
 Build the EDC launcher:
 

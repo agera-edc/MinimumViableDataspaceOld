@@ -222,9 +222,9 @@ jobs:
           cat <<EOF > system-tests/.env
           CONSUMER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
           PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
-          EDC_VAULT_CLIENTID=${{ secrets.APP_CLIENT_ID }}
-          EDC_VAULT_TENANTID=${{ secrets.ARM_TENANT_ID }}
-          EDC_VAULT_CLIENTSECRET=<client secret>
+          APP_CLIENT_ID=${{ secrets.APP_CLIENT_ID }}
+          APP_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
+          APP_CLIENT_SECRET=<client secret>
           CONSUMER_DID_URL=did:web:${{ needs.Deploy.outputs.company1_did_host }}
           PROVIDER_DID_URL=did:web:${{ needs.Deploy.outputs.company2_did_host }}
           CONSUMER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company1_connector_name }}
@@ -242,7 +242,7 @@ jobs:
         run: docker-compose -f system-tests/docker-compose.yml up --build --detach
         timeout-minutes: 10
         env:
-          EDC_VAULT_CLIENTSECRET: ${{ secrets.APP_CLIENT_SECRET }}
+          APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
 
       - name: 'Unit and system tests'
         run: ./gradlew test
