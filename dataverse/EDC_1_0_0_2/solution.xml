@@ -1,0 +1,128 @@
+<ImportExportXml version="9.2.22042.149" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SolutionManifest>
+    <UniqueName>EDC</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="EDC" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.0.2</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>Dataspace</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Dataspace" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions />
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>edc</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>78484</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="edc_dsaccesscontrolpolicy" behavior="0" />
+      <RootComponent type="1" schemaName="edc_dsasset" behavior="0" />
+      <RootComponent type="1" schemaName="edc_dscontractusagepolicy" behavior="0" />
+      <RootComponent type="1" schemaName="edc_dspolicyselector" behavior="0" />
+      <RootComponent type="1" schemaName="edc_dspublish" behavior="0" />
+      <RootComponent type="1" schemaName="product" behavior="2" />
+      <RootComponent type="29" id="{a1591d7f-2bd6-ec11-a7b5-6045bd005528}" behavior="0" />
+      <RootComponent type="61" schemaName="edc_dsicon" behavior="0" />
+      <RootComponent type="61" schemaName="edc_DSPublish" behavior="0" />
+      <RootComponent type="61" schemaName="edc_dssvgicon" behavior="0" />
+      <RootComponent type="62" schemaName="edc_EclipseDataspace" behavior="0" />
+      <RootComponent type="63" id="{1fd7d76d-fed5-ec11-a7b5-6045bd005528}" behavior="0" />
+      <RootComponent type="80" schemaName="edc_EclipseDataspace" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="product" displayName="Product" solution="msdynce_ProductManagement (9.0.4.0066)">
+          <package>msdynce_ProductManagementAnchor (9.0.22042.10001)</package>
+        </Required>
+        <Dependent type="1" schemaName="product" displayName="Product" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Product" parentDisplayName="Product" solution="msdynce_ProductManagement (9.0.4.0066)" id="{a640be62-63f6-4027-90d7-48c014a7c6f3}">
+          <package>msdynce_ProductManagementAnchor (9.0.22042.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Product" parentDisplayName="Product" id="{a640be62-63f6-4027-90d7-48c014a7c6f3}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="accessChecker_icon" displayName="accessChecker_icon" solution="msft_AccessCheckerExtension (1.1.0.3)" />
+        <Dependent type="62" schemaName="edc_EclipseDataspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="images/msdyn_publish32" displayName="images/msdyn_publish32" solution="OCISBR (1.0.0.2064)" />
+        <Dependent type="62" schemaName="edc_EclipseDataspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/SitemapIcons/SVG/ProjectContractMileStone.svg" displayName="msdyn_/SitemapIcons/SVG/ProjectContractMileStone.svg" solution="ProjectService (3.10.0.31)" />
+        <Dependent type="62" schemaName="edc_EclipseDataspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_callscriptcomponent_route_action_type_icon.svg" displayName="msdyn_callscriptcomponent_route_action_type_icon.svg" solution="msdyn_Agentscripts (9.2.22041.1002)">
+          <package>AgentProductivityToolsAnchor (9.2.22041.1002)</package>
+          <package>msdynce_ServiceAnchor (9.0.22041.1005)</package>
+        </Required>
+        <Dependent type="62" schemaName="edc_EclipseDataspace" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

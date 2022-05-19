@@ -1,0 +1,314 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "edc_EDCConnector3"
+        },
+        "api": {
+          "name": "shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071"
+        }
+      },
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "edc_sharedcommondataserviceforapps_4b489"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "6bc3a310-5c64-41e3-9196-e099f3f8b172"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "edc_dspublish",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "CreateAsset": {
+          "runAfter": {
+            "Initialize_URL_env_var": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "52aeb6d0-d097-4c3e-ba26-2664a0aaba9c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071_1",
+              "operationId": "CreateAsset",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071"
+            },
+            "parameters": {
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "body/asset/properties/asset:prop:name": "@triggerOutputs()?['body/edc_name']",
+              "body/asset/properties/asset:prop:version": "1.0",
+              "body/asset/properties/asset:prop:id": "@triggerOutputs()?['body/edc_publishedrecordid']",
+              "body/asset/properties/asset:prop:contenttype": "text",
+              "body/dataAddress/properties/type": "Dataverse",
+              "body/dataAddress/properties/url": "@variables('URL')",
+              "body/dataAddress/properties/keyName": " @{triggerOutputs()?['body/edc_name']}"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_URL_env_var": {
+          "runAfter": {
+            "Parse_JSON_-_AccessControlPolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "64d50c5d-f189-4f87-97c0-09b2a6b3d71f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "URL",
+                "type": "string",
+                "value": "@{concat('https://org47579008.crm.dynamics.com/api/data/v9.2/', triggerOutputs()?['body/edc_publishedtablename'], '(', triggerOutputs()?['body/edc_publishedrecordid'], ')')}"
+              }
+            ]
+          }
+        },
+        "Get_a_row_by_ID__-_expand_with_edc_DSContractUsagePolicy": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d7354b3a-16ba-44bf-a90e-1ee5130e90ef"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "edc_dspublishs",
+              "recordId": "@triggerOutputs()?['body/edc_dspublishid']",
+              "$select": "edc_DSPolicySelector",
+              "$expand": "edc_DSPolicySelector($expand=edc_DSContractUsagePolicy($select=edc_policyid))"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_dsPublishJson_for_ContractUsagePolicy": {
+          "runAfter": {
+            "Get_a_row_by_ID_-_expand_with_DSAccessControlPolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cf24a306-413b-41f0-9c08-8c18d4eee2b2"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "dsPublishJsonCUPolicy",
+                "type": "string",
+                "value": "@{body('Get_a_row_by_ID__-_expand_with_edc_DSContractUsagePolicy')}"
+              }
+            ]
+          }
+        },
+        "Parse_JSON_-_ContractUsagePolicy": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1a779ec6-5063-487b-bf7d-a85bee2c9157"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@variables('dsPublishJsonCUPolicy')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "@@odata.etag": {
+                  "type": "string"
+                },
+                "edc_dspublishid": {
+                  "type": "string"
+                },
+                "edc_DSPolicySelector": {
+                  "type": "object",
+                  "properties": {
+                    "edc_DSContractUsagePolicy": {
+                      "type": "object",
+                      "properties": {
+                        "edc_policyid": {
+                          "type": "string"
+                        },
+                        "edc_dscontractusagepolicyid": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PublishContractDefinition": {
+          "runAfter": {
+            "CreateAsset": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e4d4df6a-20e4-4d5c-9e10-4096efad8411"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071_1",
+              "operationId": "PublishContractDefinition",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_edcconnector-20-2d-201-5f45113f5dc471ad53-5fea01c4440dade071"
+            },
+            "parameters": {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "body/accessPolicyId": "@body('Parse_JSON_-_ContractUsagePolicy')?['edc_DSPolicySelector']?['edc_DSContractUsagePolicy']?['edc_policyid']",
+              "body/contractPolicyId": "@body('Parse_JSON_-_AccessControlPolicy')?['edc_DSPolicySelector']?['edc_DSAccessControlPolicy']?['edc_policyid']",
+              "body/id": "@triggerOutputs()?['body/edc_dspublishid']",
+              "body/criteria": [
+                {
+                  "left": "asset:prop:id",
+                  "op": "in",
+                  "right": [
+                    "@triggerOutputs()?['body/edc_publishedrecordid']"
+                  ]
+                }
+              ]
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_a_row_by_ID_-_expand_with_DSAccessControlPolicy": {
+          "runAfter": {
+            "Get_a_row_by_ID__-_expand_with_edc_DSContractUsagePolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f90c40ce-aff3-4034-ad7c-34ed81ddf397"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "edc_dspublishs",
+              "recordId": "@triggerOutputs()?['body/edc_dspublishid']",
+              "$expand": "edc_DSPolicySelector($expand=edc_DSAccessControlPolicy($select=edc_policyid))"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Initialize_dsPublishJson_for_ContractUsagePolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2b4a4ba9-47ca-45d7-bd42-b29f575604bd"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "dsPublishJsonACPolicy",
+                "type": "string",
+                "value": "@{body('Get_a_row_by_ID_-_expand_with_DSAccessControlPolicy')}"
+              }
+            ]
+          }
+        },
+        "Parse_JSON_-_AccessControlPolicy": {
+          "runAfter": {
+            "Parse_JSON_-_ContractUsagePolicy": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dd23146b-c014-4057-8904-8715d226008c"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@variables('dsPublishJsonACPolicy')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "@@odata.etag": {
+                  "type": "string"
+                },
+                "edc_dspublishid": {
+                  "type": "string"
+                },
+                "edc_DSPolicySelector": {
+                  "type": "object",
+                  "properties": {
+                    "edc_DSAccessControlPolicy": {
+                      "type": "object",
+                      "properties": {
+                        "edc_policyid": {
+                          "type": "string"
+                        },
+                        "edc_dsaccesscontrolpolicyid": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

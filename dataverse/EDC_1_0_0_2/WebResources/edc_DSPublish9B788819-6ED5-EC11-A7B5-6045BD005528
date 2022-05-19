@@ -1,0 +1,40 @@
+// function publishToDataspace(currentControl) {
+//     // v1.6
+//     const extraqs = encodeURIComponent(new URLSearchParams({
+//         edc_publishedrecordid: currentControl.data.entity.getId(),
+//         edc_publishedtablename: currentControl.data.entity.getEntityName()
+//     }).toString());
+
+//     Xrm.Navigation.navigateTo({
+//         pageType: "entityrecord",
+//         entityName: "edc_dspublish",
+//         data: {
+//             extraqs: extraqs
+//         }
+//     },{ target: 1}).then(()=>{
+//         //success
+//     },()=>{
+//         //error
+//     });
+// }
+
+function publishToDataspace(currentControl) {
+    // v2.0
+    console.log("publishToDataspace");
+    
+    var parameters = {};
+    parameters["edc_publishedrecordid"] = currentControl.data.entity.getId();  
+    parameters["edc_publishedtablename"] = currentControl.data.entity.getEntityName();
+
+    var entityFormOptions = {};
+    entityFormOptions["entityName"] = "edc_dspublish";
+
+    Xrm.Navigation.openForm(entityFormOptions, parameters).then(
+        function (success) {
+            console.log(success);
+        },
+        function (error) {
+            console.log(error);
+        }
+    );  
+}

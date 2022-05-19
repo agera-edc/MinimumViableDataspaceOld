@@ -1,0 +1,32 @@
+<appaction uniquename="edc__PublishtoDataspac!4bd0bd50e7bf4db881a74a1f1f67e995!edc_EclipseDataspace!product!0">
+  <appmoduleid>
+    <uniquename>edc_EclipseDataspace</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Publish to Dataspace">
+    <label description="Publish to Dataspace" languagecode="1033" />
+  </buttonlabeltext>
+  <buttonsequencepriority>1000513.5000000000</buttonsequencepriority>
+  <context>1</context>
+  <contextentity>
+    <logicalname>product</logicalname>
+  </contextentity>
+  <contextvalue>product</contextvalue>
+  <hidden>0</hidden>
+  <iconwebresourceid>
+    <webresourceid>629b7e28-b5d5-ec11-a7b5-6045bd005528</webresourceid>
+  </iconwebresourceid>
+  <iscustomizable>1</iscustomizable>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>PublishtoDataspac!4bd0bd50e7bf4db881a74a1f1f67e995</name>
+  <onclickeventjavascriptfunctionname>publishToDataspace</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":12},{"type":8},{"type":4}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>9b788819-6ed5-ec11-a7b5-6045bd005528</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>
