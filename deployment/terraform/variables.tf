@@ -8,7 +8,7 @@ variable "participant_name" {
 }
 
 variable "participant_region" {
-  default = "northeurope"
+  default = "eu"
 }
 
 variable "runtime_image" {

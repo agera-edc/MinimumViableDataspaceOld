@@ -1,0 +1,5 @@
+{
+  "name": "connector-company1",
+  "supportedProtocols": ["ids-multipart"],
+  "url": "http://company1:8282"
+}

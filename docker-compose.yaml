@@ -1,0 +1,49 @@
+# Docker-compose file to run MVD locally, for demo or debug purposes
+# note that environment variables for all three connectors must be declared in an .env file!
+version: "3.9"
+services:
+  company1:
+    env_file:
+      - company1.env
+    container_name: company1
+    build:
+      context: launcher
+      dockerfile: Dockerfile
+    ports:
+      - "8181:8181"
+      - "9191:9191"
+      - "8282:8282"
+    volumes:
+      - type: bind
+        source: ./deployment/dockercompose
+        target: /registry
+  company2:
+    env_file:
+      - company2.env
+    container_name: company2
+    build:
+      context: launcher
+      dockerfile: Dockerfile
+    ports:
+      - "18181:8181"
+      - "19191:9191"
+      - "18282:8282"
+    volumes:
+      - type: bind
+        source: ./deployment/dockercompose
+        target: /registry
+  company3:
+    env_file:
+      - company3.env
+    container_name: company3
+    build:
+      context: launcher
+      dockerfile: Dockerfile
+    ports:
+      - "28181:8181"
+      - "29191:9191"
+      - "28282:8282"
+    volumes:
+      - type: bind
+        source: ./deployment/dockercompose
+        target: /registry
