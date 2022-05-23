@@ -28,3 +28,5 @@ You might need to delete the DataSpace created previously.
 - Click on `Run workflow`
 - Provide the resources prefix that you used when you deployed your DataSpace.
 - Click on `Run workflow` to trigger to destroy your MinimumViableDataspace DataSpace.
+
+Note that the GitHub Artifacts by the Destroy pipeline are only retained for 90 days. If destroying a deployment after that period, the pipeline will fail. In that case, manually delete the provisioned Azure resource groups.
