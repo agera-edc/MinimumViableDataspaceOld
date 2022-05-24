@@ -1,6 +1,6 @@
 ## System tests
 
-The test use the key vault secret to connect to the storage accounts and copy a file from provider to consumer storage account.
+The test uses the key vault secret to connect to the storage accounts and copy a file from provider to consumer storage account.
 
 ### Running test locally
 
