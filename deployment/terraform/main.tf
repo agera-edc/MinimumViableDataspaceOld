@@ -54,8 +54,8 @@ data "azurerm_storage_share" "registry" {
 locals {
   registry_files_prefix = "${var.prefix}-"
 
-  connector_id   = "urn:connector:${var.prefix}-${var.participant_name}"
-  connector_name = "connector-${var.participant_name}"
+  connector_id     = "urn:connector:${var.prefix}-${var.participant_name}"
+  connector_name   = "connector-${var.participant_name}"
   connector_region = var.participant_region
 
   did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
@@ -306,7 +306,7 @@ resource "azurerm_storage_blob" "did" {
         "id" : "#identity-hub-url",
         "type" : "IdentityHub",
         // Only the query parameters are used, see MockCredentialsVerifier class
-        "serviceEndpoint": "http://dummy?region=${urlencode(local.connector_region)}"
+        "serviceEndpoint" : "http://dummy?region=${urlencode(local.connector_region)}"
       }
     ],
     "verificationMethod" = [
