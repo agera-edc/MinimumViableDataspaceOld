@@ -73,7 +73,7 @@ services:
     ports:
       - "9193:9191"
       - "8183:8181"
-      - "5006:5007"
+      - "5007:5007"
     volumes:
       - ./resources:/resources
 
