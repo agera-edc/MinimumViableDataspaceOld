@@ -195,13 +195,14 @@ jobs:
         run: |
           ./gradlew :system-tests:test
         env:
-          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
-          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
-          PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
-          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
-          CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
+          PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8282
+          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
+          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
+          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8181/api/federatedcatalog
+          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy.outputs.company3_key_vault }}
           CONSUMER_US_CATALOG_URL: http://${{ needs.Deploy.outputs.company3_edc_host }}:8181/api/federatedcatalog
-          API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
+          API_KEY: ${{ needs.Deploy.outputs.company2_api_key }}
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
@@ -225,7 +226,8 @@ jobs:
       - name: 'create env file'
         run: |-
           cat <<EOF > system-tests/.env
-          CONSUMER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
+          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy.outputs.company3_key_vault }}
           PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
           APP_CLIENT_ID=${{ secrets.APP_CLIENT_ID }}
           APP_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
