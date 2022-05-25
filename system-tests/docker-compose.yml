@@ -52,6 +52,31 @@ services:
     volumes:
       - ./resources:/resources
 
+  consumer-us:
+    container_name: consumer-us
+    build:
+      context: ../launcher
+      args:
+        JVM_ARGS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007"
+    environment:
+      IDS_WEBHOOK_ADDRESS: http://consumer-us:8282
+      EDC_CONNECTOR_NAME: ${CONSUMER_US_CONNECTOR_NAME}
+      EDC_IDENTITY_DID_URL: ${CONSUMER_US_DID_URL}
+      EDC_VAULT_CLIENTID: ${APP_CLIENT_ID}
+      EDC_VAULT_CLIENTSECRET: ${APP_CLIENT_SECRET}
+      EDC_VAULT_TENANTID: ${APP_TENANT_ID}
+      EDC_API_AUTH_KEY: ApiKeyDefaultValue
+      NODES_JSON_FILES_PREFIX: registry-
+      NODES_JSON_DIR: /resources/registry
+      EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 1
+      EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 1
+    ports:
+      - "9193:9191"
+      - "8183:8181"
+      - "5006:5007"
+    volumes:
+      - ./resources:/resources
+
   newman:
     container_name: newman
     image: postman/newman
@@ -69,27 +94,3 @@ services:
         condition: service_healthy
       provider:
         condition: service_healthy
-
-  consumer-us:
-    container_name: consumer-us
-    build:
-      context: ../launcher
-      args:
-        JVM_ARGS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007"
-      environment:
-        IDS_WEBHOOK_ADDRESS: http://consumer-us:8282
-        EDC_CONNECTOR_NAME: ${CONSUMER_US_CONNECTOR_NAME}
-        EDC_IDENTITY_DID_URL: ${CONSUMER_US_DID_URL}
-        EDC_VAULT_NAME: ${CONSUMER_KEY_VAULT}
-        EDC_VAULT_TENANTID: ${APP_TENANT_ID}
-        EDC_VAULT_CLIENTID: ${APP_CLIENT_ID}
-        EDC_VAULT_CLIENTSECRET: ${APP_CLIENT_SECRET}
-        EDC_API_AUTH_KEY: ApiKeyDefaultValue
-        NODES_JSON_FILES_PREFIX: registry-
-        NODES_JSON_DIR: /resources/registry
-        EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 1
-        EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 1
-      ports:
-        - "9193:9191"
-        - "8183:8181"
-        - "5006:5007"
