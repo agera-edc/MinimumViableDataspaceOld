@@ -201,9 +201,8 @@ jobs:
           PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8282
           PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
           CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
-          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
           CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8181/api/federatedcatalog
-          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy.outputs.company3_key_vault }}
           CONSUMER_US_CATALOG_URL: http://${{ needs.Deploy.outputs.company3_edc_host }}:8181/api/federatedcatalog
           PROVIDER_DID_URL: did:web:${{ needs.Deploy.outputs.company1_did_host }}
           CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy.outputs.company2_did_host }}
@@ -232,9 +231,8 @@ jobs:
       - name: 'create env file'
         run: |-
           cat <<EOF > system-tests/.env
-          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
-          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy.outputs.company3_key_vault }}
-          PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
           APP_CLIENT_ID=${{ secrets.APP_CLIENT_ID }}
           APP_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
           APP_CLIENT_SECRET=<client secret>
