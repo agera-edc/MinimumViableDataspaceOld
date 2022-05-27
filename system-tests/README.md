@@ -35,7 +35,7 @@ az login --service-principal --user "$APP_CLIENT_ID" --password "$APP_CLIENT_SEC
 
 Run tests:
 ```
-CONSUMER_KEY_VAULT="$CONSUMER_KEY_VAULT" ./gradlew :system-tests:test
+CONSUMER_EU_KEY_VAULT="$CONSUMER_EU_KEY_VAULT" CONSUMER_US_KEY_VAULT="$CONSUMER_US_KEY_VAULT" ./gradlew :system-tests:test
 ```
 
 ### Debugging MVD locally
