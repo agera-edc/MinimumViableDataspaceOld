@@ -261,7 +261,7 @@ jobs:
         run: ./gradlew test
         timeout-minutes: 10
         env:
-          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
+          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
 
       - name: 'docker-compose logs'
         run: docker-compose -f system-tests/docker-compose.yml logs
