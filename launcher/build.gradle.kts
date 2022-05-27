@@ -28,7 +28,6 @@ dependencies {
 
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:ids:${edcVersion}")
-    implementation("${edcGroup}:control-api:${edcVersion}")
     implementation("${edcGroup}:observability-api:${edcVersion}")
     implementation("${edcGroup}:data-management-api:${edcVersion}")
     implementation("${edcGroup}:filesystem-configuration:${edcVersion}")
