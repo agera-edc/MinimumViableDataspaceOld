@@ -77,4 +77,9 @@ variable "data_dashboard_image_tag" {
   default     = "5396bfc0a1c5672e1858d2e9da3f374a436b19dc"
 }
 
+variable "data_dashboard_theme" {
+  description = "theme for the data dashboard ui"
+  default = ""
+}
+
 
