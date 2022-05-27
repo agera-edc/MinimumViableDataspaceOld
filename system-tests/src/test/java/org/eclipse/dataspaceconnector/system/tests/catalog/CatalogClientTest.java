@@ -46,7 +46,7 @@ class CatalogClientTest {
 
     @Test
     void containsOnlyNonRestrictedAsset() {
-        await().atMost(5, MINUTES).untilAsserted(() -> {
+        await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_US_CATALOG_URL);
             assertThat(nodes).satisfiesExactly(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
@@ -55,7 +55,7 @@ class CatalogClientTest {
 
     @Test
     void containsAllAssets() {
-        await().atMost(5, MINUTES).untilAsserted(() -> {
+        await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
             assertThat(nodes).satisfiesExactlyInAnyOrder(
                     n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
