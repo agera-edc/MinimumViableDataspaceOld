@@ -231,7 +231,7 @@ jobs:
       - name: 'create env file'
         run: |-
           cat <<EOF > system-tests/.env
-          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
           PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
           APP_CLIENT_ID=${{ secrets.APP_CLIENT_ID }}
           APP_TENANT_ID=${{ secrets.ARM_TENANT_ID }}

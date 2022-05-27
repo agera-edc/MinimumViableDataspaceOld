@@ -63,12 +63,12 @@ class CatalogClientTest {
         });
     }
 
-    private List<ContractOffer> getNodesFromCatalog(String euConsumerCatalogUrl) {
+    private List<ContractOffer> getNodesFromCatalog(String consumerCatalogUrl) {
         var nodesJson = given()
                 .contentType("application/json")
                 .body(FederatedCatalogCacheQuery.Builder.newInstance().build())
                 .when()
-                .post(euConsumerCatalogUrl)
+                .post(consumerCatalogUrl)
                 .then()
                 .statusCode(200)
                 .extract().body().asString();
