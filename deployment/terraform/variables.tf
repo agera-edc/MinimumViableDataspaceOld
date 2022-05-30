@@ -79,7 +79,7 @@ variable "data_dashboard_image_tag" {
 
 variable "data_dashboard_theme" {
   description = "theme for the data dashboard ui"
-  default = "" # Use default theme. Possible theme values are defined in `theme.scss` in the EDCDataDashboard repository.
+  default     = "" # Use default theme. Possible theme values are defined in `theme.scss` in the EDCDataDashboard repository.
 }
 
 
