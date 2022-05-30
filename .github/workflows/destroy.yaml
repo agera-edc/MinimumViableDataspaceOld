@@ -47,9 +47,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 'Fail'
-        run: false
-
       - uses: actions/download-artifact@v3
         with:
           name: terraform-variables-${{ env.RESOURCES_PREFIX }}-${{ matrix.participant }}
