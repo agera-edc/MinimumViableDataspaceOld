@@ -12,9 +12,11 @@ variable "participant_region" {
 }
 
 variable "runtime_image" {
+  description = "Image name of the EDC Connector to deploy"
 }
 
 variable "dashboard_image" {
+  description = "Image name of the Data Dashboard web app to deploy"
 }
 
 variable "location" {
