@@ -14,6 +14,9 @@ variable "participant_region" {
 variable "runtime_image" {
 }
 
+variable "dashboard_image" {
+}
+
 variable "location" {
   default = "northeurope"
 }

@@ -164,7 +164,7 @@ resource "azurerm_container_group" "webapp" {
 
   container {
     name   = "webapp"
-    image  = "${data.azurerm_container_registry.registry.login_server}/mvd-edc/data-dashboard:${var.runtime_image}"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.dashboard_image}"
     cpu    = 1
     memory = 1
 
