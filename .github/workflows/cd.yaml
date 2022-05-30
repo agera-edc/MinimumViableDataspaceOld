@@ -47,3 +47,11 @@ jobs:
     secrets: inherit
     with:
       resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
+
+  Complete:
+    needs:
+      - Destroy
+    steps:
+      - name: 'Empty step.'
+        run: exit 0
+
