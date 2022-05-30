@@ -46,7 +46,6 @@ public class TransferLocalSimulation extends Simulation {
     public TransferLocalSimulation(TransferRequestFactory requestFactory) {
         var httpProtocol = http
                 .baseUrl(CONSUMER_MANAGEMENT_URL)
-                .header(API_KEY_HEADER, API_KEY);
         setUp(scenario(DESCRIPTION)
                 .repeat(REPEAT)
                 .on(contractNegotiationAndTransfer(PROVIDER_IDS_URL, requestFactory))
