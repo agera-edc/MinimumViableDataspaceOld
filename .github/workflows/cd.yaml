@@ -53,6 +53,7 @@ jobs:
     needs:
       - Destroy
     steps:
-      - name: 'Empty step.'
-        run: exit 0
+      - name: 'Failed.'
+        if: needs.Destroy.result == 'failure'
+        run: exit 1
 
