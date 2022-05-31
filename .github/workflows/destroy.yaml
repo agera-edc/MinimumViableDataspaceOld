@@ -55,7 +55,7 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: 'Download tfvars file'
-        run: az storage blob download --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f deployment/terraform/terraform.tfvars -n "${{ env.RESOURCES_PREFIX }}.tfvars"
+        run: az storage blob download --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f deployment/terraform/terraform.tfvars -n "${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode login
 
       - name: 'Delete terraform resources'
         run: |
