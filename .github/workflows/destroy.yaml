@@ -68,7 +68,6 @@ jobs:
           ' >> backend.conf
           terraform init -backend-config=backend.conf
           terraform destroy -auto-approve
-          az storage blob delete --account-name ${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }} -c ${{ secrets.TERRAFORM_STATE_CONTAINER }} -n ${{ matrix.participant }}${RESOURCES_PREFIX}.tfstate
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider
@@ -80,3 +79,8 @@ jobs:
 
           # Passing dummy variables to terraform destroy, because destroy needs input variables to be defined, but uses the state.
           TF_VAR_application_sp_client_secret: dummy
+
+      - name: 'Delete state and tfvars blobs'
+        run: |
+          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
+          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate" --auth-mode key
