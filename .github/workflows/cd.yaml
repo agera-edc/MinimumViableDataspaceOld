@@ -53,7 +53,9 @@ jobs:
     needs:
       - Destroy
     steps:
+      - run: echo "${{ needs.Destroy.result }}"
+      - run: echo "${{ needs.Destroy }}"
       - name: 'Failed.'
-        if: needs.Destroy.result == 'failure'
+        if: ${{ needs.Destroy.result == 'failure' }}
         run: exit 1
 
