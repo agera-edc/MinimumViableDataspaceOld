@@ -80,7 +80,28 @@ jobs:
           # Passing dummy variables to terraform destroy, because destroy needs input variables to be defined, but uses the state.
           TF_VAR_application_sp_client_secret: dummy
 
+      - name: 'Completion marker blob'
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f /dev/null -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.completed" --auth-mode key
+
+  Post-destroy:
+    needs:
+      - Matrix
+      - Destroy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
+
+    steps:
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
       - name: 'Delete state and tfvars blobs'
         run: |
-          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
-          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate" --auth-mode key
+          for extension in tfvars tfstate completed
+          do
+            az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.$extension" --auth-mode key
+          done
