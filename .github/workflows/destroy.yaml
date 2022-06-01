@@ -81,7 +81,7 @@ jobs:
           TF_VAR_application_sp_client_secret: dummy
 
       - name: 'Completion marker blob'
-        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f /dev/null -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.done" --auth-mode key
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f /dev/null -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.completed" --auth-mode key
 
   Post-destroy:
     needs:
@@ -92,5 +92,7 @@ jobs:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
       - name: 'Delete state and tfvars blobs'
         run: |
-          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
-          az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate" --auth-mode key
+          for extension in tfvars tfstate completed
+          do
+            az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.$extension" --auth-mode key
+          done
