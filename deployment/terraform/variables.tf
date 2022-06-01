@@ -12,6 +12,11 @@ variable "participant_region" {
 }
 
 variable "runtime_image" {
+  description = "Image name of the EDC Connector to deploy"
+}
+
+variable "dashboard_image" {
+  description = "Image name of the Data Dashboard web app to deploy"
 }
 
 variable "location" {
@@ -72,9 +77,7 @@ variable "registry_share" {
   description = "name of the registry JSON documents file share"
 }
 
-variable "data_dashboard_image_tag" {
-  description = "tag of the Data Dashboard web app image to deploy"
-  default     = "5396bfc0a1c5672e1858d2e9da3f374a436b19dc"
+variable "data_dashboard_theme" {
+  description = "theme for the data dashboard ui"
+  default     = "" # Use default theme. Possible theme values are defined in `theme.scss` in the EDCDataDashboard repository.
 }
-
-
