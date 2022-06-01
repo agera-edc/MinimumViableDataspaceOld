@@ -90,6 +90,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
+      
+    steps:
       - name: 'Delete state and tfvars blobs'
         run: |
           for extension in tfvars tfstate completed
