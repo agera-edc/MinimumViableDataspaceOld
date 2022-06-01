@@ -92,6 +92,13 @@ jobs:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
 
     steps:
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
       - name: 'Delete state and tfvars blobs'
         run: |
           for extension in tfvars tfstate completed
