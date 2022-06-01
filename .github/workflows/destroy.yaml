@@ -47,9 +47,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 'Fail'
-        run: false
-
       - uses: actions/download-artifact@v3
         with:
           name: terraform-variables-${{ env.RESOURCES_PREFIX }}-${{ matrix.participant }}
@@ -86,3 +83,6 @@ jobs:
 
           # Passing dummy variables to terraform destroy, because destroy needs input variables to be defined, but uses the state.
           TF_VAR_application_sp_client_secret: dummy
+      - name: 'Fail'
+        run: false
+

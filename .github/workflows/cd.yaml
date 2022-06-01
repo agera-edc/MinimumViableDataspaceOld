@@ -54,7 +54,8 @@ jobs:
       - Destroy
     steps:
       - run: echo "${{ needs.Destroy.result }}"
-      - run: echo "${{ needs.Destroy }}"
+      - run: echo "${{ toJSON(needs.Destroy) }}"
+      - run: echo "${{ toJSON(needs) }}"
       - name: 'Failed.'
         if: ${{ needs.Destroy.result == 'failure' }}
         run: exit 1
