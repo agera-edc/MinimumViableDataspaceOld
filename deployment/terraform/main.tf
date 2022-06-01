@@ -163,7 +163,7 @@ resource "azurerm_container_group" "webapp" {
 
   container {
     name   = "webapp"
-    image  = "${data.azurerm_container_registry.registry.login_server}/mvd-edc/data-dashboard:${var.data_dashboard_image_tag}"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.dashboard_image}"
     cpu    = 1
     memory = 1
 
@@ -177,12 +177,11 @@ resource "azurerm_container_group" "webapp" {
       mount_path = "/usr/share/nginx/html/assets/config"
       secret = {
         "app.config.json" = base64encode(jsonencode({
-          "dataManagementApiUrl" = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
-          "catalogUrl"           = "http://${azurerm_container_group.edc.fqdn}:${local.edc_default_port}/api/federatedcatalog"
-          "apiKey"               = local.api_key
-
-          "storageAccount" = azurerm_storage_account.inbox.name
-
+          "theme"                       = var.data_dashboard_theme
+          "dataManagementApiUrl"        = "http://${azurerm_container_group.edc.fqdn}:${local.edc_management_port}/api/v1/data"
+          "catalogUrl"                  = "http://${azurerm_container_group.edc.fqdn}:${local.edc_default_port}/api/federatedcatalog"
+          "apiKey"                      = local.api_key
+          "storageAccount"              = azurerm_storage_account.inbox.name
           "storageExplorerLinkTemplate" = "storageexplorer://v=1&accountid=${azurerm_resource_group.participant.id}/providers/Microsoft.Storage/storageAccounts/{{account}}&subscriptionid=${data.azurerm_subscription.current_subscription.subscription_id}&resourcetype=Azure.BlobContainer&resourcename={{container}}",
         }))
       }
