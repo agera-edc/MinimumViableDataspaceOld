@@ -86,7 +86,7 @@ jobs:
       company3_key_vault: ${{ steps.runterraform.outputs.company3_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
-      company3_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company3_api_key: ${{ steps.runterraform.outputs.company3_api_key }}
       company1_did_host: ${{ steps.runterraform.outputs.company1_did_host }}
       company2_did_host: ${{ steps.runterraform.outputs.company2_did_host }}
       company3_did_host: ${{ steps.runterraform.outputs.company3_did_host }}
