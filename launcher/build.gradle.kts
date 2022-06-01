@@ -60,9 +60,6 @@ dependencies {
 
     // Federated catalog
     implementation("${edcGroup}:catalog-cache:${edcVersion}")
-
-    // IDS policy
-    implementation("${edcGroup}:ids-policy:${edcVersion}")
 }
 
 application {
