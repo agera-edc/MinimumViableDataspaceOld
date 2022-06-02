@@ -49,7 +49,7 @@ variable "app_insights_agent_jar" {
 
 variable "app_insights_connection_string" {
   description = "optional connection string to Application Insights"
-  default = null
+  default     = null
 }
 
 variable "application_sp_object_id" {

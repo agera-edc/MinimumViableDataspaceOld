@@ -78,11 +78,12 @@ resource "azurerm_storage_account" "agent" {
 resource "azurerm_storage_share" "agent" {
   name                 = "agent"
   storage_account_name = azurerm_storage_account.agent.name
+  quota                = 50
 }
 
 resource "azurerm_storage_share_file" "agent" {
   name             = "applicationinsights-agent.jar"
-  count        = var.app_insights_agent_jar == null ? 0 : 1
+  count            = var.app_insights_agent_jar == null ? 0 : 1
   storage_share_id = azurerm_storage_share.agent.id
   source           = file(var.app_insights_agent_jar)
 }
@@ -144,7 +145,7 @@ resource "azurerm_container_group" "edc" {
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
 
-      JVM_ARGS = "-javaagent:/agent/applicationinsights-agent.jar"
+      JVM_ARGS                      = "-javaagent:/agent/applicationinsights-agent.jar"
       APPLICATIONINSIGHTS_ROLE_NAME = local.connector_name
     }
 
