@@ -111,7 +111,7 @@ jobs:
         run: |
           cat > terraform.tfvars <<EOF
           prefix = "${{ env.RESOURCES_PREFIX }}"
-          resource_group = "rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}"
+          resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
           EOF
 
       - name: 'Az CLI login'
