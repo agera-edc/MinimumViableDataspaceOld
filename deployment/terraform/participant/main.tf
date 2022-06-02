@@ -65,6 +65,27 @@ locals {
   edc_management_port = 9191
 }
 
+resource "azurerm_storage_account" "agent" {
+  name                     = "${var.prefix}${var.participant_name}agent"
+  resource_group_name      = azurerm_resource_group.participant.name
+  location                 = azurerm_resource_group.participant.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  account_kind             = "StorageV2"
+}
+
+resource "azurerm_storage_share" "agent" {
+  name                 = "agent"
+  storage_account_name = azurerm_storage_account.agent.name
+}
+
+resource "azurerm_storage_share_file" "agent" {
+  name             = "applicationinsights-agent.jar"
+  count        = var.app_insights_agent_jar == null ? 0 : 1
+  storage_share_id = azurerm_storage_share.agent.id
+  source           = file(var.app_insights_agent_jar)
+}
+
 resource "azurerm_container_group" "edc" {
   name                = "${var.prefix}-${var.participant_name}-edc"
   location            = var.location
@@ -124,6 +145,7 @@ resource "azurerm_container_group" "edc" {
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
 
+      JVM_ARGS = "-javaagent:/agent/applicationinsights-agent.jar"
       APPLICATIONINSIGHTS_ROLE_NAME = local.connector_name
     }
 
@@ -141,6 +163,14 @@ resource "azurerm_container_group" "edc" {
       share_name           = data.azurerm_storage_share.registry.name
       mount_path           = "/registry"
       name                 = "registry"
+    }
+
+    volume {
+      storage_account_name = azurerm_storage_account.agent.name
+      storage_account_key  = azurerm_storage_account.agent.primary_access_key
+      share_name           = azurerm_storage_share.agent.name
+      mount_path           = "/agent"
+      name                 = "agent"
     }
 
     liveness_probe {
