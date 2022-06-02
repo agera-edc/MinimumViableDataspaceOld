@@ -85,7 +85,7 @@ resource "azurerm_storage_share_file" "agent" {
   name             = "applicationinsights-agent.jar"
   count            = var.app_insights_agent_jar == null ? 0 : 1
   storage_share_id = azurerm_storage_share.agent.id
-  source           = file(var.app_insights_agent_jar)
+  source           = var.app_insights_agent_jar
 }
 
 resource "azurerm_container_group" "edc" {
