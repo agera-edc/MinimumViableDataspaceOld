@@ -67,7 +67,7 @@ jobs:
             key                  = "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate"
           ' >> backend.conf
           terraform init -backend-config=backend.conf
-          terraform destro -auto-approve
+          terraform destroy -auto-approve
         working-directory: deployment/terraform
         env:
           # Authentication settings for Terraform AzureRM provider
