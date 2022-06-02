@@ -118,7 +118,9 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
 
-    working-directory: deployment/terraform/participant
+    defaults:
+      run:
+        working-directory: deployment/terraform/participant
 
     steps:
       - uses: actions/checkout@v2
