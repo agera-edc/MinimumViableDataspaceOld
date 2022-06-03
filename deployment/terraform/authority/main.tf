@@ -14,6 +14,10 @@ provider "azurerm" {
     key_vault {
       purge_soft_delete_on_destroy = true
     }
+    // When deleting App Insights, resources related to microsoft.alertsmanagement remain
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
   }
 }
 
