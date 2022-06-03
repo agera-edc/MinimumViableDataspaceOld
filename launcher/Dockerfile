@@ -30,4 +30,4 @@ ENV WEB_HTTP_IDS_PATH="/api/v1/ids"
 # ARG can not be used in ENTRYPOINT so storing value in an ENV variable
 ENV ENV_JVM_ARGS=$JVM_ARGS
 ENTRYPOINT [ "sh", "-c", \
-    "exec java ${ENV_JVM_ARGS} -jar app.jar"]
+    "exec java ${ENV_JVM_ARGS} ${JVM_RUNTIME_ARGS} -jar app.jar"]

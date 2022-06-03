@@ -145,7 +145,7 @@ resource "azurerm_container_group" "edc" {
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
 
-      JVM_ARGS                      = "-javaagent:/agent/applicationinsights-agent.jar"
+      JVM_RUNTIME_ARGS              = "-javaagent:/agent/applicationinsights-agent.jar"
       APPLICATIONINSIGHTS_ROLE_NAME = local.connector_name
     }
 
