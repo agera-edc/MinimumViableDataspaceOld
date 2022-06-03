@@ -68,6 +68,44 @@ jobs:
         run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
 
+  # Build runtime image in Azure Container Registry, tagged with the unique run_number.
+  Build-Registration-Service:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      # Checkout MVD code
+      - uses: actions/checkout@v2
+
+      # Checkout Registration service code
+      - name: Checkout EDC
+        uses: actions/checkout@v2
+        with:
+          repository: agera-edc/RegistrationService
+          ref: d9f81a3736efb38e47f48d7da0c749653001f0b4
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      - uses: ./.github/actions/gradle-setup
+
+      # Build Registration Service runtime JAR locally.
+      # The result is a JAR file in launcher/build/libs.
+      - name: 'Build runtime JAR'
+        run: ./gradlew launcher:shadowJar
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
+        working-directory: launcher
+
   # Build data dashboard webapp
   Build-Dashboard:
     runs-on: ubuntu-latest
@@ -96,6 +134,8 @@ jobs:
 
   # Deploy shared dataspace components.
   Deploy-Dataspace:
+    needs:
+      - Build-Registration-Service
     runs-on: ubuntu-latest
     outputs:
       app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
