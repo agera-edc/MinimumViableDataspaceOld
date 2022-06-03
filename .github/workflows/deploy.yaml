@@ -95,14 +95,14 @@ jobs:
         run: az acr build --registry $ACR_NAME --image mvd-edc/data-dashboard:${{ env.RESOURCES_PREFIX }} .
 
   # Deploy shared dataspace components.
-  Deploy-Authority:
+  Deploy-Dataspace:
     runs-on: ubuntu-latest
     outputs:
       app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
 
     defaults:
       run:
-        working-directory: deployment/terraform/authority
+        working-directory: deployment/terraform/dataspace
 
     steps:
       - uses: actions/checkout@v2
@@ -150,7 +150,7 @@ jobs:
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
     needs:
-      - Deploy-Authority
+      - Deploy-Dataspace
       - Build-Connector
       - Build-Dashboard
       - Matrix
@@ -330,7 +330,7 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: 'Run EDC instances in docker-compose'
+      - name: 'Build launcher'
         run: ./gradlew :launcher:shadowJar
 
       - name: 'create env file'

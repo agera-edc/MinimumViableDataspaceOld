@@ -89,13 +89,13 @@ jobs:
           az storage blob delete --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate" --auth-mode key
 
   # Delete shared deployed Azure resources.
-  Destroy-Authority:
+  Destroy-Dataspace:
     continue-on-error: true
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: deployment/terraform/authority
+        working-directory: deployment/terraform/dataspace
 
     steps:
       - uses: actions/checkout@v2
