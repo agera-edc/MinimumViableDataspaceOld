@@ -8,5 +8,5 @@ variable "location" {
 }
 
 variable "resource_group" {
-  default = "test-authority"
+  default = "test-dataspace"
 }

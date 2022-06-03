@@ -27,15 +27,15 @@ data "azurerm_subscription" "current_subscription" {
 data "azurerm_client_config" "current_client" {
 }
 
-resource "azurerm_resource_group" "authority" {
+resource "azurerm_resource_group" "dataspace" {
   name     = var.resource_group
   location = var.location
 }
 
-resource "azurerm_application_insights" "authority" {
+resource "azurerm_application_insights" "dataspace" {
   name                = "${var.prefix}-appinsights"
   location            = var.location
-  resource_group_name = azurerm_resource_group.authority.name
+  resource_group_name = azurerm_resource_group.dataspace.name
   application_type    = "java"
 }
 
