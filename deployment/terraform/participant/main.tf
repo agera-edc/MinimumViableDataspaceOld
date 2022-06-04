@@ -94,7 +94,6 @@ resource "azurerm_container_group" "edc" {
   resource_group_name = azurerm_resource_group.participant.name
   ip_address_type     = "Public"
   dns_name_label      = local.edc_dns_label
-  restart_policy      = "Always"
   os_type             = "Linux"
 
   image_registry_credential {
@@ -172,6 +171,14 @@ resource "azurerm_container_group" "edc" {
       share_name           = azurerm_storage_share.agent.name
       mount_path           = "/agent"
       name                 = "agent"
+    }
+
+    liveness_probe {
+      http_get {
+        port = 8181
+        path = "/api/check/health"
+      }
+      failure_threshold = 6
     }
   }
 }
