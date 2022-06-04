@@ -103,7 +103,7 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
+        run: az acr build --registry $ACR_NAME --image mvd-edc/registration-service:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
 
   # Build data dashboard webapp
@@ -150,8 +150,14 @@ jobs:
       - name: 'Create tfvars file'
         run: |
           cat > terraform.tfvars <<EOF
+          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          acr_name = "${{ secrets.ACR_NAME }}"
           prefix = "${{ env.RESOURCES_PREFIX }}"
           resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
+          runtime_image = "mvd-edc/registration-service:${{ env.RESOURCES_PREFIX }}"
+          registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          registry_storage_account = "${{ secrets.REGISTRY_STORAGE_ACCOUNT }}"
+          registry_share = "${{ secrets.REGISTRY_SHARE }}"
           EOF
 
       - name: 'Az CLI login'
