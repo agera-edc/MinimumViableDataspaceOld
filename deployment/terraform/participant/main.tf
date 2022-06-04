@@ -173,13 +173,6 @@ resource "azurerm_container_group" "edc" {
       mount_path           = "/agent"
       name                 = "agent"
     }
-
-    liveness_probe {
-      http_get {
-        port = 8181
-        path = "/api/check/health"
-      }
-    }
   }
 }
 

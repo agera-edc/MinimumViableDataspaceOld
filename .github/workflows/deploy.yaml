@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
 
 on:
   workflow_call:
