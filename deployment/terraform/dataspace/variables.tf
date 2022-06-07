@@ -11,8 +11,8 @@ variable "resource_group" {
   default = "test-dataspace"
 }
 
-variable "runtime_image" {
-  description = "Image name of the EDC Connector to deploy"
+variable "registry_runtime_image" {
+  description = "Image name of the Registry Service to deploy"
 }
 
 variable "acr_name" {

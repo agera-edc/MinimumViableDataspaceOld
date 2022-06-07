@@ -79,7 +79,7 @@ resource "azurerm_container_group" "registry-service" {
 
   container {
     name   = "registry-service"
-    image  = "${data.azurerm_container_registry.registry.login_server}/${var.runtime_image}"
+    image  = "${data.azurerm_container_registry.registry.login_server}/${var.registry_runtime_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
 

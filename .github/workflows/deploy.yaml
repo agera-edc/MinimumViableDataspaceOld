@@ -152,7 +152,7 @@ jobs:
           acr_name = "${{ secrets.ACR_NAME }}"
           prefix = "${{ env.RESOURCES_PREFIX }}"
           resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
-          runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
+          registry_runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
           registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
           registry_storage_account = "${{ secrets.REGISTRY_STORAGE_ACCOUNT }}"
           registry_share = "${{ secrets.REGISTRY_SHARE }}"
