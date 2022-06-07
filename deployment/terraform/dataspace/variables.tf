@@ -28,7 +28,7 @@ variable "container_cpu" {
 }
 
 variable "container_memory" {
-  default = "1.5"
+  default = "8"
 }
 
 variable "registry_resource_group" {
