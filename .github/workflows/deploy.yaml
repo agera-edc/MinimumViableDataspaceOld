@@ -193,9 +193,6 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-      - name: 'Verify deployed Registry Service is healthy'
-        run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
-
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
     needs:
