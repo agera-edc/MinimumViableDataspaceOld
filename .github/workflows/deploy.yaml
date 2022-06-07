@@ -74,9 +74,6 @@ jobs:
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
     steps:
-      # Checkout MVD code
-      - uses: actions/checkout@v2
-
       # Checkout Registration service code
       - name: Checkout EDC
         uses: actions/checkout@v2
@@ -198,7 +195,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: 'Verify deployed Registry Service is healthy'
-          run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/health
+        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
