@@ -195,7 +195,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: 'Verify deployed Registry Service is healthy'
-        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/health
+        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/check/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
