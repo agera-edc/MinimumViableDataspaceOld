@@ -122,6 +122,7 @@ resource "azurerm_container_group" "edc" {
       # Refresh catalog frequently to accelerate scenarios
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
+
       APPLICATIONINSIGHTS_ROLE_NAME = local.connector_name
     }
 
