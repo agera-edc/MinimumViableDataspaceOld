@@ -139,6 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
+      registry_host: ${{ steps.runterraform.outputs.registry_host }}
 
     defaults:
       run:
@@ -184,6 +185,9 @@ jobs:
           terraform apply -auto-approve
           app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
           echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
+          REGISTRY_HOST=$(terraform output -raw registry_host)
+          echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
+          echo "::set-output name=registry_host::${REGISTRY_HOST}"
 
         env:
           # Authentication settings for Terraform AzureRM provider
@@ -192,6 +196,9 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: 'Verify deployed Registry Service is healthy'
+          run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
