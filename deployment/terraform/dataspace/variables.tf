@@ -36,7 +36,7 @@ variable "registry_resource_group" {
 }
 
 variable "registry_storage_account" {
-  description = "name of the registry JSON documents file share storage account"
+  description = "name of the registration service storage account"
 }
 
 variable "registry_share" {
