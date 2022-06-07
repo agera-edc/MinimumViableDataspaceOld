@@ -43,10 +43,6 @@ variable "container_memory" {
   default = "8"
 }
 
-variable "app_insights_agent_jar" {
-  description = "application insights agent JAR file"
-}
-
 variable "app_insights_connection_string" {
   description = "optional connection string to Application Insights"
   default     = null
