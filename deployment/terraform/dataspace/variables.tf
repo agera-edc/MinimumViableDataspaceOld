@@ -12,7 +12,7 @@ variable "resource_group" {
 }
 
 variable "registry_runtime_image" {
-  description = "Image name of the Registry Service to deploy"
+  description = "Image name of the Registry Service to deploy."
 }
 
 variable "acr_name" {
