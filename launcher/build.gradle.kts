@@ -26,8 +26,6 @@ dependencies {
     implementation(project(":extensions:policies"))
     implementation(project(":extensions:mock-credentials-verifier"))
 
-    implementation("${edcGroup}:registration-service-client:${edcVersion}")
-
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:observability-api:${edcVersion}")
     implementation("${edcGroup}:data-management-api:${edcVersion}")
