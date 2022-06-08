@@ -191,8 +191,7 @@ jobs:
           echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
           REGISTRY_HOST=$(terraform output -raw registry_host)
           echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
-          WEBAPP_URL=$(terraform output -raw webapp_url)
-          echo "::notice title=MVD WebApp for Registry Service::$WEBAPP_URL"
+          DID_HOST=$(terraform output -raw did_host)
           echo "::set-output name=registry_host::${REGISTRY_HOST}"
 
         env:
@@ -207,7 +206,7 @@ jobs:
           TF_VAR_public_key_jwk_file: "key.public.jwk"
 
       - name: 'Verify did endpoint is available'
-        run: curl --fail https://$DID_HOST/.well-known/did.json | jq '.id'
+        run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
 
       - name: 'Verify deployed Registry Service is healthy'
         run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/check/health
