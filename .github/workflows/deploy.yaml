@@ -328,7 +328,9 @@ jobs:
         working-directory: .
 
   Verify:
-    needs: Deploy-Participants
+    needs:
+      - Deploy-Participants
+      - Deploy-Dataspace
     runs-on: ubuntu-latest
     steps:
       # Checkout MVD code
@@ -358,6 +360,7 @@ jobs:
           CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company2_did_host }}
           CONSUMER_US_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company3_did_host }}
           API_KEY: ${{ needs.Deploy-Participants.outputs.company2_api_key }}
+          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registry_host }}
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
