@@ -193,7 +193,7 @@ resource "azurerm_storage_blob" "did" {
     ],
     "authentication" : [
       "#identity-key-1"
-    ] })
+  ] })
   content_type = "application/json"
 }
 
