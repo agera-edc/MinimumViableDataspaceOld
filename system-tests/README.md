@@ -10,6 +10,10 @@ From the build result, download the artifact named `testing-configuration` and e
 
 In the file, add the application client secret value under the `APP_CLIENT_SECRET` key. It is used to access Key Vault.
 
+Publish Registration Service packages to maven local:
+
+TBD
+
 Build the EDC launcher:
 
 ```
