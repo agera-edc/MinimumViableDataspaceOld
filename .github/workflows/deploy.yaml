@@ -162,6 +162,7 @@ jobs:
           registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
           registry_storage_account = "${{ secrets.REGISTRY_STORAGE_ACCOUNT }}"
           registry_share = "${{ secrets.REGISTRY_SHARE }}"
+          application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
           EOF
 
       - name: 'Az CLI login'
@@ -202,7 +203,6 @@ jobs:
           # Terraform variables not included in terraform.tfvars.
           TF_VAR_key_file: "key.pem"
           TF_VAR_public_key_jwk_file: "key.public.jwk"
-          TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}
 
       - name: 'Verify did endpoint is available'
         run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
