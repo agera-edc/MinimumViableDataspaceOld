@@ -360,7 +360,11 @@ jobs:
           CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company2_did_host }}
           CONSUMER_US_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company3_did_host }}
           API_KEY: ${{ needs.Deploy-Participants.outputs.company2_api_key }}
-          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registry_host }}
+          REGISTRATION_SERVICE_URL: http://${{ needs.Deploy-Dataspace.outputs.registry_host }}
+
+      - name: 'Echo registry_host'
+        run: |
+          echo "${{ needs.Deploy-Dataspace.outputs.registry_host }}"
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
@@ -399,7 +403,7 @@ jobs:
           CONSUMER_EU_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company2_connector_name }}
           CONSUMER_US_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company3_connector_name }}
           PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy-Participants.outputs.company1_assets_storage_account }}
-          REGISTRATION_SERVICE_URL=${{ needs.Deploy-Dataspace.outputs.registry_host}}
+          REGISTRATION_SERVICE_URL=http://${{ needs.Deploy-Dataspace.outputs.registry_host}}
           EOF
 
       - name: 'Publish env file'
