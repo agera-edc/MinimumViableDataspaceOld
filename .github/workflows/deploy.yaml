@@ -361,7 +361,9 @@ jobs:
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
-    needs: Deploy-Participants
+    needs:
+      - Deploy-Participants
+      - Deploy-Dataspace
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -394,6 +396,7 @@ jobs:
           CONSUMER_EU_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company2_connector_name }}
           CONSUMER_US_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company3_connector_name }}
           PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy-Participants.outputs.company1_assets_storage_account }}
+          REGISTRATION_SERVICE_URL=${{ needs.Deploy-Dataspace.outputs.registry_host}}
           EOF
 
       - name: 'Publish env file'
