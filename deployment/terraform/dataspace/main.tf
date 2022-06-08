@@ -45,10 +45,10 @@ data "azurerm_storage_share" "registry" {
 locals {
   registry_files_prefix = "${var.prefix}-"
 
-  connector_name = "connector-registry"
+  connector_name = "connector-registration"
 
-  registry_service_dns_label = "${var.prefix}-registry-mvd"
-  edc_default_port           = 8181
+  registration_service_dns_label = "${var.prefix}-registration-mvd"
+  edc_default_port               = 8181
 }
 
 resource "azurerm_resource_group" "dataspace" {
@@ -63,12 +63,12 @@ resource "azurerm_application_insights" "dataspace" {
   application_type    = "java"
 }
 
-resource "azurerm_container_group" "registry-service" {
-  name                = "${var.prefix}-registry"
+resource "azurerm_container_group" "registration-service" {
+  name                = "${var.prefix}-registration-service"
   location            = var.location
   resource_group_name = azurerm_resource_group.dataspace.name
   ip_address_type     = "Public"
-  dns_name_label      = local.registry_service_dns_label
+  dns_name_label      = local.registration_service_dns_label
   os_type             = "Linux"
 
   image_registry_credential {
@@ -78,7 +78,7 @@ resource "azurerm_container_group" "registry-service" {
   }
 
   container {
-    name   = "registry-service"
+    name   = "registration-service"
     image  = "${data.azurerm_container_registry.registry.login_server}/${var.registry_runtime_image}"
     cpu    = var.container_cpu
     memory = var.container_memory
