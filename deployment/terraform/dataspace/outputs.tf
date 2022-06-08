@@ -6,3 +6,7 @@ output "app_insights_connection_string" {
 output "registry_host" {
   value = azurerm_container_group.registry-service.fqdn
 }
+
+output "webapp_url" {
+  value = "http://${azurerm_container_group.registry-service.fqdn}"
+}
