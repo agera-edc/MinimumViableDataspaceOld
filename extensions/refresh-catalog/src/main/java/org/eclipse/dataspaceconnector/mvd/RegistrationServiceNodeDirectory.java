@@ -2,20 +2,27 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.registration.client.ApiClient;
-import org.eclipse.dataspaceconnector.registration.client.ApiClientFactory;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
 import org.eclipse.dataspaceconnector.registration.client.models.Participant;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Federated cache directory using Registration Service as backend.
+ */
 public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirectory {
 
-    static final String API_URL = "http://localhost:8181/api";
+    private final RegistryApi api;
 
-    ApiClient apiClient = ApiClientFactory.createApiClient(API_URL);
-    RegistryApi api = new RegistryApi(apiClient);
+    /**
+     * Constructs {@link RegistrationServiceNodeDirectory}
+     *
+     * @param api RegistrationService API client.
+     */
+    public RegistrationServiceNodeDirectory(RegistryApi api) {
+        this.api = api;
+    }
 
     @Override
     public List<FederatedCacheNode> getAll() {
