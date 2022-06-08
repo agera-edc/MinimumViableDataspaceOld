@@ -3,6 +3,6 @@ output "app_insights_connection_string" {
   sensitive = true
 }
 
-output "registry_host" {
-  value = azurerm_container_group.registry-service.fqdn
+output "registration_service_url" {
+  value = "http://${azurerm_container_group.registry-service.fqdn}:${local.edc_default_port}"
 }

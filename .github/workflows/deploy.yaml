@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
-      registry_host: ${{ steps.runterraform.outputs.registry_host }}
+      registration_service_url: ${{ steps.runterraform.outputs.registration_service_url }}
 
     defaults:
       run:
@@ -182,9 +182,8 @@ jobs:
           terraform apply -auto-approve
           app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
           echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
-          REGISTRY_HOST=$(terraform output -raw registry_host)
-          echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
-          echo "::set-output name=registry_host::${REGISTRY_HOST}"
+          registration_service_url=$(terraform output -raw registration_service_url)
+          echo "::set-output name=registration_service_url::${registration_service_url}"
 
         env:
           # Authentication settings for Terraform AzureRM provider
@@ -195,7 +194,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: 'Verify deployed Registry Service is healthy'
-        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/check/health
+        run: curl --retry 6 --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
@@ -345,10 +344,6 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: 'Echo registry_host'
-        run: |
-          echo "${{ needs.Deploy-Dataspace.outputs.registry_host }}"
-
       - name: 'System tests'
         run: |
           ./gradlew :system-tests:test
@@ -364,7 +359,7 @@ jobs:
           CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company2_did_host }}
           CONSUMER_US_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company3_did_host }}
           API_KEY: ${{ needs.Deploy-Participants.outputs.company2_api_key }}
-          REGISTRATION_SERVICE_URL: http://${{ needs.Deploy-Dataspace.outputs.registry_host }}
+          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
@@ -403,7 +398,7 @@ jobs:
           CONSUMER_EU_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company2_connector_name }}
           CONSUMER_US_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company3_connector_name }}
           PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy-Participants.outputs.company1_assets_storage_account }}
-          REGISTRATION_SERVICE_URL=http://${{ needs.Deploy-Dataspace.outputs.registry_host}}
+          REGISTRATION_SERVICE_URL=http://${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
           EOF
 
       - name: 'Publish env file'
