@@ -4,5 +4,5 @@ output "app_insights_connection_string" {
 }
 
 output "registration_service_url" {
-  value = "http://${azurerm_container_group.registry-service.fqdn}:${local.edc_default_port}"
+  value = "http://${azurerm_container_group.registration-service.fqdn}:${local.edc_default_port}"
 }
