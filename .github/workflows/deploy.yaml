@@ -419,7 +419,6 @@ jobs:
         env:
           CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company2_key_vault }}
           CONSUMER_US_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company3_key_vault }}
-          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
 
       - name: 'docker-compose logs'
         run: docker-compose -f system-tests/docker-compose.yml logs
