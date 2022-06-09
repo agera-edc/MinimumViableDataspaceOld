@@ -336,8 +336,8 @@ jobs:
           . gradle.properties
           mvn dependency:copy -Dartifact=$registrationServiceGroup:registration-service-cli:$registrationServiceVersion:jar:all -DoutputDirectory=.
           java -jar registration-service-cli-$registrationServiceVersion-all.jar \
-            register \
             "-s=$REGISTRATION_SERVICE_API_URL" \
+            participants register \
             "-n=${{matrix.participant}}" \
             "-p=ids-multipart" \
             "-u=$PROVIDER_IDS_URL"
