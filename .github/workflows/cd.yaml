@@ -37,13 +37,13 @@ jobs:
     with:
       resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
 
-  Destroy:
-    # Always run Destroy workflow unless SetResourcesPrefix workflow fails.
-    if: ${{ always() && needs.SetResourcesPrefix.result == 'success'}}
-    uses: ./.github/workflows/destroy.yaml
-    needs:
-      - SetResourcesPrefix
-      - Deploy
-    secrets: inherit
-    with:
-      resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
+#  Destroy:
+#    # Always run Destroy workflow unless SetResourcesPrefix workflow fails.
+#    if: ${{ always() && needs.SetResourcesPrefix.result == 'success'}}
+#    uses: ./.github/workflows/destroy.yaml
+#    needs:
+#      - SetResourcesPrefix
+#      - Deploy
+#    secrets: inherit
+#    with:
+#      resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
