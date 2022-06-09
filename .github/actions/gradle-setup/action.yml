@@ -16,7 +16,7 @@ runs:
       with:
         repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: f47e3ce3c40daa6713778f9a13e1129d053ecbb5
+        ref: d942cfb757d83337e7952e6568bb06fe97e168e4
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
