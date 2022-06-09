@@ -64,7 +64,7 @@ resource "azurerm_application_insights" "dataspace" {
 }
 
 resource "azurerm_container_group" "registration-service" {
-  name                = "${var.prefix}-registration-service"
+  name                = "${var.prefix}-registration-mvd"
   location            = var.location
   resource_group_name = azurerm_resource_group.dataspace.name
   ip_address_type     = "Public"
