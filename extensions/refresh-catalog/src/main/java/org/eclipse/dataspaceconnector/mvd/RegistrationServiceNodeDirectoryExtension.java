@@ -35,7 +35,7 @@ public class RegistrationServiceNodeDirectoryExtension implements ServiceExtensi
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
         TypeManager typeManager = context.getTypeManager();
-        var registrationServiceApiUrl = ConfigurationFunctions.propOrEnv("REGISTRATION_SERVICE_API_URL", API_URL);
+        var registrationServiceApiUrl = ConfigurationFunctions.propOrEnv("registration.service.api.url", API_URL);
         var service = new RegistrationServiceNodeDirectory(new RegistryApi(ApiClientFactory.createApiClient(registrationServiceApiUrl)));
         context.registerService(FederatedCacheNodeDirectory.class, service);
     }
