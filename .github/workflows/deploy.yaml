@@ -336,13 +336,13 @@ jobs:
           mvn dependency:copy -Dartifact=$registrationServiceGroup:registration-service-cli:$registrationServiceVersion:jar:all -DoutputDirectory=.
           java -jar registration-service-cli-$registrationServiceVersion-all.jar \
             register \
-            "-s=$REGISTRATION_SERVICE_URL" \
+            "-s=$REGISTRATION_SERVICE_API_URL" \
             "-n=${{matrix.participant}}" \
             "-p=ids-multipart" \
             "-u=$PROVIDER_IDS_URL"
         env:
           PROVIDER_IDS_URL: http://${{ env.EDC_HOST }}:8282
-          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
+          REGISTRATION_SERVICE_API_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}/api
         working-directory: .
 
   Verify:
