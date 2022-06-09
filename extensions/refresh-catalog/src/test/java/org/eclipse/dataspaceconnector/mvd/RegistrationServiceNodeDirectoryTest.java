@@ -53,9 +53,13 @@ class RegistrationServiceNodeDirectoryTest {
         when(registryApi.listParticipants()).thenReturn(List.of(company1, company2));
 
         List<FederatedCacheNode> cacheNodes = service.getAll();
-        assertThat(cacheNodes).extracting(FederatedCacheNode::getName).containsExactlyInAnyOrder(company1.getName(), company2.getName());
-        assertThat(cacheNodes).extracting(FederatedCacheNode::getTargetUrl).containsExactlyInAnyOrder(company1.getUrl(), company2.getUrl());
-        assertThat(cacheNodes).extracting(FederatedCacheNode::getSupportedProtocols).containsExactlyInAnyOrder(company1.getSupportedProtocols(), company2.getSupportedProtocols());
+        assertThat(cacheNodes)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactly(mapToNode(company1), mapToNode(company2));
+    }
+
+    private FederatedCacheNode mapToNode(Participant participant) {
+        return new FederatedCacheNode(participant.getName(), participant.getUrl(), participant.getSupportedProtocols());
     }
 
     @NotNull
