@@ -329,7 +329,7 @@ jobs:
       - name: 'Register participant'
         run: |
           set -u
-          . ../gradle.properties
+          . gradle.properties
           mvn dependency:copy -Dartifact=$registrationServiceGroup:registration-service-cli:$registrationServiceVersion:jar:all -DoutputDirectory=.
           java -jar registration-service-cli-$registrationServiceVersion-all.jar \
             register \
@@ -340,6 +340,7 @@ jobs:
         env:
           PROVIDER_IDS_URL: http://${{ env.EDC_HOST }}:8282
           REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
+        working-directory: .
 
   Verify:
     needs:
