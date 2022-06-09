@@ -4,7 +4,7 @@ The test uses the key vault secret to connect to the storage accounts and copy a
 
 ### Building MVD project
 
-One of the MVD dependencies is Registration Service rest client library. Registration Service is not published to any central artifactory yet so in local 
+One of the MVD dependencies is the Registration Service REST client library. Registration Service is not published to any central artifactory yet so in local 
 development we have to use locally published dependencies.
 
 #### Publish Registration Service to local Maven
