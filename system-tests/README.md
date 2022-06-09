@@ -11,8 +11,6 @@ development we have to use locally published dependencies.
 
 Checkout [Registration Service repository](https://github.com/agera-edc/RegistrationService). 
 
-Follow [these instructions](https://github.com/agera-edc/RegistrationService/blob/main/docs/developer/openapi.md) to generate rest client.
-
 Publish Registration Service libraries to local Maven artifactory by executing gradle command `./gradlew publishToMavenLocal` from Registration Service root 
 folder. 
 

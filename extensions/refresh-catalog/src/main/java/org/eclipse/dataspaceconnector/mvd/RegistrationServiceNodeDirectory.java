@@ -13,23 +13,23 @@ import java.util.stream.Collectors;
  */
 public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirectory {
 
-    private final RegistryApi api;
+    private final RegistryApi apiClient;
 
     /**
      * Constructs {@link RegistrationServiceNodeDirectory}
      *
-     * @param api RegistrationService API client.
+     * @param apiClient RegistrationService API client.
      */
-    public RegistrationServiceNodeDirectory(RegistryApi api) {
-        this.api = api;
+    public RegistrationServiceNodeDirectory(RegistryApi apiClient) {
+        this.apiClient = apiClient;
     }
 
     @Override
     public List<FederatedCacheNode> getAll() {
-        return api.listParticipants().stream().map(this::map).collect(Collectors.toList());
+        return apiClient.listParticipants().stream().map(this::toFederatedCacheNode).collect(Collectors.toList());
     }
 
-    private FederatedCacheNode map(Participant participant) {
+    private FederatedCacheNode toFederatedCacheNode(Participant participant) {
         return new FederatedCacheNode(participant.getName(), participant.getUrl(), participant.getSupportedProtocols());
     }
 
