@@ -57,7 +57,3 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
       shell: bash
       working-directory: RegistrationService
-
-    - name: Delete Registration Service packages
-      run: rm -r RegistrationService
-      shell: bash
