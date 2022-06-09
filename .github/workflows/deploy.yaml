@@ -84,6 +84,7 @@ jobs:
       - name: 'Login to ACR'
         run: az acr login -n $ACR_NAME
 
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/gradle-setup
 
       # Build Registration Service runtime JAR locally.
