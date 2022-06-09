@@ -326,6 +326,9 @@ jobs:
           deployment/seed-data.sh
         working-directory: .
 
+      # Publish registration service CLI to local maven repo
+      - uses: ./.github/actions/gradle-setup
+
       - name: 'Register participant'
         run: |
           set -u
