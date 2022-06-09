@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: agera-edc/RegistrationService
-          ref: d9f81a3736efb38e47f48d7da0c749653001f0b4
+          ref: f47e3ce3c40daa6713778f9a13e1129d053ecbb5
 
       - name: 'Az CLI login'
         uses: azure/login@v1
@@ -419,6 +419,7 @@ jobs:
         env:
           CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company2_key_vault }}
           CONSUMER_US_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company3_key_vault }}
+          REGISTRATION_SERVICE_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
 
       - name: 'docker-compose logs'
         run: docker-compose -f system-tests/docker-compose.yml logs
