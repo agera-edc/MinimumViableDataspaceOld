@@ -91,11 +91,12 @@ jobs:
       # The result is a JAR file in launcher/build/libs.
       - name: 'Build runtime JAR'
         run: ./gradlew launcher:shadowJar
+        working-directory: RegistrationService
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
         run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
-        working-directory: launcher
+        working-directory: RegistrationService/launcher
 
   # Build data dashboard webapp
   Build-Dashboard:
