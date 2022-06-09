@@ -119,6 +119,8 @@ resource "azurerm_container_group" "edc" {
       NODES_JSON_DIR          = "/registry"
       NODES_JSON_FILES_PREFIX = local.registry_files_prefix
 
+      REGISTRATION_SERVICE_API_URL=var.registration_service_api_url
+
       # Refresh catalog frequently to accelerate scenarios
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
