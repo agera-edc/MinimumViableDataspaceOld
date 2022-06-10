@@ -172,7 +172,7 @@ resource "azurerm_storage_blob" "did" {
   source_content = jsonencode({
     id = local.did_url
     "@context" = [
-    "https://www.w3.org/ns/did/v1",
+      "https://www.w3.org/ns/did/v1",
       {
         "@base" = local.did_url
       }
