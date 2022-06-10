@@ -65,7 +65,42 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd-edc/connector:${{ env.RESOURCES_PREFIX }} .
+        run: az acr build --registry $ACR_NAME --image mvd/connector:${{ env.RESOURCES_PREFIX }} .
+        working-directory: launcher
+
+  # Build runtime image in Azure Container Registry, tagged with the unique run_number.
+  Build-Registration-Service:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      # Checkout Registration service code
+      - name: Checkout Registration Service
+        uses: actions/checkout@v2
+        with:
+          repository: agera-edc/RegistrationService
+          ref: d9f81a3736efb38e47f48d7da0c749653001f0b4
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      - uses: ./.github/actions/gradle-setup
+
+      # Build Registration Service runtime JAR locally.
+      # The result is a JAR file in launcher/build/libs.
+      - name: 'Build runtime JAR'
+        run: ./gradlew launcher:shadowJar
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
 
   # Build data dashboard webapp
@@ -92,11 +127,80 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd-edc/data-dashboard:${{ env.RESOURCES_PREFIX }} .
+        run: az acr build --registry $ACR_NAME --image mvd/data-dashboard:${{ env.RESOURCES_PREFIX }} .
+
+  # Deploy shared dataspace components.
+  Deploy-Dataspace:
+    needs:
+      - Build-Registration-Service
+    runs-on: ubuntu-latest
+    outputs:
+      app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
+      registry_host: ${{ steps.runterraform.outputs.registry_host }}
+
+    defaults:
+      run:
+        working-directory: deployment/terraform/dataspace
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'Create tfvars file'
+        run: |
+          cat > terraform.tfvars <<EOF
+          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          acr_name = "${{ secrets.ACR_NAME }}"
+          prefix = "${{ env.RESOURCES_PREFIX }}"
+          resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
+          registry_runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
+          registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          registry_storage_account = "${{ secrets.REGISTRY_STORAGE_ACCOUNT }}"
+          registry_share = "${{ secrets.REGISTRY_SHARE }}"
+          EOF
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload tfvars file'
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f terraform.tfvars -n "${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
+
+      - name: 'Run terraform'
+        id: runterraform
+        run: |
+          # Create backend.conf file to retrieve the remote terraform state during terraform init.
+          echo '
+            resource_group_name  = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+            storage_account_name = "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}"
+            container_name       = "${{ secrets.TERRAFORM_STATE_CONTAINER }}"
+            key                  = "${{ env.RESOURCES_PREFIX }}.tfstate"
+          ' >> backend.conf
+          terraform init -backend-config=backend.conf
+          terraform apply -auto-approve
+          app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
+          echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
+          REGISTRY_HOST=$(terraform output -raw registry_host)
+          echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
+          echo "::set-output name=registry_host::${REGISTRY_HOST}"
+
+        env:
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: 'Verify deployed Registry Service is healthy'
+        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/check/health
 
   # Deploy dataspace participants in parallel.
-  Deploy:
+  Deploy-Participants:
     needs:
+      - Deploy-Dataspace
       - Build-Connector
       - Build-Dashboard
       - Matrix
@@ -104,19 +208,29 @@ jobs:
     outputs:
       company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
       company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
+      company3_edc_host: ${{ steps.runterraform.outputs.company3_edc_host }}
       company1_key_vault: ${{ steps.runterraform.outputs.company1_key_vault }}
       company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
+      company3_key_vault: ${{ steps.runterraform.outputs.company3_key_vault }}
       company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
       company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company3_api_key: ${{ steps.runterraform.outputs.company3_api_key }}
       company1_did_host: ${{ steps.runterraform.outputs.company1_did_host }}
       company2_did_host: ${{ steps.runterraform.outputs.company2_did_host }}
+      company3_did_host: ${{ steps.runterraform.outputs.company3_did_host }}
       company1_connector_name: ${{ steps.runterraform.outputs.company1_connector_name }}
       company2_connector_name: ${{ steps.runterraform.outputs.company2_connector_name }}
+      company3_connector_name: ${{ steps.runterraform.outputs.company3_connector_name }}
       company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
       company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
+      company3_assets_storage_account: ${{ steps.runterraform.outputs.company3_assets_storage_account }}
 
     strategy:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
+
+    defaults:
+      run:
+        working-directory: deployment/terraform/participant
 
     steps:
       - uses: actions/checkout@v2
@@ -129,7 +243,7 @@ jobs:
 
       - name: 'Create tfvars file'
         run: |
-          cat > deployment/terraform/terraform.tfvars <<EOF
+          cat > terraform.tfvars <<EOF
           acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
           acr_name = "${{ secrets.ACR_NAME }}"
           participant_name = "${{ matrix.participant }}"
@@ -137,8 +251,8 @@ jobs:
           data_dashboard_theme = "${{ matrix.data_dashboard_theme }}"
           prefix = "${{ env.RESOURCES_PREFIX }}"
           resource_group = "rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}"
-          runtime_image = "mvd-edc/connector:${{ env.RESOURCES_PREFIX }}"
-          dashboard_image = "mvd-edc/data-dashboard:${{ env.RESOURCES_PREFIX }}"
+          runtime_image = "mvd/connector:${{ env.RESOURCES_PREFIX }}"
+          dashboard_image = "mvd/data-dashboard:${{ env.RESOURCES_PREFIX }}"
           application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
           application_sp_client_id = "${{ secrets.APP_CLIENT_ID }}"
           registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
@@ -154,7 +268,7 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: 'Upload tfvars file'
-        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f deployment/terraform/terraform.tfvars -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f terraform.tfvars -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
 
       - name: 'Run terraform'
         id: runterraform
@@ -187,7 +301,6 @@ jobs:
           echo "::set-output name=${{ matrix.participant }}_did_host::${DID_HOST}"
           echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
 
-        working-directory: deployment/terraform
         env:
 
           # Authentication settings for Terraform AzureRM provider
@@ -198,9 +311,10 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
           # Terraform variables not included in terraform.tfvars.
-          TF_VAR_key_file: "../../key.pem"
-          TF_VAR_public_key_jwk_file: "../../key.public.jwk"
+          TF_VAR_key_file: "key.pem"
+          TF_VAR_public_key_jwk_file: "key.public.jwk"
           TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}
+          TF_VAR_app_insights_connection_string: ${{ needs.Deploy-Dataspace.outputs.app_insights_connection_string }}
 
       - name: 'Verify did endpoint is available'
         run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
@@ -212,9 +326,10 @@ jobs:
         run: |
           npm install -g newman
           deployment/seed-data.sh
+        working-directory: .
 
   Verify:
-    needs: Deploy
+    needs: Deploy-Participants
     runs-on: ubuntu-latest
     steps:
       # Checkout MVD code
@@ -233,16 +348,21 @@ jobs:
         run: |
           ./gradlew :system-tests:test
         env:
-          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:9191
-          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:9191
-          PROVIDER_IDS_URL: http://${{ needs.Deploy.outputs.company2_edc_host }}:8282
-          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
-          CONSUMER_CATALOG_URL: http://${{ needs.Deploy.outputs.company1_edc_host }}:8181/api/federatedcatalog
-          API_KEY: ${{ needs.Deploy.outputs.company1_api_key }}
+          PROVIDER_IDS_URL: http://${{ needs.Deploy-Participants.outputs.company1_edc_host }}:8282
+          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy-Participants.outputs.company1_edc_host }}:9191
+          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy-Participants.outputs.company2_edc_host }}:9191
+          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company2_key_vault }}
+          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company3_key_vault }}
+          CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy-Participants.outputs.company2_edc_host }}:8181/api/federatedcatalog
+          CONSUMER_US_CATALOG_URL: http://${{ needs.Deploy-Participants.outputs.company3_edc_host }}:8181/api/federatedcatalog
+          PROVIDER_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company1_did_host }}
+          CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company2_did_host }}
+          CONSUMER_US_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company3_did_host }}
+          API_KEY: ${{ needs.Deploy-Participants.outputs.company2_api_key }}
 
   # Verify docker-compose setup for local testing
   VerifyLocalTests:
-    needs: Deploy
+    needs: Deploy-Participants
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -256,22 +376,25 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: 'Run EDC instances in docker-compose'
+      - name: 'Build launcher'
         run: ./gradlew :launcher:shadowJar
 
       - name: 'create env file'
         run: |-
           cat <<EOF > system-tests/.env
-          CONSUMER_KEY_VAULT=${{ needs.Deploy.outputs.company1_key_vault }}
-          PROVIDER_KEY_VAULT=${{ needs.Deploy.outputs.company2_key_vault }}
+          CONSUMER_EU_KEY_VAULT=${{ needs.Deploy-Participants.outputs.company2_key_vault }}
+          CONSUMER_US_KEY_VAULT=${{ needs.Deploy-Participants.outputs.company3_key_vault }}
+          PROVIDER_KEY_VAULT=${{ needs.Deploy-Participants.outputs.company1_key_vault }}
           APP_CLIENT_ID=${{ secrets.APP_CLIENT_ID }}
           APP_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
           APP_CLIENT_SECRET=<client secret>
-          CONSUMER_DID_URL=did:web:${{ needs.Deploy.outputs.company1_did_host }}
-          PROVIDER_DID_URL=did:web:${{ needs.Deploy.outputs.company2_did_host }}
-          CONSUMER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company1_connector_name }}
-          PROVIDER_CONNECTOR_NAME=${{ needs.Deploy.outputs.company2_connector_name }}
-          PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy.outputs.company2_assets_storage_account }}
+          PROVIDER_DID_URL=did:web:${{ needs.Deploy-Participants.outputs.company1_did_host }}
+          CONSUMER_EU_DID_URL=did:web:${{ needs.Deploy-Participants.outputs.company2_did_host }}
+          CONSUMER_US_DID_URL=did:web:${{ needs.Deploy-Participants.outputs.company3_did_host }}
+          PROVIDER_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company1_connector_name }}
+          CONSUMER_EU_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company2_connector_name }}
+          CONSUMER_US_CONNECTOR_NAME=${{ needs.Deploy-Participants.outputs.company3_connector_name }}
+          PROVIDER_ASSETS_STORAGE_ACCOUNT=${{ needs.Deploy-Participants.outputs.company1_assets_storage_account }}
           EOF
 
       - name: 'Publish env file'
@@ -290,7 +413,8 @@ jobs:
         run: ./gradlew test
         timeout-minutes: 10
         env:
-          CONSUMER_KEY_VAULT: ${{ needs.Deploy.outputs.company1_key_vault }}
+          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company2_key_vault }}
+          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company3_key_vault }}
 
       - name: 'docker-compose logs'
         run: docker-compose -f system-tests/docker-compose.yml logs

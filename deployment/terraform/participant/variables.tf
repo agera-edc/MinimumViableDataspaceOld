@@ -40,7 +40,12 @@ variable "container_cpu" {
 }
 
 variable "container_memory" {
-  default = "1.5"
+  default = "8"
+}
+
+variable "app_insights_connection_string" {
+  description = "optional connection string to Application Insights"
+  default     = null
 }
 
 variable "application_sp_object_id" {
@@ -65,6 +70,7 @@ variable "public_key_jwk_file" {
   description = "name of a file containing the public key in JWK format"
   default     = null
 }
+
 variable "registry_resource_group" {
   description = "resource group of the registry JSON documents file share storage account"
 }

@@ -31,11 +31,6 @@ locals {
   api_key = random_password.apikey.result
 }
 
-resource "azurerm_resource_group" "participant" {
-  name     = var.resource_group
-  location = var.location
-}
-
 data "azurerm_container_registry" "registry" {
   name                = var.acr_name
   resource_group_name = var.acr_resource_group
@@ -54,8 +49,9 @@ data "azurerm_storage_share" "registry" {
 locals {
   registry_files_prefix = "${var.prefix}-"
 
-  connector_id   = "urn:connector:${var.prefix}-${var.participant_name}"
-  connector_name = "connector-${var.participant_name}"
+  connector_id     = "urn:connector:${var.prefix}-${var.participant_name}"
+  connector_name   = "connector-${var.participant_name}"
+  connector_region = var.participant_region
 
   did_url = "did:web:${azurerm_storage_account.did.primary_web_host}"
 
@@ -63,6 +59,11 @@ locals {
   edc_default_port    = 8181
   edc_ids_port        = 8282
   edc_management_port = 9191
+}
+
+resource "azurerm_resource_group" "participant" {
+  name     = var.resource_group
+  location = var.location
 }
 
 resource "azurerm_container_group" "edc" {
@@ -104,8 +105,6 @@ resource "azurerm_container_group" "edc" {
       EDC_IDS_ID         = local.connector_id
       EDC_CONNECTOR_NAME = local.connector_name
 
-      EDC_MOCK_REGION = var.participant_region
-
       EDC_VAULT_NAME     = azurerm_key_vault.participant.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
       EDC_VAULT_CLIENTID = var.application_sp_client_id
@@ -123,12 +122,16 @@ resource "azurerm_container_group" "edc" {
       # Refresh catalog frequently to accelerate scenarios
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS  = 10
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS = 10
+
+      APPLICATIONINSIGHTS_ROLE_NAME = local.connector_name
     }
 
     secure_environment_variables = {
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
 
       EDC_API_AUTH_KEY = local.api_key
+
+      APPLICATIONINSIGHTS_CONNECTION_STRING = var.app_insights_connection_string
     }
 
     volume {
@@ -144,6 +147,7 @@ resource "azurerm_container_group" "edc" {
         port = 8181
         path = "/api/check/health"
       }
+      failure_threshold = 6
     }
   }
 }
@@ -267,6 +271,14 @@ resource "azurerm_storage_blob" "testfile" {
   source                 = "sample-data/text-document.txt"
 }
 
+resource "azurerm_storage_blob" "testfile2" {
+  name                   = "text-document-2.txt"
+  storage_account_name   = azurerm_storage_account.assets.name
+  storage_container_name = azurerm_storage_container.assets_container.name
+  type                   = "Block"
+  source                 = "sample-data/text-document.txt"
+}
+
 resource "azurerm_key_vault_secret" "asset_storage_key" {
   name         = "${azurerm_storage_account.assets.name}-key1"
   value        = azurerm_storage_account.assets.primary_access_key
@@ -306,7 +318,7 @@ resource "azurerm_storage_blob" "did" {
         "id" : "#identity-hub-url",
         "type" : "IdentityHub",
         // Only the query parameters are used, see MockCredentialsVerifier class
-        "serviceEndpoint" : "http://dummy?region=eu"
+        "serviceEndpoint" : "http://dummy?region=${urlencode(local.connector_region)}"
       }
     ],
     "verificationMethod" = [
