@@ -34,12 +34,3 @@ variable "container_memory" {
 variable "registry_resource_group" {
   description = "resource group of the registration service"
 }
-
-variable "registry_storage_account" {
-  description = "name of the registration service storage account"
-}
-
-variable "registry_share" {
-  description = "name of the registry JSON documents file share"
-}
-
