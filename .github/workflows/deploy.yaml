@@ -189,11 +189,10 @@ jobs:
           terraform apply -auto-approve
           app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
           echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
-          REGISTRY_HOST=$(terraform output -raw registry_host)
-          echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
-          DID_HOST=$(terraform output -raw did_host)
-          echo "DID_HOST=$DID_HOST" >> $GITHUB_ENV
-          echo "::set-output name=registry_host::${REGISTRY_HOST}"
+          registry_host=$(terraform output -raw registry_host)
+          echo "::set-output name=registry_host::${registry_host}"
+          did_host=$(terraform output -raw did_host)
+          echo "::set-output name=did_host::${did_host}"
 
         env:
           # Authentication settings for Terraform AzureRM provider
@@ -207,10 +206,10 @@ jobs:
           TF_VAR_public_key_jwk_file: "key.public.jwk"
 
       - name: 'Verify did endpoint is available'
-        run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
+        run: curl https://${{ steps.runterraform.outputs.did_host }}/.well-known/did.json | jq '.id'
 
       - name: 'Verify deployed Registry Service is healthy'
-        run: curl --retry 6 --fail http://${REGISTRY_HOST}:8181/api/check/health
+        run: curl --retry 6 --fail http://${{ steps.runterraform.outputs.registry_host }}:8181/api/check/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
