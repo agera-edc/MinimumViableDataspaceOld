@@ -327,6 +327,15 @@ jobs:
 
       - name: 'Register participant'
         run: |
+          curl -vfd '{ "name": "${{matrix.participant}}", "supportedProtocols": [ "ids-multipart" ], "url": "http://${{ env.EDC_HOST }}:8282" }' \
+            -HContent-type:application/json \
+            $REGISTRATION_SERVICE_API_URL/registry/participant
+        env:
+          REGISTRATION_SERVICE_API_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}/api
+
+      - name: 'Register participant2'
+        if: never()
+        run: |
           set -u
           . gradle.properties
           mvn dependency:copy -Dartifact=$registrationServiceGroup:registration-service-cli:$registrationServiceVersion:jar:all -DoutputDirectory=.
