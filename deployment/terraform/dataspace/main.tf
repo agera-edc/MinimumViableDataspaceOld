@@ -176,13 +176,6 @@ resource "azurerm_storage_blob" "did" {
         "@base" = local.did_url
       }
     ],
-    "service" : [
-      {
-        "id" : "#identity-hub-url",
-        "type" : "IdentityHub",
-        "serviceEndpoint" : "http://dummy"
-      }
-    ],
     "verificationMethod" = [
       {
         "id"           = "#identity-key-1"
